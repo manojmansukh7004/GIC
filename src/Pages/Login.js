@@ -26,14 +26,8 @@ class Login extends Component {
     reqesting: false,
     passwordVisibility: false,
     isModalVisible: false,
-    modalMessage: '',
     loading: false,
-    companyData: [],
     baseUrl: "",
-    // loading: true,
-    // selectedValue: null,
-    // pickerLabel: 'Select Company'
-    companyCode: '',
   };
 
   async componentDidMount() {
@@ -80,15 +74,13 @@ class Login extends Component {
       if (data.ErrorList != null && data.ErrorList != "") {
         var error = data.ErrorList[0].split("$")[1]
         alert(error);
-        //location.href = domain + "login.html";
       }
       else if (data.SuccessList != undefined || data.ErrorList != undefined || data.ExceptionList != undefined) {
         alert(data.ExceptionList[0].split("$")[1]);
       }
       else if (data.EmployeeDetails[0] != "") {
 
-        // alert("login")
-        this.props.userData(data)
+        this.props.userData(data.EmployeeDetails[0][0].UserID)
         onSignIn()
         // this.props.navigation.navigate('TimeSheet')
         if (data.EmployeeDetails[0][0].RedirectPage == "") {
@@ -118,48 +110,7 @@ class Login extends Component {
     //  
     // });
   }
-  // onPressLogin = async () => {
-  //   this.setState({ loading: true })
-
-  //   if (this.state.userName == '') {
-  //     alert("Enter the user name")
-  //   }
-  //   if (this.state.password == '') {
-  //     alert("Enter the Password")
-  //   }
-  //   const payload = {
-  //     "loginDetails":
-  //     {
-  //       Action: 1,
-  //       LoginEmpID: this.state.userName,
-  //       Password: this.state.password
-  //     }
-  //   };
-  //   var baseUrl = `${this.state.baseUrl}`;
-  //   const response = await attemptLogin(payload, baseUrl);
-  //   console.log("login details", response);
-
-  //   if (Object.keys(response)[0] == "EmployeeDetails") {
-  //     var user = response.EmployeeDetails[0][0]
-  //     // this.props.userDetails(user);
-  //     var page = (response.EmployeeDetails[0][0].RedirectPage).toString().split(".")[0]
-  //     await storeData("EmpName", response.EmployeeDetails[0][0].LoginEmpName)
-  //     await storeData("UserID", response.EmployeeDetails[0][0].UserID)
-  //     await storeData("RedirectPage", page)
-  //     console.log("paggggggggg", page);
-
-  //     onSignIn()
-
-  //     this.props.navigation.navigate('SplashScreen')
-  //   } else {
-  //     alert("Invalid Id & Password \nPlease try again..");
-  //     this.setState({ userName: '', password: '', loading: false })
-  //   }
-
-
-
-  // }
-
+ 
   togglePasswordVisibility = () => {
     this.setState((prevState) => ({
       passwordVisibility: !prevState.passwordVisibility,

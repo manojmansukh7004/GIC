@@ -26,7 +26,7 @@ class SplashScreen extends Component {
     type1: 'VB',
     division1: "01",
     baseUrl: '',
-    userID: '',
+    UserId: '',
     filterData: '',
     customerData: '',
     RedirectPage: '',
@@ -38,14 +38,14 @@ class SplashScreen extends Component {
     await getData('baseUrl').then((value) => {
       this.setState({ baseUrl: value })
     })
-    await getData('UserID').then((value) => {
-      this.setState({ userID: value })
+    await getData('UserId').then((value) => {
+      this.setState({ UserId: value })
     })
     await getData('RedirectPage').then((value) => {
       this.setState({ RedirectPage: value })
     })
 
-    var userId = this.state.userID
+    var userId = this.state.UserId
     var baseUrl = this.state.baseUrl
     this.props.setUser(userId)
     this.props.setBaseUrl(baseUrl)
