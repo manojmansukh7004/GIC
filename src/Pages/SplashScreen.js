@@ -93,9 +93,9 @@ class SplashScreen extends Component {
             console.log("rrrr",res);
             // res =false
             if (res == true) {
-              this.setState({ loading: false });  
+              // this.setState({ loading: false });  
               // this.props.navigation.navigate('TimeSheet')
-              this.FetchFiltetData()
+              // this.FetchFiltetData()
             }
             else {
               this.props.navigation.navigate('Login')
@@ -138,6 +138,8 @@ class SplashScreen extends Component {
       <View style={styles.container}>
         {/* <Image style={{ height: 180, width: 180 }} source={require('../Assets/logo11.png')} /> */}
         <Image style={styles.img} source={require('../Assets/logo.jpg')} />
+        <Image style={{}} source={require('../Assets/loader.gif')} />
+
         {
           this.state.loading == true ? <ActivityIndicator size={40} animating={true} color={Colors.blue800} style={{ top: 25 }} /> : null
         }
@@ -168,11 +170,11 @@ const styles = StyleSheet.create({
     margin: 10
   },
   container: {
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     flex: 1,
     backgroundColor: 'white',
-    bottom: 20
+    marginTop: 150
   },
   card: {
     height: 320,

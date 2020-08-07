@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import { Text, View, TouchableOpacity, StyleSheet, Image, BackHandler, Alert, StatusBar } from "react-native";
-import { storeData, getData } from '../Config/AsyncStorace'
+import { Divider } from 'material-bread';
 // import DeviceInfo from 'react-native-device-info';
 import Icon from 'react-native-vector-icons/Ionicons';
 var count = 0
 import { connect } from 'react-redux'
 import { } from '../Redux/Action'
+import { color } from "react-native-reanimated";
 class DrawerComponent extends Component {
     constructor(props) {
         super(props);
@@ -79,107 +80,71 @@ class DrawerComponent extends Component {
         BackHandler.removeEventListener("hardwareBackPress", this.backAction);
     }
 
-
-
     async componentDidMount() {
 
-      
+
     }
 
     render() {
         const { navigation } = this.props;
         return (
-            <View style={{ flex: 1,}}>
-        <StatusBar translucent barStyle="dark-content" backgroundColor="#e7ebee" />
+            <View style={{ flex: 1, }}>
+                <StatusBar translucent barStyle="dark-content" backgroundColor="#e7ebee" />
 
-            <View style={styles.sideMenuContainer}>
+                <View style={styles.sideMenuContainer}>
 
-                <Image
-                    source={require('../Assets/logo.jpg')}
-                    style={styles.sideMenuProfileIcon}
-                />
-                <View style={{ jujustifyContent: 'flex-end', alignItems: 'flex-end', marginRight: 3 }}>
-                    {/* <Text>{VersionCode} </Text> */}
-                </View>
-                <View
-                    style={{
-                        width: '100%',
-                        height: 1,
-                        backgroundColor: '#e2e2e2',
+                    <Image
+                        source={require('../Assets/logo-sm.jpg')}
+                        style={styles.sideMenuProfileIcon}
+                    />
+                    <View style={{ jujustifyContent: 'flex-end', alignItems: 'flex-end', marginRight: 3 }}>
+                        {/* <Text>{VersionCode} </Text> */}
+                    </View>
+                    <View
 
-                    }}
-                />
-                <View style={{
-                    flexDirection: 'row',
-                    width: '100%',
-                    alignItems: 'flex-start',
-                    paddingTop: 10,
-                    paddingBottom: 10,
-                    backgroundColor: '#E2EDE8',
-                }}>
-                    <Text style={styles.Title}>TIMESHEET</Text>
-                </View>
-
-                <TouchableOpacity
-                    style={{
+                    />
+                    <View style={{
                         flexDirection: 'row',
                         width: '100%',
                         alignItems: 'flex-start',
                         paddingTop: 10,
-                        paddingBottom: 10,
-                        // backgroundColor: this.state.key === 1 ? '#e0dbdb' : '#ffffff',
-                    }}
-                    onPress={() => this.setState({ key: 1 }, () => {
-                        // this.clearFilter()
-                        navigation.navigate("TimeSheet")
-                    })}
-                >
-                    <View style={{ marginRight: 10, marginLeft: 20 }}>
-                    {/* <Icon name="favorite" size={48} /> */}
-
-                        {/* <Icon
-                                    name={'md-paper'}
-                                    // style={styles.icon}
-                                    size={28}
-                                /> */}
+                        // paddingBottom: 10,
+                        // backgroundColor: '#E2EDE8',
+                    }}>
+                        <Text style={styles.Title}>TimeSheet</Text>
                     </View>
-                    <Text style={[styles.text,{color:this.state.key === 1 ? 'blue': 'black'}]}>My TimeSheet</Text>
-                </TouchableOpacity>
 
-                <TouchableOpacity
-                    style={{
-                        flexDirection: 'row',
-                        width: '100%',
-                        alignItems: 'flex-start',
-                        paddingTop: 10,
-                        paddingBottom: 10,
-                        // backgroundColor: this.state.key === 2 ? '#e0dbdb' : '#ffffff',
-                    }}
-                    onPress={() => this.setState({ key: 2 }, () => {
-                        // this.clearFilter()
-                        navigation.navigate("TimeSheet")
-                    })}
-                >
-                    <View style={{ marginRight: 10, marginLeft: 20 }}>
-                        {/* <Icon
-                                name={'md-paper'}
-                                // style={styles.icon}
-                                size={28}
-                            /> */}
+                    <TouchableOpacity
+                        style={styles.title}
+                        onPress={() => this.setState({ key: 1 }, () => {
+                            navigation.navigate("TimeSheet")
+                        })}
+                    >
+                        <View style={{ marginRight: 10, marginLeft: 20 }}>
+                            <Image style={{ height: 25, width: 25 }}
+                                source={require("../Assets/darkCalendar.png")} />
+                        </View>
+                        <Text style={[styles.text, { color: this.state.key === 1 ? 'blue' : 'black' }]}>My TimeSheet</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.strip}
+                        onPress={() => this.setState({ key: 2 }, () => {
+                            navigation.navigate("TimeSheet")
+                        })}
+                    >
+                        <View style={{ marginRight: 10, marginLeft: 20 }}>
+                            <Image style={{ height: 25, width: 25 }}
+                                source={require("../Assets/approval.png")} />
+                        </View>
+                        <Text style={[styles.text, { color: this.state.key === 2 ? 'blue' : 'black' }]}>TimeSheet Approval</Text>
+                    </TouchableOpacity>
+
+                    <Divider style={{ borderWidth: .3, borderColor: 'grey', backgroundColor: 'grey' }} />
+
+                    <View style={styles.title}>
+                        <Text style={styles.Title}>Reports</Text>
                     </View>
-                    <Text style={[styles.text,{color:this.state.key === 2 ? 'blue': 'black'}]}>TimeSheet Approval</Text>
-                </TouchableOpacity>
-                <View style={{
-                    flexDirection: 'row',
-                    width: '100%',
-                    alignItems: 'flex-start',
-                    paddingTop: 10,
-                    paddingBottom: 10,
-                    backgroundColor: '#E2EDE8',
-                }}>
-                    <Text style={styles.Title}>REPORTS</Text>
                 </View>
-            </View>
             </View>
         );
     }
@@ -222,11 +187,17 @@ const mapStateToProps = state => {
 export default connect(mapStateToProps)(DrawerComponent)
 const styles = StyleSheet.create({
     Title: {
-        fontSize: 18,
-        // margin: 5,
+        fontSize: 14,
         marginLeft: 15,
-        fontWeight: 'bold',
-
+        color: 'grey'
+        // fontWeight: 'bold',
+    },
+    title:{
+        flexDirection: 'row',
+        width: '100%',
+        alignItems: 'flex-start',
+        paddingTop: 10,
+        paddingBottom: 10,
     },
     text: {
         fontSize: 16,
@@ -248,9 +219,13 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     sideMenuProfileIcon: {
-        justifyContent: 'center',
-        alignItems: 'stretch',
-        width: 280,
-        height: 90,
+        justifyContent: 'center'
     },
+    strip: {
+        flexDirection: 'row',
+        width: '100%',
+        alignItems: 'flex-start',
+        paddingTop: 10,
+
+    }
 });

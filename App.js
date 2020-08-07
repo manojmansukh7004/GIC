@@ -20,16 +20,10 @@ export default class App extends Component {
   render() {
     return (
 
-      // <NavigationContainer>
       <Provider store={Store}>
-              {/* <StatusBar translucent barStyle="dark-content" backgroundColor="#e7ebee" /> */}
         <AppContainer />
        </Provider>
-      // </NavigationContainer>
-        // <NavigationContainer>
-          // <MyDrawer />
-        // </NavigationContainer>
-        // <TablrEx/>
+     
     );
   }
 }

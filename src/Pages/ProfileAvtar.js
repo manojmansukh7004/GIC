@@ -53,7 +53,7 @@ export default class Profile extends Component {
       <>
         <Avatar
           type={"text"}
-          size={40}
+          size={30}
           content={this.state.empName == '' ? null : (this.state.empName).charAt(0)}
           color={this.randomColor()}
           onPress={() => this.setState({ visible: !this.state.visible })}
