@@ -64,30 +64,34 @@ export default class Profile extends Component {
           style={
             {
               width: 400,
+              // height:200
             }
           }
         >
 
-          <Paragraph style={{ fontSize: 20, fontWeight: 'bold' }}>
-            {"Confirm SignOut"}
-          </Paragraph>
-          <Paragraph style={{ marginTop: 10, fontSize: 16 }}>
-            {"  Are you sure want to SignOut ?"}
+          <Text style={{ fontSize: 20, marginBottom:5 }}>
+            {"Sign Out"}
+          </Text>
+          <Paragraph style={{  fontSize: 16 }}>
+            {"  \t\tAre you sure you want to SignOut ?"}
           </Paragraph>
 
           <View
             style={{
               justifyContent: "flex-end",
               flexDirection: 'row',
-              paddingVertical: 20
+              paddingVertical: 20,
+              
             }}
           >
             <Button
               text={'cancel'}
+              style={{borderWidth: .3,margin:5, marginRight:5}}
               onPress={() => this.setState({ visible: false })}
             />
             <Button
               text={'Sign out'}
+              style={{borderWidth: 1,margin:5, borderColor: 'red'}}
               onPress={() => onSignOut().then(() =>
                 this.setState({ visible: false }),
                 this.props.navigation.navigate('SplashScreen')

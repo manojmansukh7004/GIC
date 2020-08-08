@@ -41,9 +41,9 @@ class SplashScreen extends Component {
     await getData('UserId').then((value) => {
       this.setState({ UserId: value })
     })
-    await getData('RedirectPage').then((value) => {
-      this.setState({ RedirectPage: value })
-    })
+    // await getData('RedirectPage').then((value) => {
+    //   this.setState({ RedirectPage: value })
+    // })
 
     var userId = this.state.UserId
     var baseUrl = this.state.baseUrl
@@ -51,6 +51,8 @@ class SplashScreen extends Component {
     this.props.setBaseUrl(baseUrl)
 
     this.props.navigation.navigate("TimeSheet")
+    // this.setState({ loading: false });  
+
   }
 
   onPressUpdate = () => {
@@ -95,7 +97,7 @@ class SplashScreen extends Component {
             if (res == true) {
               // this.setState({ loading: false });  
               // this.props.navigation.navigate('TimeSheet')
-              // this.FetchFiltetData()
+              this.FetchFiltetData()
             }
             else {
               this.props.navigation.navigate('Login')
@@ -138,10 +140,10 @@ class SplashScreen extends Component {
       <View style={styles.container}>
         {/* <Image style={{ height: 180, width: 180 }} source={require('../Assets/logo11.png')} /> */}
         <Image style={styles.img} source={require('../Assets/logo.jpg')} />
-        <Image style={{}} source={require('../Assets/loader.gif')} />
+        {/* <Image style={{}} source={require('../Assets/loader.gif')} /> */}
 
         {
-          this.state.loading == true ? <ActivityIndicator size={40} animating={true} color={Colors.blue800} style={{ top: 25 }} /> : null
+          this.state.loading == true ? <ActivityIndicator size={40} animating={true} color={Colors.blue800} /> : null
         }
 
       </View>

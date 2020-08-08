@@ -3,6 +3,7 @@ import { SET_BASEURL, SET_USER} from './ActionType'
 const initialState ={
     user: '',
     baseUrl: '',
+    fontColor: '#FFFF',
     primaryColor: "#297AF9",
     secColor:"#F2F7F4"
 }

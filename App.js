@@ -19,11 +19,13 @@ export default class App extends Component {
   }
   render() {
     return (
+      <>
+      <StatusBar translucent barStyle="light-content" backgroundColor="#297AF9" />
 
       <Provider store={Store}>
         <AppContainer />
        </Provider>
-     
+     </>
     );
   }
 }
