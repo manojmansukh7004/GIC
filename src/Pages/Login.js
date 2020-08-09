@@ -96,7 +96,7 @@ class Login extends Component {
               await storeData("UserId", data.EmployeeDetails[0][0].UserID)
               await storeData("UserName", data.EmployeeDetails[0][0].LoginEmpName)
               await storeData("UserRole", data.EmployeeDetails[0][0].LoginEmpRole)
-              this.props.navigation.navigate('TimeSheet')
+              this.props.navigation.navigate('SplashScreen')
               // }
         }
       }
