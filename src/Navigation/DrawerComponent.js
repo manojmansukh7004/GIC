@@ -89,9 +89,9 @@ class DrawerComponent extends Component {
         const { navigation } = this.props;
         return (
             <View style={{ flex: 1, }}>
-                <StatusBar translucent barStyle="dark-content" backgroundColor="#e7ebee" />
+                <StatusBar translucent barStyle="light-content" backgroundColor= {this.state.primaryColor} />
 
-                <View style={styles.sideMenuContainer}>
+                <View style={[styles.sideMenuContainer,{backgroundColor: this.props.secColor}]}>
 
                     <Image
                         source={require('../Assets/logo-sm.jpg')}
@@ -153,7 +153,8 @@ const mapStateToProps = state => {
     return {
         userId: state.userId,
         baseUrl: state.baseUrl,
-
+        primaryColor: state.primaryColor,
+        secColor: state.secColor,
     }
 }
 
@@ -214,7 +215,7 @@ const styles = StyleSheet.create({
     sideMenuContainer: {
         width: '100%',
         height: '100%',
-        backgroundColor: '#fff',
+        // backgroundColor: '#fff',
         // alignItems: 'flex-start',
         marginTop: 20,
     },

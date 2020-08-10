@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
   },
   subContiner1: {
     flexDirection: 'row',
-    height: "100%",
+    height: "100%"
     // borderWidth: 0.2,
     // borderColor: '#C1C0B9',
     // borderRadius: 5,

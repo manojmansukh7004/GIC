@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ToastAndroid, TextInput, Image, StatusBar, StyleSheet, SafeAreaView, ScrollView, Text, FlatList, View, TouchableOpacity } from 'react-native';
+import { ToastAndroid, TextInput, Image, StatusBar, StyleSheet, Picker, ScrollView, Text, FlatList, View, TouchableOpacity } from 'react-native';
 import { Divider, } from 'react-native-paper';
 import Appbar1 from '../Component/AppBar1'
 import { FloatingAction } from "react-native-floating-action";
@@ -10,8 +10,12 @@ import moment from 'moment';
 import { CreateNewTimesheet } from '../Services/CreateNewTimesheet'
 import { GetEmpTimesheetList } from '../Services/GetEmpTimesheetList'
 import { GetEmpWeeklyTimesheetData } from '../Services/GetEmpWeeklyTimesheetData'
+import { saveTimesheetEntry } from '../Services/saveTimesheetEntry'
+
 // import DateTimePicker from '@react-native-community/datetimepicker';
 import DropdownMenu from 'react-native-material-dropdown';
+var PickerItem = Picker.Item;
+var selectedService = '00:05'
 
 const showToast = (Msg) => {
     ToastAndroid.show(Msg, ToastAndroid.LONG);
@@ -21,9 +25,10 @@ const cardTitle = 16
 const cardDate = 14
 const subTitle = 14
 var firstDate = '', lastDate = '', firstDate1 = '', lastDate1 = ''
-var descField = '', descIndex = ''
+var descField = '', descIndex = '', dayField = '', dayIndex = ''
 var lblMon = "", lblTue = "", lblWed = "", lblThu = "", lblFri = "", lblSat = "", lblSun = ""
 var TotalTime = "", dvTotMon = "", dvTotTue = "", dvTotWed = "", dvTotThu = "", dvTotFri = "", dvTotSat = "", dvTotSun = ""
+var timesheetID = '', clientCode = '', projectCode = '', typeofWorkId = '', phaseId = '', activityId = '', workOrderId = '', taskDesc = '', status = '', duration = '', dailyTaskComments = '', date = '', autoId = '', status = ''
 var time = [
     '00:00', '00:05', '00:10', '00:15', '00:20', '00:25', '00:30', '00:35', '00:40', '00:45', '00:50', '00:55',
     '01:00', '01:05', '01:10', '01:15', '01:20', '01:25', '01:30', '01:35', '01:40', '01:45', '01:50', '01:55',
@@ -75,7 +80,7 @@ class TimeSheet extends Component {
             loading: true,
             count: 0,
             content: true,
-            dateVisible: false,
+            timeVisible: false,
             weekVisible: false,
             timesheetVisible: false,
             calenderVisible: false,
@@ -84,6 +89,7 @@ class TimeSheet extends Component {
             show: false,
             selectedDate: '',
             selectedWeek: '',
+            timesheetId: '',
             lblMon: "",
             lblTue: "",
             lblWed: "",
@@ -101,6 +107,9 @@ class TimeSheet extends Component {
             addDesc: "",
             addDescField: '',
             addDescIndex: '',
+            dayField: '',
+            dayIndex: '',
+            selectedTime: '',
             TotalTime: "0.00",
             statusBarColor: "#297AF9",
             timesheetList: [],
@@ -109,6 +118,7 @@ class TimeSheet extends Component {
             ratingName: [],
             headerData: [],
             headerHrsData: [],
+            selectedService: '00:05'
         }
     }
 
@@ -199,16 +209,13 @@ class TimeSheet extends Component {
     }
 
     handleAddDescription = () => {
-        console.log("desssss", this.state.addDescField, this.state.addDescIndex, this.state.addDesc);
 
         let addDescField = this.state.addDescField
         let index = this.state.addDescIndex
         let value = this.state.addDesc
-
         let { timesheetData } = this.state;
         let targetPost = timesheetData[index];
 
-        console.log("GGgg", value, targetPost.addDescField);
         if (addDescField == 1) {
             targetPost.Mon_TaskComments = value;
         }
@@ -230,24 +237,128 @@ class TimeSheet extends Component {
         else if (addDescField == 7) {
             targetPost.Sun_TaskComments = value;
         }
-        this.setState({ timesheetData }, () => { console.log("ddddddddddddd", timesheetData[0]) }
-        );
+        this.setState({ timesheetData });
     }
 
-    showMode = (currentMode) => {
-        setShow(true);
-        setMode(currentMode);
-    };
+    updateTime = () => {
 
-    showTimepicker = () => {
-        showMode('time');
-    };
+        let dayField = this.state.dayField
+        let index = this.state.dayIndex
+        let value = this.state.selectedTime
+        let { timesheetData } = this.state;
+        let targetPost = timesheetData[index];
 
-    _showTimePicker = () => this.setState({ isTimePickerVisible: true }, () => {
-        console.log(this.state.isTimePickerVisible);
-    });
+        if (dayField == 1) {
+            targetPost.Mon = value;
+        }
+        else if (dayField == 2) {
+            targetPost.Tue = value;
+        }
+        else if (dayField == 3) {
+            targetPost.Wed = value;
+        }
+        else if (dayField == 4) {
+            targetPost.Thu = value;
+        }
+        else if (dayField == 5) {
+            targetPost.Fri = value;
+        }
+        else if (dayField == 6) {
+            targetPost.Sat = value;
+        }
+        else if (dayField == 7) {
+            targetPost.Sun = value;
+        }
+        this.setState({ timesheetData });
+    }
 
-    _hideTimePicker = () => this.setState({ isTimePickerVisible: false });
+    insertUpdateTimesheetEntry = async () => {
+        console.log("insertUpdateTimesheetEntry", (this.state.headerData[0].Tue_Date))
+        var timesheetData = []
+        // var dayField = 0
+        var data = this.state.timesheetData
+        // for(var i =0; i< this.state.timesheetData.length; i++){
+        Object.keys(data).map((item, index) => {
+            console.log(data[item].ProjectCode);
+            timesheetID = data[item].TimesheetId
+            clientCode = data[item].ClientCode
+            projectCode = data[item].ProjectCode
+            typeofWorkId = data[item].TypeOfWorkId
+            phaseId = data[item].PhaseId
+            activityId = data[item].ActivityId
+            workOrderId = data[item].WorkOrderId
+            taskDesc = data[item].TaskDesc
+            status = data[item].Status
+
+            for (var dayField = 1; dayField <= 7; dayField++) {
+                if (dayField == 1) {
+                    duration = data[item].Mon
+                    dailyTaskComments = data[item].Mon_TaskComments
+                    date = (this.state.headerData[0].Mon_Date)
+                    autoId = data[item].Mon_AutoId
+                }
+                else if (dayField == 2) {
+                    duration = data[item].Tue
+                    dailyTaskComments = data[item].Tue_TaskComments
+                    date = this.state.headerData[0].Tue_Date
+                    autoId = data[item].Tue_AutoId
+                }
+                else if (dayField == 3) {
+                    duration = data[item].Wed
+                    dailyTaskComments = data[item].Wed_TaskComments
+                    date = this.state.headerData[0].Wed_Date
+                    autoId = data[item].Wed_AutoId
+                }
+                else if (dayField == 4) {
+                    duration = data[item].Thu
+                    dailyTaskComments = data[item].Thu_TaskComments
+                    date = this.state.headerData[0].Thu_Date
+                    autoId = data[item].Thu_AutoId
+                }
+                else if (dayField == 5) {
+                    duration = data[item].Fri
+                    dailyTaskComments = data[item].Fri_TaskComments
+                    date = this.state.headerData[0].Fri_Date
+                    autoId = data[item].Fri_AutoId
+                }
+                else if (dayField == 6) {
+                    duration = data[item].Sat
+                    dailyTaskComments = data[item].Sat_TaskComments
+                    date = this.state.headerData[0].Sat_Date
+                    autoId = data[item].Sat_AutoId
+                }
+                else if (dayField == 7) {
+                    duration = data[item].Sun
+                    dailyTaskComments = data[item].Sun_TaskComments
+                    date = this.state.headerData[0].Sun_Date
+                    autoId = data[item].Sun_AutoId
+                }
+
+                timesheetData.push({
+                    Action: 10,
+                    EmployeeNo: this.props.user,
+                    TimesheetId: timesheetID,
+                    Date: date,
+                    ClientCode: clientCode,
+                    ProjectCode: projectCode,
+                    TypeOfWork: typeofWorkId == null ? '' : typeofWorkId,
+                    Phase: phaseId == null ? '' : phaseId,
+                    WorkOrder: workOrderId == null ? '' : workOrderId,
+                    Activity: activityId == null ? '' : activityId,
+                    TaskDescription: taskDesc == null ? '' : taskDesc,
+                    DailyTaskComments: dailyTaskComments == null ? '' : dailyTaskComments,
+                    Duration: duration == null ? '' : duration,
+                    TimesheetEntryId: autoId == null ? '' : autoId,
+                    Status: status == null ? '' : status,
+                    CurrRecordStatus: status == "" ? "Saved" : status
+                });
+            }
+            console.log("Aaaaaa", timesheetData);
+        })
+        var timesheetsave = await saveTimesheetEntry(this.props.user, timesheetData, this.props.baseUrl)
+        console.log("ressss", timesheetsave);
+
+    }
 
     componentDidMount() {
         this.empTimesheetList()
@@ -261,7 +372,7 @@ class TimeSheet extends Component {
             <>
                 <StatusBar translucent barStyle="light-content" backgroundColor='#297AF9' />
 
-                <View style={[styles.Container, {backgroundColor: this.props.bgColor}]}>
+                <View style={[styles.Container, { backgroundColor: this.props.primaryColor }]}>
 
                     <View style={{ height: "7%", backgroundColor: this.props.primaryColor }}>
                         <Appbar1 navigation={this.props.navigation}
@@ -271,7 +382,7 @@ class TimeSheet extends Component {
                         />
                     </View>
 
-                    <View style={{ height: "90%", backgroundColor: " this.props.secColor" }}>
+                    <View style={{ height: "90%", backgroundColor:  this.props.secColor}}>
                         {/* this.state.timesheetVisible== true ? "80%" */}
                         {
                             this.state.timesheetVisible == true ?
@@ -290,10 +401,10 @@ class TimeSheet extends Component {
                                             <Text style={styles.text}> {firstDate1 == '' ? "Select Week" : firstDate1 + " - " + lastDate1}</Text>
                                         </TouchableOpacity>
                                     </View>
-                                    <View style={{ flexDirection: "row" }}>
+                                    <View style={{ flexDirection: "row", top: 5 }}>
                                         {
                                             this.state.timesheetVisible == true ?
-                                                <TouchableOpacity onPress={() => console.log("Add row")}
+                                                <TouchableOpacity onPress={() => this.props.navigation.navigate('TimesheetEntry',{"timesheetId": this.state.timesheetId})}
                                                     style={styles.saveButton}>
                                                     <Text style={styles.text}> {"Add Row"}</Text>
                                                 </TouchableOpacity> : null
@@ -302,7 +413,7 @@ class TimeSheet extends Component {
                                         {
                                             this.state.timesheetData.length !== 0 ?
                                                 <>
-                                                    <TouchableOpacity onPress={() => alert("Save")}
+                                                    <TouchableOpacity onPress={() => this.insertUpdateTimesheetEntry()}
                                                         style={styles.saveButton}>
                                                         <Text style={styles.text}> {"Save"}</Text>
                                                     </TouchableOpacity>
@@ -316,167 +427,187 @@ class TimeSheet extends Component {
 
                                 </> : null
                         }
-                        
+
                         <ScrollView style={{ flex: 1 }}
                             // horizontal={true}
                             scrollEnabled={this.state.content}
                         >
                             <View style={{ width: '100%' }}>
-                            {
-                            this.state.timesheetData.length !== 0 ?
-                                <View style={{ flexDirection: 'row', marginLeft: 5, }}>
-                                    <View style={{ flexDirection: 'column', }}>
-                                        <View style={[styles.sheetHeader, { justifyContent: 'center', alignItems: 'center', flexDirection: 'row', backgroundColor: this.props.stripHeaderColor }]}>
-                                            <Text style={{ fontSize: 18, fontWeight: '900', color: this.props.fontColor }}>{"Project"}</Text>
-                                            <Text style={{ fontSize: 16,color: this.props.fontColor }}>{"  (Client)"}</Text>
+                                {
+                                    this.state.timesheetData.length !== 0 ?
+                                        <View style={{ flexDirection: 'row', marginLeft: 5, }}>
+                                            <View style={{ flexDirection: 'column', }}>
+                                                <View style={[styles.sheetHeader, { justifyContent: 'center', alignItems: 'center', flexDirection: 'row', backgroundColor: this.props.stripHeaderColor }]}>
+                                                    <Text style={{ fontSize: 18, fontWeight: '900', color: this.props.fontColor }}>{"Project"}</Text>
+                                                    <Text style={{ fontSize: 16, color: this.props.fontColor }}>{"  (Client)"}</Text>
 
-                                        </View>
-                                        {
-                                            this.state.timesheetData.length !== 0 ?
-                                                <View style={{ flexDirection: 'row', }}>
-                                                    <FlatList
-                                                        data={Object.keys(this.state.timesheetData)}
-                                                        renderItem={({ item }) => (
-                                                            <View style={[styles.sheetData1,{backgroundColor: this.props.stripColor}]}>
-                                                                <Text style={{ fontSize: 18, fontWeight: '900' }}>{this.state.timesheetData[item].ProjectName}</Text>
-                                                                <Text>{"  (" + this.state.timesheetData[item].ClientName + ")"}</Text>
-                                                            </View>
-                                                        )}
-                                                    />
-                                                </View> : null
-                                        }
-                                    </View>
+                                                </View>
+                                                {
+                                                    this.state.timesheetData.length !== 0 ?
+                                                        <View style={{ flexDirection: 'row', }}>
+                                                            <FlatList
+                                                                data={Object.keys(this.state.timesheetData)}
+                                                                renderItem={({ item }) => (
 
-                                    <ScrollView style={{}}
-                                        horizontal={true}
-                                        scrollEnabled={this.state.content}
-                                    >
-                                        <View style={{ flexDirection: 'column' }}>
-                                            <View style={{ flexDirection: 'row', height: 60, marginBottom: 10 }}>
-                                                <View style={[styles.sheetData,{backgroundColor: this.props.stripHeaderColor}]}>
-                                                    <Text style={{color: this.props.fontColor}}>{this.state.lblMon}</Text>
-                                                    <Text style={{color: this.props.fontColor}}>{this.state.dvTotMon}</Text>
-                                                </View>
-                                                <View style={[styles.sheetData,{backgroundColor: this.props.stripHeaderColor}]}>
-                                                    <Text style={{color: this.props.fontColor}}>{this.state.lblTue}</Text>
-                                                    <Text style={{color: this.props.fontColor}}>{this.state.dvTotTue}</Text>
-                                                </View>
-                                                <View style={[styles.sheetData,{backgroundColor: this.props.stripHeaderColor}]}>
-                                                    <Text style={{color: this.props.fontColor}}>{this.state.lblWed}</Text>
-                                                    <Text style={{color: this.props.fontColor}}>{this.state.dvTotWed}</Text>
-                                                </View>
-                                                <View style={[styles.sheetData,{backgroundColor: this.props.stripHeaderColor}]}>
-                                                    <Text style={{color: this.props.fontColor}}>{this.state.lblThu}</Text>
-                                                    <Text style={{color: this.props.fontColor}}>{this.state.dvTotThu}</Text>
-                                                </View>
-                                                <View style={[styles.sheetData,{backgroundColor: this.props.stripHeaderColor}]}>
-                                                    <Text style={{color: this.props.fontColor}}>{this.state.lblFri}</Text>
-                                                    <Text style={{color: this.props.fontColor}}>{this.state.dvTotFri}</Text>
-                                                </View>
-                                                <View style={[styles.sheetData,{backgroundColor: this.props.stripHeaderColor}]}>
-                                                    <Text style={{color: this.props.fontColor}}>{this.state.lblSat}</Text>
-                                                    <Text style={{color: this.props.fontColor}}>{this.state.dvTotSat}</Text>
-                                                </View>
-                                                <View style={[styles.sheetData,{backgroundColor: this.props.stripHeaderColor}]}>
-                                                    <Text style={{color: this.props.fontColor}}>{this.state.lblSun}</Text>
-                                                    <Text style={{color: this.props.fontColor}}>{this.state.dvTotSun}</Text>
-                                                </View>
+                                                                    <View style={[styles.sheetData1, { backgroundColor: this.props.stripColor }]}>
+                                                                        <Text style={{ fontSize: 18, fontWeight: '900' }}>{this.state.timesheetData[item].ProjectName}</Text>
+                                                                        <Text>{"  (" + this.state.timesheetData[item].ClientName + ")"}</Text>
+                                                                    </View>
+                                                                )}
+                                                            />
+                                                        </View> : null
+                                                }
                                             </View>
-                                            <View style={{ flexDirection: 'row', }}>
-                                                <FlatList
-                                                    data={Object.keys(this.state.timesheetData)}
-                                                    renderItem={({ item, index }) => (
-                                                        <View style={{ flexDirection: 'row', marginRight: 5 }}>
 
-                                                            <View style={[styles.sheetData,{backgroundColor: this.props.stripColor}]}>
-                                                                <TouchableOpacity onPress={()=>{}} style={styles.hrsData}>
-                                                                    <Text>{this.state.timesheetData[item].Mon}</Text>
-                                                                </TouchableOpacity>
-                                                              
-                                                                {/* <DropdownMenu
-                                                                    style={{ flex: 0.5 }}
-                                                                    bgColor={'grey'}
-                                                                    tintColor={'#000000'}
-                                                                    activityTintColor={'red'}
-                                                                    handler={(selection, row) => this.setState({ text: data[selection][row] })}
-                                                                    data={time}
-                                                                /> */}
-                                                                <TouchableOpacity onPress={() =>
-                                                                    this.setState({ addDescVisible: true, addDesc: this.state.timesheetData[item].Mon_TaskComments, addDescField: 1, addDescIndex: index },
-                                                                        () => { })}>
-                                                                    <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
-                                                                </TouchableOpacity>
-                                                            </View>
-                                                            <View style={[styles.sheetData,{backgroundColor: this.props.stripColor}]}>
-                                                                <View style={styles.hrsData}>
-                                                                    <Text>{this.state.timesheetData[item].Tue}</Text>
-                                                                </View>
-                                                                <TouchableOpacity onPress={() =>
-                                                                    this.setState({ addDescVisible: true, addDesc: this.state.timesheetData[item].Tue_TaskComments, addDescField: 2, addDescIndex: index },
-                                                                        () => { })}>
-                                                                    <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
-                                                                </TouchableOpacity>
-                                                            </View>
-                                                            <View style={[styles.sheetData,{backgroundColor: this.props.stripColor}]}>
-                                                                <View style={styles.hrsData}>
-                                                                    <Text>{this.state.timesheetData[item].Wed}</Text>
-                                                                </View>
-                                                                <TouchableOpacity onPress={() =>
-                                                                    this.setState({ addDescVisible: true, addDesc: this.state.timesheetData[item].Wed_TaskComments, addDescField: 3, addDescIndex: index },
-                                                                        () => { })}>
-                                                                    <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
-                                                                </TouchableOpacity>
-                                                            </View>
-                                                            <View style={[styles.sheetData,{backgroundColor: this.props.stripColor}]}>
-                                                                <View style={styles.hrsData}>
-                                                                    <Text>{this.state.timesheetData[item].Thu}</Text>
-                                                                </View>
-                                                                <TouchableOpacity onPress={() =>
-                                                                    this.setState({ addDescVisible: true, addDesc: this.state.timesheetData[item].Thu_TaskComments, addDescField: 4, addDescIndex: index },
-                                                                        () => { })}>
-                                                                    <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
-                                                                </TouchableOpacity>
-                                                            </View>
-                                                            <View style={[styles.sheetData,{backgroundColor: this.props.stripColor}]}>
-                                                                <View style={styles.hrsData}>
-                                                                    <Text>{this.state.timesheetData[item].Fri}</Text>
-                                                                </View>
-                                                                <TouchableOpacity onPress={() =>
-                                                                    this.setState({ addDescVisible: true, addDesc: this.state.timesheetData[item].Fri_TaskComments, addDescField: 5, addDescIndex: index },
-                                                                        () => { })}>
-                                                                    <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
-                                                                </TouchableOpacity>
-                                                            </View>
-                                                            <View style={[styles.sheetData,{backgroundColor: this.props.stripColor}]}>
-                                                                <View style={styles.hrsData}>
-                                                                    <Text>{this.state.timesheetData[item].Sat}</Text>
-                                                                </View>
-                                                                <TouchableOpacity onPress={() =>
-                                                                    this.setState({ addDescVisible: true, addDesc: this.state.timesheetData[item].Sat_TaskComments, addDescField: 6, addDescIndex: index },
-                                                                        () => { })}>
-                                                                    <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
-                                                                </TouchableOpacity>
-                                                            </View>
-                                                            <View style={[styles.sheetData,{backgroundColor: this.props.stripColor}]}>
-                                                                <View style={styles.hrsData}>
-                                                                    <Text>{this.state.timesheetData[item].Sun}</Text>
-                                                                </View>
-                                                                <TouchableOpacity onPress={() =>
-                                                                    this.setState({ addDescVisible: true, addDesc: this.state.timesheetData[item].Sun_TaskComments, addDescField: 7, addDescIndex: index },
-                                                                        () => { })}>
-                                                                    <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
-                                                                </TouchableOpacity>
-                                                            </View>
+                                            <ScrollView style={{}}
+                                                horizontal={true}
+                                                scrollEnabled={this.state.content}
+                                            >
+                                                <View style={{ flexDirection: 'column' }}>
+                                                    <View style={{ flexDirection: 'row', height: 70, top: 5, backgroundColor: this.props.stripHeaderColor }}>
+                                                        <View style={[styles.sheetData, { backgroundColor: this.props.stripHeaderColor }]}>
+                                                            <Text style={{ color: this.props.fontColor }}>{this.state.lblMon}</Text>
+                                                            <Text style={{ color: this.props.fontColor }}>{this.state.dvTotMon}</Text>
                                                         </View>
-                                                    )}
-                                                />
+                                                        <View style={[styles.sheetData, { backgroundColor: this.props.stripHeaderColor }]}>
+                                                            <Text style={{ color: this.props.fontColor }}>{this.state.lblTue}</Text>
+                                                            <Text style={{ color: this.props.fontColor }}>{this.state.dvTotTue}</Text>
+                                                        </View>
 
-                                            </View>
-                                        </View>
+                                                        <View style={[styles.sheetData, { backgroundColor: this.props.stripHeaderColor, }]}>
+                                                            <Text style={{ color: this.props.fontColor }}>{this.state.lblWed}</Text>
+                                                            <Text style={{ color: this.props.fontColor }}>{this.state.dvTotWed}</Text>
+                                                        </View>
+                                                        <View style={[styles.sheetData, { backgroundColor: this.props.stripHeaderColor, }]}>
+                                                            <Text style={{ color: this.props.fontColor }}>{this.state.lblThu}</Text>
+                                                            <Text style={{ color: this.props.fontColor }}>{this.state.dvTotThu}</Text>
+                                                        </View>
+                                                        <View style={[styles.sheetData, { backgroundColor: this.props.stripHeaderColor }]}>
+                                                            <Text style={{ color: this.props.fontColor }}>{this.state.lblFri}</Text>
+                                                            <Text style={{ color: this.props.fontColor }}>{this.state.dvTotFri}</Text>
+                                                        </View>
+                                                        <View style={[styles.sheetData, { backgroundColor: this.props.stripHeaderColor }]}>
+                                                            <Text style={{ color: this.props.fontColor }}>{this.state.lblSat}</Text>
+                                                            <Text style={{ color: this.props.fontColor }}>{this.state.dvTotSat}</Text>
+                                                        </View>
+                                                        <View style={[styles.sheetData, { backgroundColor: this.props.stripHeaderColor }]}>
+                                                            <Text style={{ color: this.props.fontColor }}>{this.state.lblSun}</Text>
+                                                            <Text style={{ color: this.props.fontColor }}>{this.state.dvTotSun}</Text>
+                                                        </View>
+                                                        <View style={[styles.approver, { backgroundColor: this.props.stripHeaderColor }]}>
+                                                            <Text style={{ color: this.props.fontColor }}>{"APPROVER"}</Text>
+                                                            {/* <Text style={{ color: this.props.fontColor }}>{this.state.dvTotFri}</Text> */}
+                                                        </View>
+                                                        <View style={[styles.approver, { backgroundColor: this.props.stripHeaderColor }]}>
+                                                            <Text style={{ color: this.props.fontColor }}>{"QUALITY  OF"}</Text>
+                                                            <Text style={{ color: this.props.fontColor }}>{"WORK"}</Text>
+                                                        </View>
+                                                        <View style={[styles.OTP, { backgroundColor: this.props.stripHeaderColor }]}>
+                                                            <Text style={{ color: this.props.fontColor }}>{"ON TIME"}</Text>
+                                                            <Text style={{ color: this.props.fontColor }}>{"PERFORMANCE"}</Text>
+                                                        </View>
+                                                    </View>
+                                                    <View style={{ flexDirection: 'row', }}>
+                                                        <FlatList
+                                                            data={Object.keys(this.state.timesheetData)}
+                                                            renderItem={({ item, index }) => (
+                                                                <View style={{ flexDirection: 'row', marginRight: 5 }}>
 
-                                    </ScrollView>
-                                </View>:null
-                            }
+                                                                    <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
+                                                                        <TouchableOpacity onPress={() => { this.setState({ timeVisible: true, dayField: 'Mon', dayIndex: index, dayField: 1, }) }} style={styles.hrsData}>
+                                                                            <Text>{this.state.timesheetData[item].Mon}</Text>
+                                                                        </TouchableOpacity>
+                                                                        <TouchableOpacity onPress={() =>
+                                                                            this.setState({ addDescVisible: true, addDesc: this.state.timesheetData[item].Mon_TaskComments, addDescField: 1, addDescIndex: index },
+                                                                                () => { })}>
+                                                                            <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
+                                                                        </TouchableOpacity>
+                                                                    </View>
+                                                                    <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
+                                                                        <TouchableOpacity onPress={() => { this.setState({ timeVisible: true, dayField: 'Tue', dayIndex: index, dayField: 2, }) }} style={styles.hrsData}>
+                                                                            <Text>{this.state.timesheetData[item].Tue}</Text>
+                                                                        </TouchableOpacity>
+                                                                        <TouchableOpacity onPress={() =>
+                                                                            this.setState({ addDescVisible: true, addDesc: this.state.timesheetData[item].Tue_TaskComments, addDescField: 2, addDescIndex: index },
+                                                                                () => { })}>
+                                                                            <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
+                                                                        </TouchableOpacity>
+                                                                    </View>
+                                                                    <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
+                                                                        <TouchableOpacity onPress={() => { this.setState({ timeVisible: true, dayField: 'Wed', dayIndex: index, dayField: 3, }) }} style={styles.hrsData}>
+                                                                            <Text>{this.state.timesheetData[item].Wed}</Text>
+                                                                        </TouchableOpacity>
+                                                                        <TouchableOpacity onPress={() =>
+                                                                            this.setState({ addDescVisible: true, addDesc: this.state.timesheetData[item].Wed_TaskComments, addDescField: 3, addDescIndex: index },
+                                                                                () => { })}>
+                                                                            <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
+                                                                        </TouchableOpacity>
+                                                                    </View>
+                                                                    <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
+                                                                        <TouchableOpacity onPress={() => { this.setState({ timeVisible: true, dayField: 'Thu', dayIndex: index, dayField: 4, }) }} style={styles.hrsData}>
+                                                                            <Text>{this.state.timesheetData[item].Thu}</Text>
+                                                                        </TouchableOpacity>
+                                                                        <TouchableOpacity onPress={() =>
+                                                                            this.setState({ addDescVisible: true, addDesc: this.state.timesheetData[item].Thu_TaskComments, addDescField: 4, addDescIndex: index },
+                                                                                () => { })}>
+                                                                            <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
+                                                                        </TouchableOpacity>
+                                                                    </View>
+                                                                    <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
+                                                                        <TouchableOpacity onPress={() => { this.setState({ timeVisible: true, dayField: 'Fri', dayIndex: index, dayField: 5, }) }} style={styles.hrsData}>
+                                                                            <Text>{this.state.timesheetData[item].Fri}</Text>
+                                                                        </TouchableOpacity>
+                                                                        <TouchableOpacity onPress={() =>
+                                                                            this.setState({ addDescVisible: true, addDesc: this.state.timesheetData[item].Fri_TaskComments, addDescField: 5, addDescIndex: index },
+                                                                                () => { })}>
+                                                                            <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
+                                                                        </TouchableOpacity>
+                                                                    </View>
+                                                                    <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
+                                                                        <TouchableOpacity onPress={() => { this.setState({ timeVisible: true, dayField: 'Sat', dayIndex: index, dayField: 6, }) }} style={styles.hrsData}>
+                                                                            <Text>{this.state.timesheetData[item].Sat}</Text>
+                                                                        </TouchableOpacity>
+                                                                        <TouchableOpacity onPress={() =>
+                                                                            this.setState({ addDescVisible: true, addDesc: this.state.timesheetData[item].Sat_TaskComments, addDescField: 6, addDescIndex: index },
+                                                                                () => { })}>
+                                                                            <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
+                                                                        </TouchableOpacity>
+                                                                    </View>
+                                                                    <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
+                                                                        <TouchableOpacity onPress={() => { this.setState({ timeVisible: true, dayField: 'Sun', dayIndex: index, dayField: 7, }) }} style={styles.hrsData}>
+                                                                            <Text>{this.state.timesheetData[item].Sun}</Text>
+                                                                        </TouchableOpacity>
+                                                                        <TouchableOpacity onPress={() =>
+                                                                            this.setState({ addDescVisible: true, addDesc: this.state.timesheetData[item].Sun_TaskComments, addDescField: 7, addDescIndex: index },
+                                                                                () => { })}>
+                                                                            <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
+                                                                        </TouchableOpacity>
+                                                                    </View>
+                                                                    <View style={[styles.OTP, { backgroundColor: this.props.stripColor }]}>
+                                                                        {/* <View style={styles.hrsData1}> */}
+                                                                            <Text>{this.state.timesheetData[item].Approver}</Text>
+                                                                        {/* </View> */}
+                                                                    </View>
+                                                                    <View style={[styles.approver, { backgroundColor: this.props.stripColor }]}>
+                                                                        {/* <View style={styles.hrsData1}> */}
+                                                                            <Text>{this.state.timesheetData[item].ApprQOWRating}</Text>
+                                                                        {/* </View> */}
+                                                                    </View>
+                                                                    <View style={[styles.OTP, { backgroundColor: this.props.stripColor }]}>
+                                                                        {/* <View style={styles.hrsData1}> */}
+                                                                            <Text>{this.state.timesheetData[item].ApprOTPRating}</Text>
+                                                                        {/* </View> */}
+                                                                    </View>
+                                                                </View>
+                                                            )}
+                                                        />
+
+                                                    </View>
+                                                </View>
+
+                                            </ScrollView>
+                                        </View> : null
+                                }
 
                                 <Dialog
                                     visible={this.state.addDescVisible}
@@ -513,25 +644,40 @@ class TimeSheet extends Component {
                                 </Dialog>
 
                                 <Dialog
-                                    visible={this.state.dateVisible}
+                                    visible={this.state.timeVisible}
                                     onTouchOutside={() =>
-                                        this.setState({ dateVisible: false })}
+                                        this.setState({ timeVisible: false }, () => { this.updateTime() })}
                                     style={
                                         {
-                                            width: 600,
+                                            width: 100,
                                             height: 350,
                                         }
                                     }
                                 >
-                                    <View style={{ justifyContent: 'center', alignItems: 'center', right: 10 }}>
-                                        <CalendarPicker
-                                            onDateChange={this.onDateChange}
-                                            startFromMonday={true}
+                                    <View style={{ justifyContent: 'center', alignItems: 'center', right: 20 }}>
 
-                                            maxDate={new Date()}
-                                            width={350}
-                                            height={400}
+                                        <FlatList
+                                            data={Object.keys(time)}
+                                            renderItem={({ item, index }) => (
+
+                                                <TouchableOpacity onPress={() => {
+                                                    this.setState({ selectedTime: time[item], timeVisible: false },
+                                                        () => {
+                                                            console.log("selectedTime", time[item],
+                                                                this.updateTime()
+                                                            )
+                                                        })
+                                                }}
+                                                    style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 15 }}>
+                                                    <View>
+                                                        <Text style={styles.textPopup}>
+                                                            {time[item]}
+                                                        </Text>
+                                                        <Divider />
+                                                    </View>
+                                                </TouchableOpacity>)}
                                         />
+
                                     </View>
                                 </Dialog>
 
@@ -555,9 +701,9 @@ class TimeSheet extends Component {
                                             renderItem={({ item, index }) => (
 
                                                 <TouchableOpacity onPress={() => {
-                                                    this.setState({ selectedWeek: this.state.timesheetList[item], weekVisible: false, timesheetVisible: true },
+                                                    this.setState({ selectedWeek: this.state.timesheetList[item], timesheetId: this.state.timesheetList[item].Value, weekVisible: false, timesheetVisible: true },
                                                         () => {
-                                                            console.log("selectedWeek", this.state.selectedWeek),
+                                                            console.log("selectedWeek", this.state.selectedWeek.Value),
                                                                 firstDate1 = moment(new Date(this.state.selectedWeek.Text.slice(0, 10).split('-').reverse().join('/'))).format("DD MMM"),
                                                                 lastDate1 = moment(new Date(this.state.selectedWeek.Text.slice(14, 24).split('-').reverse().join('/'))).format("DD MMM YYYY"),
                                                                 this.empWeeklyTimesheetData()
@@ -637,7 +783,7 @@ const mapStateToProps = state => {
         fontColor: state.fontColor,
         stripColor: state.stripColor,
         stripHeaderColor: state.stripHeaderColor,
-        bgColor:state.bgColor,
+        bgColor: state.bgColor,
         primaryColor: state.primaryColor,
         secColor: state.secColor,
 
@@ -691,7 +837,7 @@ const styles = StyleSheet.create({
         borderWidth: .3,
         margin: 5,
         borderRadius: 3,
-        backgroundColor:'#747474'
+        backgroundColor: '#747474'
         // backgroundColor: '#424543'
     },
     buttonText: {
@@ -729,15 +875,16 @@ const styles = StyleSheet.create({
         height: 70,
         width: "auto",
         marginTop: 5,
-        left:2
-        // marginBottom: 5,
+        // left: 2,
+        marginBottom: 5,
     },
     sheetData1: {
         padding: 10,
         height: 70,
         width: "auto",
-        // marginTop: 4,
-        marginBottom: 10,
+        marginTop: 5,
+        marginBottom: 5,
+        bottom:10
         // borderWidth: .3,
         // justifyContent: 'center',
         // alignItems: 'center'
@@ -751,7 +898,31 @@ const styles = StyleSheet.create({
         // borderWidth: .3,
         justifyContent: 'center',
         alignItems: 'center',
-        right:4,
+        right: 4,
+        // backgroundColor:'red'
+    },
+    approver: {
+        padding: 10,
+        height: 70,
+        width: 110,
+        marginTop: 5,
+        marginBottom: 5,
+        // borderWidth: .3,
+        justifyContent: 'center',
+        alignItems: 'center',
+        right: 4,
+        // backgroundColor:'#FFFF'
+    },
+    OTP: {
+        padding: 10,
+        height: 70,
+        width: 125,
+        marginTop: 5,
+        marginBottom: 5,
+        // borderWidth: .3,
+        justifyContent: 'center',
+        alignItems: 'center',
+        right: 4,
         // backgroundColor:'#FFFF'
     },
     hrsData: {
@@ -762,7 +933,22 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 10,
-                backgroundColor:'#FFFF'
+        backgroundColor: '#FFFF'
 
     },
+    hrsData1: {
+        padding: 10,
+        borderWidth: .3,
+        borderRadius: 3,
+        // width: 60,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 10,
+        backgroundColor: '#FFFF'
+
+    },
+    picker: {
+        height: 200,
+        width: 50
+    }
 });

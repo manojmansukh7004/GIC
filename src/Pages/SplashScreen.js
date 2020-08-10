@@ -3,7 +3,7 @@
 /* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
 import {
-  StyleSheet, View, Image, Dimensions, Text, Linking, Platform
+  StyleSheet, View, Image, Dimensions, Text, Linking, StatusBar
 } from 'react-native';
 import { storeData, getData } from '../Config/AsyncStorace'
 import { isSignedIn } from "./Authentication";
@@ -138,6 +138,7 @@ class SplashScreen extends Component {
     }
     return (
       <View style={styles.container}>
+                        <StatusBar translucent barStyle="light-content" backgroundColor='#297AF9' />
         {/* <Image style={{ height: 180, width: 180 }} source={require('../Assets/logo11.png')} /> */}
         <Image style={styles.img} source={require('../Assets/logo.jpg')} />
         {/* <Image style={{}} source={require('../Assets/loader.gif')} /> */}
