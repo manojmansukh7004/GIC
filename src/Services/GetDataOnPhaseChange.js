@@ -1,4 +1,6 @@
-async function getDataOnClientChange(EmpID, TimesheetId, ClientCode, baseUrl) {
+async function GetDataOnPhaseChange(EmpID, TimesheetId,ProjectCode, Phase, baseUrl) {
+
+console.log("jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj",EmpID, TimesheetId, Phase, baseUrl);
 
     const payload = {
         "loginDetails":
@@ -7,11 +9,12 @@ async function getDataOnClientChange(EmpID, TimesheetId, ClientCode, baseUrl) {
           "LoginEmpCompanyCodeNo": ""
         },
         "timesheetData": {
-          "Action": 7,
+          "Action": 9,
           "EmployeeNo": EmpID,
-          "ClientCode": ClientCode,
-          "Flag": "1",
+          "ProjectCode":ProjectCode,
+          "Phase": Phase,
           "TimesheetId": TimesheetId
+         
         }
 }
 
@@ -22,7 +25,7 @@ async function getDataOnClientChange(EmpID, TimesheetId, ClientCode, baseUrl) {
       return {};
     });
   
-    const response = await fetch(`${baseUrl}/api/Timesheet/GetDataOnClientChange`, {
+    const response = await fetch(`${baseUrl}/api/Timesheet/GetDataOnPhaseChange`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -35,5 +38,5 @@ async function getDataOnClientChange(EmpID, TimesheetId, ClientCode, baseUrl) {
     return responseJson;
   }
   
-  export { getDataOnClientChange };
+  export { GetDataOnPhaseChange };
   

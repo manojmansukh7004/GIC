@@ -45,7 +45,7 @@ class AppBar extends Component {
       <View style={{ width: "15%", flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
         <View style={{ margin: 5, }}>
           <TouchableOpacity style={{justifyContent: "center", alignItems: 'center'}}
-            onPress={() => {}}>
+            onPress={() => {this.props.handleSave()}}>
             <Text style={{color: this.props.fontColor}}>{"SAVE"}</Text>
           </TouchableOpacity>
         </View>
