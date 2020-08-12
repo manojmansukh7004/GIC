@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import {
-    ToastAndroid,Text, View, StyleSheet, Picker, TouchableOpacity, Image, FlatList, ScrollView, StatusBar,TextInput
+    ToastAndroid, Text, View, StyleSheet, Picker, TouchableOpacity, Image, FlatList, ScrollView, StatusBar, TextInput
 } from 'react-native';
-import {  Divider, Card } from 'react-native-paper';
+import { Divider, Card } from 'react-native-paper';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { connect } from 'react-redux'
-import { NavigationEvents } from 'react-navigation';
+import moment from 'moment';
 import { Dialog } from 'material-bread';
 import { saveTimesheetEntry } from '../Services/saveTimesheetEntry';
 import { getTsEntryDropdownData } from '../Services/getTsEntryDropdownData';
@@ -20,6 +20,9 @@ const title = 18
 const cardTitle = 16
 const cardDate = 14
 const subTitle = 14
+var lblMon1 = "", lblTue1 = "", lblWed1 = "", lblThu1 = "", lblFri1 = "", lblSat1 = "", lblSun1 = ""
+var dvTotMon1 = "", dvTotTue1 = "", dvTotWed1 = "", dvTotThu1 = "", dvTotFri1 = "", dvTotSat1 = "", dvTotSun1 = ""
+
 class TimesheetEntry extends Component {
 
     constructor(props) {
@@ -32,6 +35,20 @@ class TimesheetEntry extends Component {
             phase: '',
             activity: '',
             workOrder: '',
+            lblMon1: "",
+            lblTue1: "",
+            lblWed1: "",
+            lblThu1: "",
+            lblFri1: "",
+            lblSat1: "",
+            lblSun1: "",
+            dvTotMon1: "",
+            dvTotTue1: "",
+            dvTotWed1: "",
+            dvTotThu1: "",
+            dvTotFri1: "",
+            dvTotSat1: "",
+            dvTotSun1: "",
             lblMon: "",
             lblTue: "",
             lblWed: "",
@@ -40,15 +57,15 @@ class TimesheetEntry extends Component {
             lblSat: "",
             lblSun: "",
             descMon: "",
-            descTue: "", 
-            descWed: "", 
-            descThu: "", 
-            descFri: "", 
-            descSat: "", 
+            descTue: "",
+            descWed: "",
+            descThu: "",
+            descFri: "",
+            descSat: "",
             descSun: "",
             dayField: "",
             dayValue: "",
-            addDesc:"",
+            addDesc: "",
             addDescField: "",
             description: "",
             projectDesc: "",
@@ -94,119 +111,117 @@ class TimesheetEntry extends Component {
     }
 
     handleDescription = () => {
-       var descField = this.state.addDescField
+        var descField = this.state.addDescField
         var description = this.state.description
         console.log(descField, description);
-        
+
         if (descField == 1) {
-            this.setState({  descMon: description });
+            this.setState({ descMon: description });
         }
         else if (descField == 2) {
-            this.setState({  descTue: description });
+            this.setState({ descTue: description });
         }
         else if (descField == 3) {
-            this.setState({  descWed: description });
+            this.setState({ descWed: description });
         }
         else if (descField == 4) {
-            this.setState({  descThu: description });
+            this.setState({ descThu: description });
         }
         else if (descField == 5) {
-            this.setState({  descFri: description });
+            this.setState({ descFri: description });
         }
         else if (descField == 6) {
-            this.setState({  descSat: description });
+            this.setState({ descSat: description });
         }
         else if (descField == 7) {
             this.setState({ descSun: description });
         }
     }
 
-    handleSave =()=>{
-        this.setState({validation: true})
-        if(this.state.client == 0){ showToast("Select client details.")}
-        else if(this.state.project == 0){ showToast("Select project details.")}
-        else if(this.state.workList == 0){ showToast("Select type of work.")}
-        else if(this.state.activity == 0){ showToast("Select activity.")}
-        else if(this.state.projectDesc == ""){ showToast("Fill up project description.")}
-        else if(this.state.lblMon == "" && this.state.lblTue == "" &&this.state.lblWed == "" &&this.state.lblFri == "" &&
-                this.state.lblSat == "" &&this.state.lblSun == "" &&this.state.lblThu == "" ){ showToast("Please enter time.")}
-        else{this.insertUpdateTimesheetEntry()}
+    handleSave = () => {
+        this.setState({ validation: true })
+        if (this.state.client == 0) { showToast("Select client details.") }
+        else if (this.state.project == 0) { showToast("Select project details.") }
+        else if (this.state.workList == 0) { showToast("Select type of work.") }
+        else if (this.state.activity == 0) { showToast("Select activity.") }
+        else if (this.state.projectDesc == "") { showToast("Fill up project description.") }
+        else if (this.state.lblMon == "" && this.state.lblTue == "" && this.state.lblWed == "" && this.state.lblFri == "" &&
+            this.state.lblSat == "" && this.state.lblSun == "" && this.state.lblThu == "") { showToast("Please enter time.") }
+        else { this.insertUpdateTimesheetEntry() }
 
     }
 
     insertUpdateTimesheetEntry = async () => {
         console.log("insertUpdateTimesheetEntry", (this.state.headerData[0].Tue_Date))
         var timesheetData = []
-        // var data = this.state.timesheetData
-        // Object.keys(data).map((item, index) => {
-            // console.log(data[item].ProjectCode);
-            timesheetID = this.state.timesheetId
-            clientCode = this.state.client
-            projectCode = this.state.project
-            typeofWorkId = this.state.workList
-            phaseId = this.state.phase==0? "": this.state.phase
-            activityId = this.state.activity
-            workOrderId = this.state.workOrder == 0? "" : this.state.workOrder
-            taskDesc = this.state.projectDesc
-            status = ""
-            autoId= null
-            for (var dayField = 1; dayField <= 7; dayField++) {
-                if (dayField == 1) {
-                    duration = this.state.lblMon
-                    dailyTaskComments = this.state.descMon
-                    date = (this.state.headerData[0].Mon_Date)
-                }
-                else if (dayField == 2) {
-                    duration = this.state.lblTue
-                    dailyTaskComments = this.state.descTue
-                    date = this.state.headerData[0].Tue_Date
-                }
-                else if (dayField == 3) {
-                    duration = this.state.lblWed
-                    dailyTaskComments = this.state.descWed
-                    date = this.state.headerData[0].Wed_Date
-                }
-                else if (dayField == 4) {
-                    duration = this.state.lblThu
-                    dailyTaskComments = this.state.descThu
-                    date = this.state.headerData[0].Thu_Date
-                }
-                else if (dayField == 5) {
-                    duration = this.state.lblFri
-                    dailyTaskComments = this.state.descFri
-                    date = this.state.headerData[0].Fri_Date
-                }
-                else if (dayField == 6) {
-                    duration = this.state.lblSat
-                    dailyTaskComments = this.state.descSat
-                    date = this.state.headerData[0].Sat_Date
-                }
-                else if (dayField == 7) {
-                    duration = this.state.lblSun
-                    dailyTaskComments = this.state.descSun
-                    date = this.state.headerData[0].Sun_Date
-                }
 
-                timesheetData.push({
-                    Action: 10,
-                    EmployeeNo: this.props.user,
-                    TimesheetId: timesheetID,
-                    Date: date,
-                    ClientCode: clientCode,
-                    ProjectCode: projectCode,
-                    TypeOfWork: typeofWorkId == null ? '' : typeofWorkId,
-                    Phase: phaseId == null ? '' : phaseId,
-                    WorkOrder: workOrderId == null ? '' : workOrderId,
-                    Activity: activityId == null ? '' : activityId,
-                    TaskDescription: taskDesc == null ? '' : taskDesc,
-                    DailyTaskComments: dailyTaskComments == null ? '' : dailyTaskComments,
-                    Duration: duration == null ? '' : duration,
-                    TimesheetEntryId: autoId == null ? '' : autoId,
-                    Status: status == null ? '' : status,
-                    CurrRecordStatus: status == "" ? "Saved" : status
-                });
+        timesheetID = this.state.timesheetId
+        clientCode = this.state.client
+        projectCode = this.state.project
+        typeofWorkId = this.state.workList
+        phaseId = this.state.phase == 0 ? "" : this.state.phase
+        activityId = this.state.activity
+        workOrderId = this.state.workOrder == 0 ? "" : this.state.workOrder
+        taskDesc = this.state.projectDesc
+        status = ""
+        autoId = null
+        for (var dayField = 1; dayField <= 7; dayField++) {
+            if (dayField == 1) {
+                duration = this.state.lblMon
+                dailyTaskComments = this.state.descMon
+                date = (this.state.headerData[0].Mon_Date)
             }
-            // console.log("Aaaaaa", timesheetData);
+            else if (dayField == 2) {
+                duration = this.state.lblTue
+                dailyTaskComments = this.state.descTue
+                date = this.state.headerData[0].Tue_Date
+            }
+            else if (dayField == 3) {
+                duration = this.state.lblWed
+                dailyTaskComments = this.state.descWed
+                date = this.state.headerData[0].Wed_Date
+            }
+            else if (dayField == 4) {
+                duration = this.state.lblThu
+                dailyTaskComments = this.state.descThu
+                date = this.state.headerData[0].Thu_Date
+            }
+            else if (dayField == 5) {
+                duration = this.state.lblFri
+                dailyTaskComments = this.state.descFri
+                date = this.state.headerData[0].Fri_Date
+            }
+            else if (dayField == 6) {
+                duration = this.state.lblSat
+                dailyTaskComments = this.state.descSat
+                date = this.state.headerData[0].Sat_Date
+            }
+            else if (dayField == 7) {
+                duration = this.state.lblSun
+                dailyTaskComments = this.state.descSun
+                date = this.state.headerData[0].Sun_Date
+            }
+
+            timesheetData.push({
+                Action: 10,
+                EmployeeNo: this.props.user,
+                TimesheetId: timesheetID,
+                Date: date,
+                ClientCode: clientCode,
+                ProjectCode: projectCode,
+                TypeOfWork: typeofWorkId == null ? '' : typeofWorkId,
+                Phase: phaseId == null ? '' : phaseId,
+                WorkOrder: workOrderId == null ? '' : workOrderId,
+                Activity: activityId == null ? '' : activityId,
+                TaskDescription: taskDesc == null ? '' : taskDesc,
+                DailyTaskComments: dailyTaskComments == null ? '' : dailyTaskComments,
+                Duration: duration == null ? '' : duration,
+                TimesheetEntryId: autoId == null ? '' : autoId,
+                Status: status == null ? '' : status,
+                CurrRecordStatus: status == "" ? "Saved" : status
+            });
+        }
+        // console.log("Aaaaaa", timesheetData);
         // })
         var data = await saveTimesheetEntry(this.props.user, timesheetData, this.props.baseUrl)
         console.log("ressss", data);
@@ -269,28 +284,55 @@ class TimesheetEntry extends Component {
             timesheetId: this.props.navigation.state.params.timesheetId,
             time: this.props.navigation.state.params.TimeArr,
             headerData: this.props.navigation.state.params.headerData
+        }, () => {
+            console.log(this.state.timesheetData);
+
+            lblMon1 = "Mon, " + moment(new Date(this.state.headerData[0].Mon_Date)).format("DD"),
+                lblTue1 = "Tue, " + moment(new Date(this.state.headerData[0].Tue_Date)).format("DD"),
+                lblWed1 = "Wed, " + moment(new Date(this.state.headerData[0].Wed_Date)).format("DD"),
+                lblThu1 = "Thu, " + moment(new Date(this.state.headerData[0].Thu_Date)).format("DD"),
+                lblFri1 = "Fri, " + moment(new Date(this.state.headerData[0].Fri_Date)).format("DD"),
+                lblSat1 = "Sat, " + moment(new Date(this.state.headerData[0].Sat_Date)).format("DD"),
+                lblSun1 = "Sun, " + moment(new Date(this.state.headerData[0].Sun_Date)).format("DD"),
+                dvTotMon1 = moment(new Date(this.state.headerData[0].Mon_Date)).format("MMM YYYY"),
+                dvTotTue1 = moment(new Date(this.state.headerData[0].Tue_Date)).format("MMM YYYY"),
+                dvTotWed1 = moment(new Date(this.state.headerData[0].Wed_Date)).format("MMM YYYY"),
+                dvTotThu1 = moment(new Date(this.state.headerData[0].Thu_Date)).format("MMM YYYY"),
+                dvTotFri1 = moment(new Date(this.state.headerData[0].Fri_Date)).format("MMM YYYY"),
+                dvTotSat1 = moment(new Date(this.state.headerData[0].Sat_Date)).format("MMM YYYY"),
+                dvTotSun1 = moment(new Date(this.state.headerData[0].Sun_Date)).format("MMM YYYY"),
+                this.setState({
+                    lblMon1: lblMon1, lblTue1: lblTue1,
+                    lblWed1: lblWed1, lblThu1: lblThu1,
+                    lblFri1: lblFri1, lblSat1: lblSat1, lblSun1: lblSun1,
+                    dvTotMon1: dvTotMon1, dvTotTue1: dvTotTue1,
+                    dvTotWed1: dvTotWed1, dvTotThu1: dvTotThu1,
+                    dvTotFri1: dvTotFri1, dvTotSat1: dvTotSat1,
+                    dvTotSun1: dvTotSun1,
+                });
         });
     }
 
     render() {
-        console.log("date",this.state.client);
-        
+        console.log("date", this.state.client);
+
         return (
             <View>
-                
+
                 <StatusBar translucent barStyle="light-content" backgroundColor='#297AF9' />
                 <View style={{ height: "100%", width: '100%', top: '3%' }}>
                     <View style={{ height: '7%', backgroundColor: this.props.primaryColor, }}>
                         <Appbar navigation={this.props.navigation}
                             title={"Timesheet Entry"}
-                            handleSave= {this.handleSave}
+                            handleSave={this.handleSave}
+                            timeSheetEntry={true}
                         />
                     </View>
                     <View style={{ height: '90%', backgroundColor: this.props.secColor }}>
                         <KeyboardAwareScrollView contentContainerStyle={styles.container}>
                             <View style={styles.horizontalContainer}>
-                                
-                                <Card style={[styles.cards,{borderWidth:1, borderColor: this.state.validation== true && this.state.client == 0?  'red': "transparent"}]}>
+
+                                <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.client == 0 ? 'red' : "transparent" }]}>
                                     <View style={styles.cardMenuSpasing}>
                                         <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>CLIENT</Text>
                                         <Picker
@@ -308,7 +350,7 @@ class TimesheetEntry extends Component {
                                     </View>
                                 </Card>
 
-                                <Card style={[styles.cards,{borderWidth:1, borderColor: this.state.validation== true && this.state.project == 0?  'red': "transparent"}]}>
+                                <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.project == 0 ? 'red' : "transparent" }]}>
                                     <View style={styles.cardMenuSpasing}>
                                         <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>PROJECT</Text>
                                         <Picker
@@ -327,7 +369,7 @@ class TimesheetEntry extends Component {
                                 </Card>
                             </View>
                             <View style={styles.horizontalContainer}>
-                            <Card style={[styles.cards,{borderWidth:1, borderColor: this.state.validation== true && this.state.workList == 0?  'red': "transparent"}]}>
+                                <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.workList == 0 ? 'red' : "transparent" }]}>
                                     <View style={styles.cardMenuSpasing}>
                                         <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>TYPE OF WORK</Text>
                                         <Picker
@@ -364,7 +406,7 @@ class TimesheetEntry extends Component {
                                 </Card>
                             </View>
                             <View style={styles.horizontalContainer}>
-                            <Card style={[styles.cards,{borderWidth:1, borderColor: this.state.validation== true && this.state.activity == 0?  'red': "transparent"}]}>
+                                <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.activity == 0 ? 'red' : "transparent" }]}>
                                     <View style={styles.cardMenuSpasing}>
                                         <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>ACTIVITY</Text>
                                         <Picker
@@ -382,7 +424,7 @@ class TimesheetEntry extends Component {
                                     </View>
                                 </Card>
 
-                                <Card style={styles.cards}>
+                                {/* <Card style={styles.cards}>
                                     <View style={styles.cardMenuSpasing}>
                                         <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>WORK ORDER</Text>
                                         <Picker
@@ -398,9 +440,9 @@ class TimesheetEntry extends Component {
                                             })}
                                         </Picker>
                                     </View>
-                                </Card>
+                                </Card> */}
                             </View>
-                            <Card style={[styles.descCard,{borderWidth:1, borderColor: this.state.validation== true && this.state.projectDesc == ""?  'red': "transparent"}]}>
+                            <Card style={[styles.descCard, { borderWidth: 1, borderColor: this.state.validation == true && this.state.projectDesc == "" ? 'red' : "transparent" }]}>
                                 <View style={styles.reasonView}>
                                     <Text style={[styles.twoCardLabel, { color: this.props.primaryColor }]}>DESCRIPTION</Text>
                                     <TextInput
@@ -426,27 +468,30 @@ class TimesheetEntry extends Component {
                                 <ScrollView horizontal={true}>
                                     <View style={styles.timeView}>
                                         <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
-                                            <Text style={{ color: this.props.primaryColor }}>{"Mon"}</Text>
+                                            <Text style={{ color: this.props.primaryColor }}>{this.state.lblMon1}</Text>
+                                            <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotMon1}</Text>
                                             <TouchableOpacity onPress={() => { this.setState({ timeVisible: true, dayField: 'Mon', dayValue: 1, }) }} style={styles.hrsData}>
                                                 <Text>{this.state.lblMon}</Text>
                                             </TouchableOpacity>
                                             <TouchableOpacity onPress={() =>
-                                                this.setState({ addDescVisible: true, addDescField: 1,addDesc: this.state.descMon })}>
+                                                this.setState({ addDescVisible: true, addDescField: 1, addDesc: this.state.descMon })}>
                                                 <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
                                             </TouchableOpacity>
                                         </View>
                                         <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
-                                            <Text style={{ color: this.props.primaryColor }}>{"Tue"}</Text>
+                                            <Text style={{ color: this.props.primaryColor }}>{this.state.lblTue1}</Text>
+                                            <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotTue1}</Text>
                                             <TouchableOpacity onPress={() => { this.setState({ timeVisible: true, dayValue: 2, }) }} style={styles.hrsData}>
                                                 <Text>{this.state.lblTue}</Text>
                                             </TouchableOpacity>
                                             <TouchableOpacity onPress={() =>
-                                                this.setState({ addDescVisible: true, addDescField: 2, addDesc: this.state.descTue  })}>
+                                                this.setState({ addDescVisible: true, addDescField: 2, addDesc: this.state.descTue })}>
                                                 <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
                                             </TouchableOpacity>
                                         </View>
                                         <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
-                                            <Text style={{ color: this.props.primaryColor }}>{"Wed"}</Text>
+                                            <Text style={{ color: this.props.primaryColor }}>{this.state.lblWed1}</Text>
+                                            <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotWed1}</Text>
                                             <TouchableOpacity onPress={() => { this.setState({ timeVisible: true, dayValue: 3, }) }} style={styles.hrsData}>
                                                 <Text>{this.state.lblWed}</Text>
                                             </TouchableOpacity>
@@ -456,42 +501,46 @@ class TimesheetEntry extends Component {
                                             </TouchableOpacity>
                                         </View>
                                         <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
-                                            <Text style={{ color: this.props.primaryColor }}>{"Thu"}</Text>
+                                            <Text style={{ color: this.props.primaryColor }}>{this.state.lblThu1}</Text>
+                                            <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotThu1}</Text>
                                             <TouchableOpacity onPress={() => { this.setState({ timeVisible: true, dayValue: 4, }) }} style={styles.hrsData}>
                                                 <Text>{this.state.lblThu}</Text>
                                             </TouchableOpacity>
                                             <TouchableOpacity onPress={() =>
-                                                this.setState({ addDescVisible: true, addDescField: 4, addDesc: this.state.descThu  })}>
+                                                this.setState({ addDescVisible: true, addDescField: 4, addDesc: this.state.descThu })}>
                                                 <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
                                             </TouchableOpacity>
                                         </View>
                                         <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
-                                            <Text style={{ color: this.props.primaryColor }}>{"Fri"}</Text>
+                                            <Text style={{ color: this.props.primaryColor }}>{this.state.lblFri1}</Text>
+                                            <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotFri1}</Text>
                                             <TouchableOpacity onPress={() => { this.setState({ timeVisible: true, dayValue: 5, }) }} style={styles.hrsData}>
                                                 <Text>{this.state.lblFri}</Text>
                                             </TouchableOpacity>
                                             <TouchableOpacity onPress={() =>
-                                                this.setState({ addDescVisible: true, addDescField: 5, addDesc: this.state.descFri  })}>
+                                                this.setState({ addDescVisible: true, addDescField: 5, addDesc: this.state.descFri })}>
                                                 <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
                                             </TouchableOpacity>
                                         </View>
                                         <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
-                                            <Text style={{ color: this.props.primaryColor }}>{"Sat"}</Text>
+                                            <Text style={{ color: this.props.primaryColor }}>{this.state.lblSat1}</Text>
+                                            <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotSat1}</Text>
                                             <TouchableOpacity onPress={() => { this.setState({ timeVisible: true, dayValue: 6, }) }} style={styles.hrsData}>
                                                 <Text>{this.state.lblSat}</Text>
                                             </TouchableOpacity>
                                             <TouchableOpacity onPress={() =>
-                                                this.setState({ addDescVisible: true, addDescField: 6 , addDesc: this.state.descSat })}>
+                                                this.setState({ addDescVisible: true, addDescField: 6, addDesc: this.state.descSat })}>
                                                 <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
                                             </TouchableOpacity>
                                         </View>
                                         <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
-                                            <Text style={{ color: this.props.primaryColor }}>{"Sun"}</Text>
+                                            <Text style={{ color: this.props.primaryColor }}>{this.state.lblSun1}</Text>
+                                            <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotSun1}</Text>
                                             <TouchableOpacity onPress={() => { this.setState({ timeVisible: true, dayValue: 7, }) }} style={styles.hrsData}>
                                                 <Text>{this.state.lblSun}</Text>
                                             </TouchableOpacity>
                                             <TouchableOpacity onPress={() =>
-                                                this.setState({ addDescVisible: true, addDescField: 7,addDesc: this.state.descSun })}>
+                                                this.setState({ addDescVisible: true, addDescField: 7, addDesc: this.state.descSun })}>
                                                 <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
                                             </TouchableOpacity>
                                         </View>
@@ -521,7 +570,7 @@ class TimesheetEntry extends Component {
                                                 autoFocus={false}
                                                 // maxLength={500}
                                                 dense
-                                                onChangeText={value => this.setState({addDesc: value, description: value })}
+                                                onChangeText={value => this.setState({ addDesc: value, description: value })}
                                             // onChangeText={value => this.handleAddDescription({ value})}
                                             />
                                         </View>
@@ -643,7 +692,7 @@ const styles = StyleSheet.create({
     sheetData: {
         padding: 10,
         // height: 70,
-        width: 75,
+        width: 80,
         marginTop: 5,
         marginBottom: 5,
         // borderWidth: .3,

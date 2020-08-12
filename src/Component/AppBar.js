@@ -27,33 +27,46 @@ class AppBar extends Component {
       // </View>
       <View style={styles.subContiner1}>
 
-      <View style={{ flexDirection: 'row', width: "85%" }}>
-        <View style={{ justifyContent: 'center', alignItems: 'center', width: "10%", marginLeft:5 }}>
-          <TouchableOpacity onPress={() => this.props.navigation.navigate('TimeSheet')}>
-            <Image
-              source={require('../Assets/backArrow.png')}
-              style={{ width: 33, height: 33, tintColor: 'white' }}
-            />
-          </TouchableOpacity>
+        <View style={{ flexDirection: 'row', width: "85%" }}>
+          <View style={{ justifyContent: 'center', alignItems: 'center', width: "10%", marginLeft: 5 }}>
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('TimeSheet')}>
+              <Image
+                source={require('../Assets/backArrow.png')}
+                style={{ width: 33, height: 33, tintColor: 'white' }}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={{ width: '90%', justifyContent: 'center', alignItems: 'center', }}>
+            <Title style={styles.Title}>
+              {this.props.title}
+            </Title>
+          </View>
         </View>
-        <View style={{ width: '90%', justifyContent: 'center', alignItems: 'center', }}>
-          <Title style={styles.Title}>
-            {this.props.title}
-          </Title>
+        <View style={{ width: "15%", flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+          <View style={{ margin: 5, }}>
+            {
+              this.props.timeSheetEntry == true ?
+                <TouchableOpacity style={{ justifyContent: "center", alignItems: 'center' }}
+                  onPress={() => { this.props.handleSave() }}>
+                  <Text style={{ color: this.props.fontColor }}>{"SAVE"}</Text>
+                </TouchableOpacity> : null
+            }
+            {
+              this.props.details == true ?
+                <TouchableOpacity style={{ justifyContent: "center", alignItems: 'center' }}
+                  onPress={() => { this.props.handleDeleteRecord() }}>
+                  <Image
+                    source={require('../Assets/bin.png')}
+                    style={{ width: 20, height: 23, top:3, tintColor: 'white' }}
+                  />
+                </TouchableOpacity> : null
+            }
+          </View>
+          <View style={{ margin: 5, marginRight: 15 }}>
+
+          </View>
         </View>
       </View>
-      <View style={{ width: "15%", flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-        <View style={{ margin: 5, }}>
-          <TouchableOpacity style={{justifyContent: "center", alignItems: 'center'}}
-            onPress={() => {this.props.handleSave()}}>
-            <Text style={{color: this.props.fontColor}}>{"SAVE"}</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={{ margin: 5, marginRight:15 }}>
-         
-        </View>
-      </View>
-    </View>
 
     );
   }
@@ -88,12 +101,13 @@ const styles = StyleSheet.create({
   },
   Title: {
     fontSize: 18,
-    // margin: 5,
-    // top: 3,
-    // marginLeft: 10,
     justifyContent: 'center',
     color: 'white'
-    // fontWeight:'bold'
+  },
+  subTitle: {
+    fontSize: 20,
+    justifyContent: 'center',
+    color: 'white'
   },
   subContiner1: {
     flexDirection: 'row',

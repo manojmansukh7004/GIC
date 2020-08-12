@@ -117,7 +117,7 @@ class TimeSheet extends Component {
             timesheetList: [],
             attendanceData: [],
             timesheetData: [],
-            ratingName: [],
+            ratingData: [],
             headerData: [],
             headerHrsData: [],
             selectedService: '00:05'
@@ -175,7 +175,7 @@ class TimeSheet extends Component {
         this.setState({
             attendanceData: timesheetData.EmpAttendanceData[0],
             timesheetData: timesheetData.EmpTimesheetData[0],
-            ratingName: timesheetData.RatingName[0],
+            ratingData: timesheetData.RatingName[0],
             headerData: timesheetData.TimesheetHeaderData[0],
             headerHrsData: timesheetData.TimesheetTotalHrs[0],
         }, () => {
@@ -184,7 +184,6 @@ class TimeSheet extends Component {
     }
 
     setTimesheetData = () => {
-        console.log("statusssssss", this.state.timesheetData[0]);
 
         lblMon = "Mon, " + moment(new Date(this.state.headerData[0].Mon_Date)).format("DD"),
             lblTue = "Tue, " + moment(new Date(this.state.headerData[0].Tue_Date)).format("DD"),
@@ -428,7 +427,7 @@ class TimeSheet extends Component {
                                             </TouchableOpacity>
                                         </View>
                                         {
-                                            this.state.timeSheetStatus !== "Submitted" ?
+                                            this.state.timeSheetStatus !== "Submitted" || this.state.timeSheetStatus !== "Approved"?
                                                 <View style={{ flexDirection: "row", top: 5 }}>
                                                     {
                                                         this.state.timesheetVisible == true ?
@@ -478,7 +477,8 @@ class TimeSheet extends Component {
                                                                     data={Object.keys(this.state.timesheetData)}
                                                                     renderItem={({ item }) => (
 
-                                                                        <TouchableOpacity onPress={() => this.props.navigation.navigate('ProjectDetail', {"headerData":this.state.headerData})}
+                                                                        <TouchableOpacity
+                                                                         onPress={() => this.props.navigation.navigate('ProjectDetail', {"timesheetData":this.state.timesheetData[item],"headerData":this.state.headerData,"headerHrsData": this.state.headerHrsData})}
                                                                         style={[styles.sheetData1, { backgroundColor: this.props.stripColor }]}>
                                                                             <Text style={{ fontSize: 18, fontWeight: '900' }}>{this.state.timesheetData[item].ProjectName}</Text>
                                                                             <Text>{"  (" + this.state.timesheetData[item].ClientName + ")"}</Text>
@@ -524,7 +524,7 @@ class TimeSheet extends Component {
                                                                 <Text style={{ color: this.props.fontColor }}>{this.state.lblSun}</Text>
                                                                 <Text style={{ color: this.props.fontColor }}>{this.state.dvTotSun}</Text>
                                                             </View>
-                                                            <View style={[styles.approver, { backgroundColor: this.props.stripHeaderColor }]}>
+                                                            <View style={[styles.OTP, { backgroundColor: this.props.stripHeaderColor }]}>
                                                                 <Text style={{ color: this.props.fontColor }}>{"APPROVER"}</Text>
                                                                 {/* <Text style={{ color: this.props.fontColor }}>{this.state.dvTotFri}</Text> */}
                                                             </View>
@@ -616,6 +616,7 @@ class TimeSheet extends Component {
                                                                         <View style={[styles.OTP, { backgroundColor: this.props.stripColor }]}>
                                                                             {/* <View style={styles.hrsData1}> */}
                                                                             <Text>{this.state.timesheetData[item].Approver}</Text>
+                                                                            {/* <Text>{"mj"}</Text> */}
                                                                             {/* </View> */}
                                                                         </View>
                                                                         <View style={[styles.approver, { backgroundColor: this.props.stripColor }]}>
@@ -643,18 +644,7 @@ class TimeSheet extends Component {
                                         visible={this.state.addDescVisible}
                                         style={{ backgroundColor: 'white', height: 250, width: 350 }}
                                         onTouchOutside={() => this.setState({ addDescVisible: false }, () => { this.handleAddDescription() })}
-                                    // title={'Additional Description'}
-
-                                    // actionItems={[
-                                    //     {
-                                    //         text: 'Cancel',
-                                    //         onPress: () => this.setState({ visible: false }),
-                                    //     },
-                                    //     {
-                                    //         text: 'OK',
-                                    //         onPress: () => this.setState({ visible: false }),
-                                    //     },
-                                    // ]}
+                                  
                                     >
                                         <View style={{ backgroundColor: 'white', height: 300, width: 400, bottom: 25, right: 25 }}>
                                             <View style={{ height: 50, padding: 15, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
@@ -930,7 +920,7 @@ const styles = StyleSheet.create({
         // borderWidth: .3,
         justifyContent: 'center',
         alignItems: 'center',
-        right: 4,
+        // right: 4,
         // backgroundColor:'red'
     },
     approver: {
@@ -942,7 +932,7 @@ const styles = StyleSheet.create({
         // borderWidth: .3,
         justifyContent: 'center',
         alignItems: 'center',
-        right: 4,
+        // right: 4,
         // backgroundColor:'#FFFF'
     },
     OTP: {
@@ -954,7 +944,7 @@ const styles = StyleSheet.create({
         // borderWidth: .3,
         justifyContent: 'center',
         alignItems: 'center',
-        right: 4,
+        // right: 4,
         // backgroundColor:'#FFFF'
     },
     hrsData: {

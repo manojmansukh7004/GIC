@@ -84,20 +84,20 @@ class Login extends Component {
         onSignIn()
         // this.props.navigation.navigate('TimeSheet')
         if (data.EmployeeDetails[0][0].RedirectPage == "") {
-            alert("Unauthorised Access!!!");
-            this.props.navigation.navigate('Login')
+          alert("Unauthorised Access!!!");
+          this.props.navigation.navigate('Login')
 
         }
         else {
-            // if (data.EmployeeDetails[0][0].IsFirstLogin == "True" && data.EmployeeDetails[0][0].AllowForcePwdChange == "True") {
-            //     location.href = "change-password.html";
-            // } else {
-              console.log("loginnnnn");
-              await storeData("UserId", data.EmployeeDetails[0][0].UserID)
-              await storeData("UserName", data.EmployeeDetails[0][0].LoginEmpName)
-              await storeData("UserRole", data.EmployeeDetails[0][0].LoginEmpRole)
-              this.props.navigation.navigate('SplashScreen')
-              // }
+          // if (data.EmployeeDetails[0][0].IsFirstLogin == "True" && data.EmployeeDetails[0][0].AllowForcePwdChange == "True") {
+          //     location.href = "change-password.html";
+          // } else {
+          console.log("loginnnnn");
+          await storeData("UserId", data.EmployeeDetails[0][0].UserID)
+          await storeData("UserName", data.EmployeeDetails[0][0].LoginEmpName)
+          await storeData("UserRole", data.EmployeeDetails[0][0].LoginEmpRole)
+          this.props.navigation.navigate('SplashScreen')
+          // }
         }
       }
     }
@@ -110,7 +110,7 @@ class Login extends Component {
     //  
     // });
   }
- 
+
   togglePasswordVisibility = () => {
     this.setState((prevState) => ({
       passwordVisibility: !prevState.passwordVisibility,
@@ -136,8 +136,8 @@ class Login extends Component {
         <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginTop: 30, }}>
           <View ><Text style={{ color: '#4285F4', fontSize: 40, fontWeight: 'bold', }}>S</Text></View>
           <View><Text style={{ color: '#DB4437', fontSize: 40, fontWeight: 'bold' }}>i</Text></View>
-          <View ><Text style={{ color: '#0F9D58', fontSize: 40, fontWeight: 'bold' }}>g</Text></View>
-          <View ><Text style={{ color: '#F4B400', fontSize: 40, fontWeight: 'bold' }}>n</Text></View>
+          <View ><Text style={{ color: '#F4B400', fontSize: 40, fontWeight: 'bold' }}>g</Text></View>
+          <View ><Text style={{ color: '#4285F4', fontSize: 40, fontWeight: 'bold' }}>n</Text></View>
           <View ><Text style={{ color: '#0F9D58', fontSize: 40, fontWeight: 'bold' }}>{" "}</Text></View>
           <View ><Text style={{ color: '#0F9D58', fontSize: 40, fontWeight: 'bold' }}>i</Text></View>
           <View ><Text style={{ color: '#DB4437', fontSize: 40, fontWeight: 'bold', }}>n</Text></View>
@@ -146,12 +146,7 @@ class Login extends Component {
 
         {
 
-          <View style={{
-            width: '100%', alignItems: 'center', marginTop: 20
-          }}
-          >
-
-
+          <View style={{width: '100%', alignItems: 'center', marginTop: 20}}>
             <TextInput
               ref={(input) => { this.userName = input; }}
               label="User Name"
@@ -186,21 +181,12 @@ class Login extends Component {
                   <Image source={(this.state.passwordVisibility) ? require('../Assets/hide.png') : require('../Assets/show.png')} style={styles.iconEye} />
                 </TouchableOpacity>
               </View>
-
-              {/* <Icon
-                    name={this.state.passwordVisibility ? 'md-eye-off' : 'md-eye'}
-                    style={styles.iconEye}
-                    size={28}
-                    color="gray"
-                    onPress={() => this.togglePasswordVisibility()}
-                  /> */}
-
             </View>
+
             <Button
               uppercase={false}
-              onPress={() => this.props.navigation.navigate('ForgotPassword', {
-                companyData: this.state.companyData
-              })}
+              // color={'#297AF9'}
+              onPress={() => this.props.navigation.navigate('ForgotPassword', { companyData: this.state.companyData })}
             >
               Forgot Password?
               </Button>
@@ -218,9 +204,19 @@ class Login extends Component {
             >
               Sign in
                 </Button>
+                <View style={{alignItems: 'flex-end', justifyContent: 'center', width: '100%', }}>
+            <Button
+              uppercase={false}
+              // color={'grey'}
+              color={'#297AF9'}
+            >
+              Powered by Circular Angle
+              </Button>
+              </View>
+
+           
             {
               this.state.loading == true ? <ActivityIndicator size={40} animating={true} color={Colors.blue800} style={{ top: 25 }} /> : null
-
             }
 
 
@@ -242,7 +238,7 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default connect( null, mapDispatchToProps)(Login);
+export default connect(null, mapDispatchToProps)(Login);
 
 const styles = StyleSheet.create({
 
