@@ -29,13 +29,22 @@ class TimesheetEntry extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            title:'',
             timesheetId: '',
+            timesheetData: [],
             client: "",
             typeOfWorkId: '',
             project: '',
             phase: '',
             activity: '',
             workOrder: '',
+            activityName: '',
+            clientName: '',
+            projectName: '',
+            typeOfWork: "",
+            phaseName: '',
+            workOrderName: '',
+            field: '',
             lblMon1: "",
             lblTue1: "",
             lblWed1: "",
@@ -70,6 +79,7 @@ class TimesheetEntry extends Component {
             addDescField: "",
             description: "",
             projectDesc: "",
+            data: [],
             time: [],
             headerData: [],
             clientList: [],
@@ -164,42 +174,56 @@ class TimesheetEntry extends Component {
         workOrderId = this.state.workOrder == 0 ? "" : this.state.workOrder
         taskDesc = this.state.projectDesc
         status = "Saved"
-        autoId = null
+        // autoId = null
+        
         for (var dayField = 1; dayField <= 7; dayField++) {
             if (dayField == 1) {
                 duration = this.state.lblMon
                 dailyTaskComments = this.state.descMon
                 date = (this.state.headerData[0].Mon_Date)
+                autoId = this.state.timesheetData.length == 0 ? "" : this.state.timesheetData.Mon_AutoId
             }
             else if (dayField == 2) {
                 duration = this.state.lblTue
                 dailyTaskComments = this.state.descTue
                 date = this.state.headerData[0].Tue_Date
+                autoId = this.state.timesheetData.length == 0 ? "" : this.state.timesheetData.Tue_AutoId
+
             }
             else if (dayField == 3) {
                 duration = this.state.lblWed
                 dailyTaskComments = this.state.descWed
                 date = this.state.headerData[0].Wed_Date
+                autoId = this.state.timesheetData.length == 0 ? "" : this.state.timesheetData.Wed_AutoId
+
             }
             else if (dayField == 4) {
                 duration = this.state.lblThu
                 dailyTaskComments = this.state.descThu
                 date = this.state.headerData[0].Thu_Date
+                autoId = this.state.timesheetData.length == 0 ? "" : this.state.timesheetData.Thu_AutoId
+
             }
             else if (dayField == 5) {
                 duration = this.state.lblFri
                 dailyTaskComments = this.state.descFri
                 date = this.state.headerData[0].Fri_Date
+                autoId = this.state.timesheetData.length == 0 ? "" : this.state.timesheetData.Fri_AutoId
+
             }
             else if (dayField == 6) {
                 duration = this.state.lblSat
                 dailyTaskComments = this.state.descSat
                 date = this.state.headerData[0].Sat_Date
+                autoId = this.state.timesheetData.length == 0 ? "" : this.state.timesheetData.Sat_AutoId
+
             }
             else if (dayField == 7) {
                 duration = this.state.lblSun
                 dailyTaskComments = this.state.descSun
                 date = this.state.headerData[0].Sun_Date
+                autoId = this.state.timesheetData.length == 0 ? "" : this.state.timesheetData.Sun_AutoId
+
             }
 
             timesheetData.push({
@@ -230,7 +254,7 @@ class TimesheetEntry extends Component {
             if (data.SuccessList != undefined || data.ErrorList != undefined || data.ExceptionList != undefined) {
                 // validationRemove();
                 if (data.SuccessList != undefined) {
-                    showToast("Timesheet data saved sucessfully.");
+                    showToast("Timesheet data updated sucessfully.");
                     this.props.navigation.navigate("TimeSheet")
                     // this.empWeeklyTimesheetData(timesheetId);
                 }
@@ -247,18 +271,12 @@ class TimesheetEntry extends Component {
 
 
     handleDataOnClientChange = async () => {
-        console.log("client calling", this.state.timesheetId);
-
         var clientChange = await getDataOnClientChange(this.props.user, this.state.timesheetId, this.state.client, this.props.baseUrl)
-        console.log(",clientChange", clientChange);
-
         this.setState({
             projetList: clientChange.ProjectList[0],
         });
     }
     handleDataOnProjectChange = async () => {
-        console.log("project calling");
-
         var projectChange = await getDataOnProjectChange(this.props.user, this.state.timesheetId, this.state.project, this.props.baseUrl)
         this.setState({
             phaseList: projectChange.PhaseList[0],
@@ -267,8 +285,6 @@ class TimesheetEntry extends Component {
         });
     }
     handleDataOnPhaseChange = async () => {
-        console.log("phase calling");
-
         if (this.state.phase !== null) {
             var phaseChange = await GetDataOnPhaseChange(this.props.user, this.state.timesheetId, this.state.project, this.state.phase == 0 ? "" : this.state.phase, this.props.baseUrl)
             this.setState({
@@ -285,11 +301,13 @@ class TimesheetEntry extends Component {
             typeOfWorkList: dropdownData.TypeOfWorkList[0],
             timesheetId: this.props.tsId,
             time: this.props.time,
+            header: this.props.navigation.state.params.header,
             headerData: this.props.navigation.state.params.headerData,
-          
-            // edit: this.props.navigation.state.params.Edit
+            timesheetData: this.props.navigation.state.params.timesheetData,
+            headerHrsData: this.props.navigation.state.params.headerHrsData,
+            edit: this.props.navigation.state.params.Edit
         }, () => {
-           
+
             lblMon1 = "Mon, " + moment(new Date(this.state.headerData[0].Mon_Date)).format("DD"),
                 lblTue1 = "Tue, " + moment(new Date(this.state.headerData[0].Tue_Date)).format("DD"),
                 lblWed1 = "Wed, " + moment(new Date(this.state.headerData[0].Wed_Date)).format("DD"),
@@ -312,15 +330,86 @@ class TimesheetEntry extends Component {
                     dvTotWed1: dvTotWed1, dvTotThu1: dvTotThu1,
                     dvTotFri1: dvTotFri1, dvTotSat1: dvTotSat1,
                     dvTotSun1: dvTotSun1,
+
+
+                }, () => {
+                    if (this.state.edit == true) {
+                        
+                        this.editTimesheet()
+                    }
                 });
         });
     }
 
-    
+    editTimesheet = () => {
+        this.setState({
+
+            client: this.state.timesheetData.ClientCode,
+            clientName: this.state.timesheetData.ClientName,
+            project: this.state.timesheetData.ProjectCode,
+            projectName: this.state.timesheetData.ProjectName,
+            typeOfWorkId: this.state.timesheetData.TypeOfWorkId,
+            typeOfWork: this.state.timesheetData.TypeOfWork,
+            phase: this.state.timesheetData.PhaseId,
+            phaseName: this.state.timesheetData.phaseName,
+            activity: this.state.timesheetData.ActivityId,
+            activityName: this.state.timesheetData.ActivityName,
+            projectDesc: this.state.timesheetData.TaskDesc,
+            lblMon: this.state.timesheetData.Mon,
+            lblTue: this.state.timesheetData.Tue,
+            lblWed: this.state.timesheetData.Wed,
+            lblThu: this.state.timesheetData.Thu,
+            lblFri: this.state.timesheetData.Fri,
+            lblSat: this.state.timesheetData.Sat,
+            lblSun: this.state.timesheetData.Sun,
+            descMon: this.state.timesheetData.Mon_TaskComments,
+            descTue: this.state.timesheetData.Tue_TaskComments,
+            descWed: this.state.timesheetData.Wed_TaskComments,
+            descThu: this.state.timesheetData.Thu_TaskComments,
+            descFri: this.state.timesheetData.Fri_TaskComments,
+            descSat: this.state.timesheetData.Sat_TaskComments,
+            descSun: this.state.timesheetData.Sun_TaskComments,
+
+        }, () => {
+            this.handleDataOnClientChange()
+            this.handleDataOnProjectChange()
+            this.handleDataOnPhaseChange()
+        });
+    }
+
+    handleSelectedData = (item, index) => {
+        if (this.state.field == 1) {
+            this.setState({
+                clientName: item.Text, client: item.Value, fieldVisible: false, project: "", projectName: '',
+                typeOfWorkId: '', typeOfWork: '', phase: '', phaseName: '', activity: '', activityName: '',
+                projetList: [], phaseList: [], activityList: [], workOrderList: [], data: []
+            }, () => { this.handleDataOnClientChange() })
+        }
+        else if (this.state.field == 2) {
+            this.setState({
+                projectName: item.Text, project: item.Value, fieldVisible: false, phase: '', phaseName: '', activity: '', activityName: '',
+                typeOfWorkId: '', typeOfWork: '', phaseList: [], activityList: [], workOrderList: [], data: []
+            }, () => { this.handleDataOnProjectChange() })
+        }
+        else if (this.state.field == 3) {
+            this.setState({
+                typeOfWork: item.Text, typeOfWorkId: item.Value, fieldVisible: false
+            }, () => { })
+        }
+        else if (this.state.field == 4) {
+            this.setState({
+                phaseName: item.Text, Phase: item.Value, fieldVisible: false, activityName: '', activityList: [], activity: ''
+            }, () => { this.handleDataOnPhaseChange() })
+        }
+        else if (this.state.field == 5) {
+            this.setState({
+                activityName: item.Text, activity: item.Value, fieldVisible: false
+            }, () => { })
+        }
+    }
+
 
     render() {
-        // console.log("clientclientclient", this.state.timesheetID);
-
         return (
             <View>
 
@@ -328,110 +417,99 @@ class TimesheetEntry extends Component {
                 <View style={{ height: "100%", width: '100%', top: '3%' }}>
                     <View style={{ height: '7%', backgroundColor: this.props.primaryColor, }}>
                         <Appbar navigation={this.props.navigation}
-                            title={"Timesheet Entry"}
+                            title={this.state.header}
                             handleSave={this.handleSave}
                             timeSheetEntry={true}
                         />
                     </View>
                     <View style={{ height: '90%', backgroundColor: this.props.secColor }}>
                         <KeyboardAwareScrollView contentContainerStyle={styles.container}>
+
+                            <Dialog
+                                visible={this.state.fieldVisible}
+                                style={{ backgroundColor: 'white', width: 350 }}
+                                onTouchOutside={() => this.setState({ fieldVisible: false }, () => { })}
+
+                            >
+                                <View style={{ backgroundColor: 'white', width: 400, height: 300, bottom: 25, right: 25 }}>
+                                    <View style={{ height: 50, padding: 15, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
+                                        <Text style={{ fontSize: title, color: this.props.fontColor }}>{this.state.title}</Text>
+                                    </View>
+                                    <View style={{ justifyContent: 'flex-start', alignItems: 'flex-start', top: 15 }}>
+                                        <View style={{ borderRadius: 5, width: 340, width: 350, height: 275, }}>
+                                            {
+                                                this.state.data.length == 0 ?
+                                                    <View style={{ width: '100%', }}>
+                                                        <Text style={styles.textPopup}>
+                                                            {"No Data Available"}
+                                                        </Text>
+                                                        <Divider />
+                                                    </View>
+                                                    :
+                                                    <FlatList
+                                                        data={Object.keys(this.state.data)}
+                                                        renderItem={({ item, index }) => (
+
+                                                            <TouchableOpacity onPress={() => {
+                                                                this.handleSelectedData(this.state.data[item], index)
+                                                            }}
+                                                                style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 15 }}>
+                                                                <View style={{ width: '100%', }}>
+                                                                    <Text style={styles.textPopup}>
+                                                                        {this.state.data[item].Text}
+                                                                    </Text>
+                                                                    <Divider />
+                                                                </View>
+                                                            </TouchableOpacity>)}
+                                                    />
+                                            }
+                                        </View>
+                                    </View>
+                                </View>
+                            </Dialog>
+
                             <View style={styles.horizontalContainer}>
 
                                 <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.client == 0 ? 'red' : "transparent" }]}>
-                                    <View style={styles.cardMenuSpasing}>
+                                    <TouchableOpacity onPress={() => this.setState({  title: "Client List", fieldVisible: true, field: 1, data: this.state.clientList })}
+                                        style={styles.cardMenuSpasing}>
                                         <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>CLIENT</Text>
-                                        <Picker
-                                            mode="dropdown"
-                                            selectedValue={this.state.client}
-                                            style={styles.pickers}
-                                            // enabled={this.item.AttStatus !== 'MissingPunches'}
-                                            onValueChange={(itemValue, ) => this.setState({ client: itemValue }, () => {
-                                                this.handleDataOnClientChange()
-                                            })}
-                                        >
-
-                                            <Picker.Item label="--Select--" value="0" />
-                                            {this.state.clientList.map((item, index) => {
-                                                return (<Picker.Item label={item.Text} value={item.Value} key={index} />)
-                                            })}
-                                        </Picker>
-                                    </View>
+                                        <Text numberOfLines={1} style={[styles.twoCardLabel1, { color: "#4D504F", }]}>{this.state.client == '' ? "--select--" : this.state.clientName}</Text>
+                                    </TouchableOpacity>
                                 </Card>
 
                                 <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.project == 0 ? 'red' : "transparent" }]}>
-                                    <View style={styles.cardMenuSpasing}>
+                                    <TouchableOpacity onPress={() => this.setState({  title: "Project List", data: this.state.projetList, fieldVisible: true, field: 2, })}
+                                        style={styles.cardMenuSpasing}>
                                         <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>PROJECT</Text>
-                                        <Picker
-                                            mode="dropdown"
-                                            selectedValue={this.state.project}
-                                            style={styles.pickers}
-                                            // enabled={this.item.AttStatus !== 'MissingPunches'}
-                                            onValueChange={(itemValue) => this.setState({ project: itemValue }, () => { this.handleDataOnProjectChange() })}
-                                        >
-                                            <Picker.Item label="--Select--" value="0" />
-                                            {this.state.projetList.map((item, index) => {
-                                                return (<Picker.Item label={item.Text} value={item.Value} key={index} />)
-                                            })}
-                                        </Picker>
-                                    </View>
+                                        <Text numberOfLines={1} style={[styles.twoCardLabel1, { color: "#4D504F" }]}>{this.state.projectName == '' ? "--select--" : this.state.projectName}</Text>
+                                    </TouchableOpacity>
                                 </Card>
                             </View>
                             <View style={styles.horizontalContainer}>
                                 <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.typeOfWorkId == 0 ? 'red' : "transparent" }]}>
-                                    <View style={styles.cardMenuSpasing}>
+                                    <TouchableOpacity onPress={() => this.setState({  title: "Type Of Work", fieldVisible: true, field: 3, data: this.state.typeOfWorkList })}
+                                        style={styles.cardMenuSpasing}>
                                         <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>TYPE OF WORK</Text>
-                                        <Picker
-                                            mode="dropdown"
-                                            selectedValue={this.state.typeOfWorkId}
-                                            style={styles.pickers}
-                                            // enabled={this.item.AttStatus !== 'MissingPunches'}
-                                            onValueChange={(itemValue) => this.setState({ typeOfWorkId: itemValue })}
-                                        >
-                                            <Picker.Item label="--Select--" value="0" />
-                                            {this.state.typeOfWorkList.map((item, index) => {
-                                                return (<Picker.Item label={item.Text} value={item.Value} key={index} />)
-                                            })}
-                                        </Picker>
-                                    </View>
+                                        <Text numberOfLines={1} style={[styles.twoCardLabel1, { color: "#4D504F" }]}>{this.state.typeOfWork == '' ? "--select--" : this.state.typeOfWork}</Text>
+                                    </TouchableOpacity>
                                 </Card>
 
                                 <Card style={styles.cards}>
-                                    <View style={styles.cardMenuSpasing}>
+                                    <TouchableOpacity onPress={() => this.setState({title: "Phase", fieldVisible: true, field: 4, data: this.state.phaseList })}
+                                        style={styles.cardMenuSpasing}>
                                         <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>PHASE</Text>
-                                        <Picker
-                                            mode="dropdown"
-                                            selectedValue={this.state.phase == undefined ? "" : this.state.phase}
-                                            style={styles.pickers}
-                                            // enabled={this.item.AttStatus !== 'MissingPunches'}
-                                            onValueChange={(itemValue) => this.setState({ phase: itemValue }, () => { this.handleDataOnPhaseChange() })}
-                                        >
-                                            <Picker.Item label="--Select--" value="0" />
-                                            {this.state.phaseList.map((item, index) => {
-                                                return (<Picker.Item label={item.Text} value={item.Value} key={index} />)
-                                            })}
-                                        </Picker>
-                                    </View>
+                                        <Text numberOfLines={1} style={[styles.twoCardLabel1, { color: "#4D504F" }]}>{this.state.phaseName == '' || this.state.phaseName == null ? "--select--" : this.state.phaseName}</Text>
+                                    </TouchableOpacity>
                                 </Card>
                             </View>
                             <View style={styles.horizontalContainer}>
                                 <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.activity == 0 ? 'red' : "transparent" }]}>
-                                    <View style={styles.cardMenuSpasing}>
+                                    <TouchableOpacity onPress={() => this.setState({title: "Activity", fieldVisible: true, field: 5, data: this.state.activityList })}
+                                        style={styles.cardMenuSpasing}>
                                         <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>ACTIVITY</Text>
-
-                                        <Picker
-                                            mode="dropdown"
-                                            selectedValue={this.state.activity}
-                                            style={styles.pickers}
-                                            // enabled={this.item.AttStatus !== 'MissingPunches'}
-                                            onValueChange={(itemValue) => this.setState({ activity: itemValue })}
-                                        >
-                                            <Picker.Item label="--Select--" value="0" />
-                                            {this.state.activityList.map((item, index) => {
-                                                return (<Picker.Item label={item.Text} value={item.Value} key={index} />)
-                                            })}
-                                        </Picker>
-
-                                    </View>
+                                        <Text numberOfLines={1} style={[styles.twoCardLabel1, { color: "#4D504F" }]}>{this.state.activityName == '' ? "--select--" : this.state.activityName}</Text>
+                                    </TouchableOpacity>
                                 </Card>
 
                                 {/* <Card style={styles.cards}>
@@ -467,7 +545,7 @@ class TimesheetEntry extends Component {
                                         // maxLength={500}
                                         dense
                                         selectionColor={this.props.primaryColor}
-                                        value={this.state.reason}
+                                        value={this.state.projectDesc}
                                         onChangeText={desc => this.setState({ projectDesc: desc, })}
                                         numberOfLines={7}
                                         style={styles.longText}
@@ -659,7 +737,8 @@ const styles = StyleSheet.create({
         elevation: 3,
         borderRadius: 5,
         marginTop: 15,
-        width: "48%"
+        width: "48%",
+        height: 60
     },
     cardContainer: { backgroundColor: 'white', height: 20, fontSize: 16 },
     singleCardLabel: {
@@ -667,8 +746,9 @@ const styles = StyleSheet.create({
         // color: '#F2721C',
         paddingStart: 8
     },
-    twoCardLabel: {
-        fontSize: 14,
+
+    twoCardLabel1: {
+        fontSize: 16,
         // color: '#F2721C',
         paddingStart: 12
     },
@@ -693,8 +773,8 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginTop: 15
     },
-    longText: { backgroundColor: 'white', fontSize: 16, marginEnd: 10, padding: 10 },
-    reasonView: { paddingStart: 3, padding: 10, },
+    longText: { backgroundColor: 'white', color: "#4D504F", fontSize: 16, marginEnd: 10, padding: 10 },
+    reasonView: { paddingStart: 15, padding: 10, },
     timeView: { padding: 10, flexDirection: 'row' },
     sheetData: {
         padding: 10,
@@ -720,8 +800,8 @@ const styles = StyleSheet.create({
     },
     textPopup: {
         padding: 3,
-        fontSize: cardDate,
-        // margin: 5,
+        fontSize: cardTitle,
+        color: "#4D504F",
         marginLeft: 15,
     },
 })

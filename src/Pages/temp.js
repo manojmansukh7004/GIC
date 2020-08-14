@@ -31,11 +31,16 @@ class TimesheetEntry extends Component {
         this.state = {
             timesheetId: '',
             client: "",
-            typeOfWorkId: '',
+            clientName: '',
+            workList: '',
             project: '',
             phase: '',
             activity: '',
             workOrder: '',
+            projectName:'',
+            TypeOfWork: '',
+            phaseName: '', 
+            activityName: '',
             lblMon1: "",
             lblTue1: "",
             lblWed1: "",
@@ -84,6 +89,12 @@ class TimesheetEntry extends Component {
             timesheetVisible: false,
             addDescVisible: false,
             validation: false,
+            fieldVisible:false,
+            edit1: false,
+            edit2: false,
+            edit3: false,
+            edit4: false,
+            edit5: false,
             selectedType: 'Select'
         }
     }
@@ -143,7 +154,7 @@ class TimesheetEntry extends Component {
         this.setState({ validation: true })
         if (this.state.client == 0) { showToast("Select client details.") }
         else if (this.state.project == 0) { showToast("Select project details.") }
-        else if (this.state.typeOfWorkId == 0) { showToast("Select type of work.") }
+        else if (this.state.workList == 0) { showToast("Select type of work.") }
         else if (this.state.activity == 0) { showToast("Select activity.") }
         else if (this.state.projectDesc == "") { showToast("Fill up project description.") }
         else if (this.state.lblMon == "" && this.state.lblTue == "" && this.state.lblWed == "" && this.state.lblFri == "" &&
@@ -158,7 +169,7 @@ class TimesheetEntry extends Component {
         // timesheetId = this.state.timesheetId
         clientCode = this.state.client
         projectCode = this.state.project
-        typeofWorkId = this.state.typeOfWorkId
+        typeofWorkId = this.state.workList
         phaseId = this.state.phase == 0 ? "" : this.state.phase
         activityId = this.state.activity
         workOrderId = this.state.workOrder == 0 ? "" : this.state.workOrder
@@ -247,7 +258,7 @@ class TimesheetEntry extends Component {
 
 
     handleDataOnClientChange = async () => {
-        console.log("client calling", this.state.timesheetId);
+        console.log("client calling", this.props.user, this.state.timesheetId, this.state.client, this.props.baseUrl);
 
         var clientChange = await getDataOnClientChange(this.props.user, this.state.timesheetId, this.state.client, this.props.baseUrl)
         console.log(",clientChange", clientChange);
@@ -286,10 +297,13 @@ class TimesheetEntry extends Component {
             timesheetId: this.props.tsId,
             time: this.props.time,
             headerData: this.props.navigation.state.params.headerData,
-          
+            timesheetData: this.props.navigation.state.params.timesheetData,
+            headerHrsData: this.props.navigation.state.params.headerHrsData,
             // edit: this.props.navigation.state.params.Edit
         }, () => {
-           
+            if (this.props.navigation.state.params.Edit == true) {
+                this.editDetails()
+            }
             lblMon1 = "Mon, " + moment(new Date(this.state.headerData[0].Mon_Date)).format("DD"),
                 lblTue1 = "Tue, " + moment(new Date(this.state.headerData[0].Tue_Date)).format("DD"),
                 lblWed1 = "Wed, " + moment(new Date(this.state.headerData[0].Wed_Date)).format("DD"),
@@ -312,11 +326,42 @@ class TimesheetEntry extends Component {
                     dvTotWed1: dvTotWed1, dvTotThu1: dvTotThu1,
                     dvTotFri1: dvTotFri1, dvTotSat1: dvTotSat1,
                     dvTotSun1: dvTotSun1,
+                    edit: this.props.navigation.state.params.Edit
                 });
         });
     }
 
-    
+    editDetails = () => {
+        var phase = ''
+        console.log(this.state.timesheetData);
+        this.handleDataOnClientChange()
+        this.handleDataOnProjectChange()
+        this.handleDataOnPhaseChange()
+        this.setState({
+            client: this.state.timesheetData.ClientCode,
+            clientName:  this.state.timesheetData.ClientName,
+            project: this.state.timesheetData.ProjectCode,
+            projectName: this.state.timesheetData.ProjectName,
+            workList: this.state.timesheetData.TypeOfWorkId,
+            TypeOfWork: this.state.timesheetData.TypeOfWork,
+            phase: this.state.timesheetData.PhaseId == null ? phase : this.state.timesheetData.PhaseId,
+           phaseName: this.state.timesheetData.PhaseName,
+            activity: this.state.timesheetData.ActivityId,
+            activityName: this.state.timesheetData.ActivityName,
+            
+        }, () => {
+            // this.handleDataOnClientChange()
+            // this.handleDataOnPhaseChange()
+            this.setState({
+                edit1: true,
+                edit2: true,
+                edit3: true,
+                edit4: true,
+                edit5: true,
+
+            })
+        })
+    }
 
     render() {
         // console.log("clientclientclient", this.state.timesheetID);
@@ -335,103 +380,221 @@ class TimesheetEntry extends Component {
                     </View>
                     <View style={{ height: '90%', backgroundColor: this.props.secColor }}>
                         <KeyboardAwareScrollView contentContainerStyle={styles.container}>
+                            <Dialog
+                                visible={this.state.fieldVisible}
+                                style={{ backgroundColor: 'white',  width: 350 }}
+                                onTouchOutside={() => this.setState({ fieldVisible: false }, () => {  })}
+
+                            >
+                                <View style={{ backgroundColor: 'white', width: 400, height: 300, bottom: 25, right: 25 }}>
+                                    <View style={{ height: 50, padding: 15, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
+                                        <Text style={{ fontSize: title, color: this.props.fontColor }}>{'Additional Description'}</Text>
+                                    </View>
+                                    <View style={{ justifyContent:'flex-start', alignItems: 'flex-start', }}>
+                                        <View style={{ borderRadius: 5, width: 340,borderWidth: .5, width: 350,height: 275,   }}>
+                                        <FlatList
+                                                data={Object.keys(this.state.clientList)}
+                                                renderItem={({ item, index }) => (
+
+                                                    <TouchableOpacity onPress={() =>{
+                                                        this.setState({clientName: this.state.clientList[item].Text, client:this.state.clientList[item].Value, fieldVisible: false },()=>{
+                                                            this.handleDataOnClientChange()
+                                                        })
+                                                    }}
+                                                        style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 15 }}>
+                                                        {/* <View> */}
+                                                            <Text style={styles.textPopup}>
+                                                                {this.state.clientList[item].Text}
+                                                            </Text>
+                                                            <Divider />
+                                                        {/* </View> */}
+                                                    </TouchableOpacity>)}
+                                            />
+                                        </View>
+                                    </View>
+                                </View>
+                            </Dialog>
+                            <Dialog
+                                visible={this.state.fieldVisible2}
+                                style={{ backgroundColor: 'white',  width: 350 }}
+                                onTouchOutside={() => this.setState({ fieldVisible2: false }, () => {  })}
+
+                            >
+                                {
+                                    console.log("pppppp",this.state.projetList)
+                                    
+                                }
+                                <View style={{ backgroundColor: 'white', width: 400, height: 300, bottom: 25, right: 25 }}>
+                                    <View style={{ height: 50, padding: 15, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
+                                        <Text style={{ fontSize: title, color: this.props.fontColor }}>{'Additional Description'}</Text>
+                                    </View>
+                                    <View style={{ justifyContent:'flex-start', alignItems: 'flex-start', }}>
+                                        <View style={{ borderRadius: 5, width: 340,borderWidth: .5, width: 350,height: 275,   }}>
+                                        <FlatList
+                                                data={Object.keys(this.state.projetList)}
+                                                renderItem={({ item, index }) => (
+
+                                                    <TouchableOpacity onPress={() =>{ this.setState({projctName: this.state.clientList[item].Text, project:this.state.clientList[item].Value, fieldVisible2: false },()=>{
+                                                        this.handleDataOnProjectChange()
+                                                    })} }
+                                                        style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 15 }}>
+                                                        {/* <View> */}
+                                                            <Text style={styles.textPopup}>
+                                                                {this.state.projetList[item].Text}
+                                                            </Text>
+                                                            <Divider />
+                                                        {/* </View> */}
+                                                    </TouchableOpacity>)}
+                                            />
+                                        </View>
+                                    </View>
+                                </View>
+                            </Dialog>
+
                             <View style={styles.horizontalContainer}>
 
                                 <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.client == 0 ? 'red' : "transparent" }]}>
-                                    <View style={styles.cardMenuSpasing}>
-                                        <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>CLIENT</Text>
-                                        <Picker
-                                            mode="dropdown"
-                                            selectedValue={this.state.client}
-                                            style={styles.pickers}
-                                            // enabled={this.item.AttStatus !== 'MissingPunches'}
-                                            onValueChange={(itemValue, ) => this.setState({ client: itemValue }, () => {
-                                                this.handleDataOnClientChange()
-                                            })}
-                                        >
 
-                                            <Picker.Item label="--Select--" value="0" />
-                                            {this.state.clientList.map((item, index) => {
-                                                return (<Picker.Item label={item.Text} value={item.Value} key={index} />)
-                                            })}
-                                        </Picker>
-                                    </View>
+                                    {
+                                        this.state.edit1 == true ?
+
+                                            <TouchableOpacity onPress={() => this.setState({ fieldVisible: true })}
+                                                style={styles.cardMenuSpasing}>
+                                                <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>CLIENT</Text>
+                                                <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.clientName}</Text>
+                                            </TouchableOpacity>
+                                            :
+                                            <View style={styles.cardMenuSpasing}>
+                                                <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>CLIENT</Text>
+                                                <Picker
+                                                    mode="dropdown"
+                                                    selectedValue={this.state.client}
+                                                    style={styles.pickers}
+                                                    // enabled={this.item.AttStatus !== 'MissingPunches'}
+                                                    onValueChange={(itemValue, ) => this.setState({ client: itemValue }, () => {
+                                                        this.handleDataOnClientChange()
+                                                    })}
+                                                >
+
+                                                    <Picker.Item label="--Select--" value="0" />
+                                                    {this.state.clientList.map((item, index) => {
+                                                        return (<Picker.Item label={item.Text} value={item.Value} key={index} />)
+                                                    })}
+                                                </Picker>
+                                            </View>
+                                    }
                                 </Card>
 
                                 <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.project == 0 ? 'red' : "transparent" }]}>
-                                    <View style={styles.cardMenuSpasing}>
-                                        <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>PROJECT</Text>
-                                        <Picker
-                                            mode="dropdown"
-                                            selectedValue={this.state.project}
-                                            style={styles.pickers}
-                                            // enabled={this.item.AttStatus !== 'MissingPunches'}
-                                            onValueChange={(itemValue) => this.setState({ project: itemValue }, () => { this.handleDataOnProjectChange() })}
-                                        >
-                                            <Picker.Item label="--Select--" value="0" />
-                                            {this.state.projetList.map((item, index) => {
-                                                return (<Picker.Item label={item.Text} value={item.Value} key={index} />)
-                                            })}
-                                        </Picker>
-                                    </View>
+                                    {
+                                        this.state.edit2 == true ?
+                                            <TouchableOpacity onPress={() => this.setState({ fieldVisible2: true  })}
+                                                style={styles.cardMenuSpasing}>
+                                                <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>PROJECT</Text>
+                                                <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.projectName}</Text>
+                                            </TouchableOpacity>
+                                            :
+                                            <View style={styles.cardMenuSpasing}>
+                                                <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>PROJECT</Text>
+
+                                                <Picker
+                                                    mode="dropdown"
+                                                    selectedValue={this.state.project}
+                                                    style={styles.pickers}
+                                                    // enabled={this.item.AttStatus !== 'MissingPunches'}
+                                                    onValueChange={(itemValue) => this.setState({ project: itemValue }, () => { this.handleDataOnProjectChange() })}
+                                                >
+                                                    <Picker.Item label="--Select--" value="0" />
+                                                    {this.state.projetList.map((item, index) => {
+                                                        return (<Picker.Item label={item.Text} value={item.Value} key={index} />)
+                                                    })}
+                                                </Picker>
+                                            </View>
+                                    }
+
                                 </Card>
                             </View>
                             <View style={styles.horizontalContainer}>
-                                <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.typeOfWorkId == 0 ? 'red' : "transparent" }]}>
-                                    <View style={styles.cardMenuSpasing}>
-                                        <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>TYPE OF WORK</Text>
-                                        <Picker
-                                            mode="dropdown"
-                                            selectedValue={this.state.typeOfWorkId}
-                                            style={styles.pickers}
-                                            // enabled={this.item.AttStatus !== 'MissingPunches'}
-                                            onValueChange={(itemValue) => this.setState({ typeOfWorkId: itemValue })}
-                                        >
-                                            <Picker.Item label="--Select--" value="0" />
-                                            {this.state.typeOfWorkList.map((item, index) => {
-                                                return (<Picker.Item label={item.Text} value={item.Value} key={index} />)
-                                            })}
-                                        </Picker>
-                                    </View>
+                                <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.workList == 0 ? 'red' : "transparent" }]}>
+                                    {
+                                        this.state.edit3 == true ?
+                                            <View style={styles.cardMenuSpasing}>
+                                                <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>TYPE OF WORK</Text>
+                                                <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.timesheetData.TypeOfWork}</Text>
+                                            </View>
+                                            :
+                                            <View style={styles.cardMenuSpasing}>
+                                                <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>TYPE OF WORK</Text>
+                                                <Picker
+                                                    mode="dropdown"
+                                                    selectedValue={this.state.workList}
+                                                    style={styles.pickers}
+                                                    // enabled={this.item.AttStatus !== 'MissingPunches'}
+                                                    onValueChange={(itemValue) => this.setState({ workList: itemValue })}
+                                                >
+                                                    <Picker.Item label="--Select--" value="0" />
+                                                    {this.state.typeOfWorkList.map((item, index) => {
+                                                        return (<Picker.Item label={item.Text} value={item.Value} key={index} />)
+                                                    })}
+                                                </Picker>
+                                            </View>
+                                    }
                                 </Card>
 
                                 <Card style={styles.cards}>
-                                    <View style={styles.cardMenuSpasing}>
-                                        <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>PHASE</Text>
-                                        <Picker
-                                            mode="dropdown"
-                                            selectedValue={this.state.phase == undefined ? "" : this.state.phase}
-                                            style={styles.pickers}
-                                            // enabled={this.item.AttStatus !== 'MissingPunches'}
-                                            onValueChange={(itemValue) => this.setState({ phase: itemValue }, () => { this.handleDataOnPhaseChange() })}
-                                        >
-                                            <Picker.Item label="--Select--" value="0" />
-                                            {this.state.phaseList.map((item, index) => {
-                                                return (<Picker.Item label={item.Text} value={item.Value} key={index} />)
-                                            })}
-                                        </Picker>
-                                    </View>
+                                    {
+                                        this.state.edit4 == true ?
+                                            <View style={styles.cardMenuSpasing}>
+                                                <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>PHASE</Text>
+                                                <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.timesheetData.PhaseName}</Text>
+                                            </View>
+                                            :
+                                            <View style={styles.cardMenuSpasing}>
+                                                <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>PHASE</Text>
+
+                                                <Picker
+                                                    mode="dropdown"
+                                                    selectedValue={this.state.phase == undefined ? "" : this.state.phase}
+                                                    style={styles.pickers}
+                                                    // enabled={this.item.AttStatus !== 'MissingPunches'}
+                                                    onValueChange={(itemValue) => this.setState({ phase: itemValue }, () => { this.handleDataOnPhaseChange() })}
+                                                >
+                                                    <Picker.Item label="--Select--" value="0" />
+                                                    {this.state.phaseList.map((item, index) => {
+                                                        return (<Picker.Item label={item.Text} value={item.Value} key={index} />)
+                                                    })}
+                                                </Picker>
+                                            </View>
+                                    }
+
                                 </Card>
                             </View>
                             <View style={styles.horizontalContainer}>
                                 <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.activity == 0 ? 'red' : "transparent" }]}>
-                                    <View style={styles.cardMenuSpasing}>
-                                        <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>ACTIVITY</Text>
+                                    {
+                                        this.state.edit5 == true ?
+                                            <View style={styles.cardMenuSpasing}>
+                                                <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>ACTIVITY</Text>
+                                                <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.timesheetData.ActivityName}</Text>
+                                            </View>
+                                            :
+                                            <View style={styles.cardMenuSpasing}>
+                                                <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>ACTIVITY</Text>
+                                                <Picker
+                                                    mode="dropdown"
+                                                    selectedValue={this.state.activity}
+                                                    style={styles.pickers}
+                                                    // enabled={this.item.AttStatus !== 'MissingPunches'}
+                                                    onValueChange={(itemValue) => this.setState({ activity: itemValue })}
+                                                >
+                                                    <Picker.Item label="--Select--" value="0" />
+                                                    {this.state.activityList.map((item, index) => {
+                                                        return (<Picker.Item label={item.Text} value={item.Value} key={index} />)
+                                                    })}
+                                                </Picker>
+                                            </View>
+                                    }
 
-                                        <Picker
-                                            mode="dropdown"
-                                            selectedValue={this.state.activity}
-                                            style={styles.pickers}
-                                            // enabled={this.item.AttStatus !== 'MissingPunches'}
-                                            onValueChange={(itemValue) => this.setState({ activity: itemValue })}
-                                        >
-                                            <Picker.Item label="--Select--" value="0" />
-                                            {this.state.activityList.map((item, index) => {
-                                                return (<Picker.Item label={item.Text} value={item.Value} key={index} />)
-                                            })}
-                                        </Picker>
-
-                                    </View>
                                 </Card>
 
                                 {/* <Card style={styles.cards}>
@@ -719,7 +882,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFF'
     },
     textPopup: {
-        padding: 3,
+        padding: 5,
         fontSize: cardDate,
         // margin: 5,
         marginLeft: 15,

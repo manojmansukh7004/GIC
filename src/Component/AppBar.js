@@ -29,7 +29,12 @@ class AppBar extends Component {
 
         <View style={{ flexDirection: 'row', width: "85%" }}>
           <View style={{ justifyContent: 'center', alignItems: 'center', width: "10%", marginLeft: 5 }}>
-            <TouchableOpacity onPress={() => this.props.navigation.navigate('TimeSheet')}>
+            <TouchableOpacity onPress={() =>
+            this.props.title == "Timesheet Entry"? this.props.navigation.navigate('TimeSheet'):
+            this.props.title == "Edit Timesheet Entry"? this.props.navigation.navigate('ProjectDetail'):
+            this.props.title == "Project Details"? this.props.navigation.navigate('TimeSheet'): 
+            null
+          }>
               <Image
                 source={require('../Assets/backArrow.png')}
                 style={{ width: 33, height: 33, tintColor: 'white' }}
@@ -42,18 +47,28 @@ class AppBar extends Component {
             </Title>
           </View>
         </View>
-        <View style={{ width: "15%", flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-          <View style={{ margin: 5, }}>
+        <View style={{ width: "15%",flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center'  }}>
+          <View style={{ margin: 5, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
             {
               this.props.timeSheetEntry == true ?
-                <TouchableOpacity style={{ justifyContent: "center", alignItems: 'center' }}
+                <TouchableOpacity style={{ justifyContent: "center", alignItems: 'center'}}
                   onPress={() => { this.props.handleSave() }}>
                   <Text style={{ color: this.props.fontColor }}>{"SAVE"}</Text>
                 </TouchableOpacity> : null
             }
             {
               this.props.details == true ?
-                <TouchableOpacity style={{ justifyContent: "center", alignItems: 'center' }}
+                <TouchableOpacity style={{ justifyContent: "center", alignItems: 'center',padding:15,width: 40, height: 30,top:3,marginRight:10 }}
+                  onPress={() => { this.props.handleEditRecord() }}>
+                  <Image
+                    source={require('../Assets/edit.png')}
+                    style={{ width: 22, height: 22, top:7, tintColor: 'white', padding:10, position:'absolute' }}
+                  />
+                </TouchableOpacity> : null
+            }
+            {
+              this.props.details == true ?
+                <TouchableOpacity style={{ justifyContent: "center", alignItems: 'center' , }}
                   onPress={() => { this.props.handleDeleteRecord() }}>
                   <Image
                     source={require('../Assets/bin.png')}

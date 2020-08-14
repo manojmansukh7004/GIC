@@ -7,7 +7,7 @@ import AppContainer from './src/Navigation/SwitchNavigation'
 import MyDrawer from './src/Navigation/NavigationDrawer'
 import Store from './src/Redux/Store'
 import { Provider } from 'react-redux'
-
+import Example from './src/Pages/Example'
 export default class App extends Component {
   constructor(){
     super()
@@ -21,7 +21,7 @@ export default class App extends Component {
     return (
       <>
       {/* <StatusBar translucent barStyle="light-content" backgroundColor="#297AF9" /> */}
-
+      {/* <Example/> */}
       <Provider store={Store}>
         <AppContainer />
        </Provider>

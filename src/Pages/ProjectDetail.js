@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import {
     ToastAndroid, Text, View, StyleSheet, Picker, TouchableOpacity, Image, FlatList, ScrollView, StatusBar, TextInput
 } from 'react-native';
-import { Divider, Card } from 'react-native-paper';
+import { Paragraph, Card } from 'react-native-paper';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { connect } from 'react-redux'
 import { DeleteTimesheetRecord } from '../Services/DeleteTimesheetRecord';
-import { Dialog } from 'material-bread';
+import { Dialog, Button } from 'material-bread';
 import moment from 'moment';
 import Appbar from '../Component/AppBar'
 const showToast = (Msg) => {
@@ -61,7 +61,9 @@ class TimesheetEntry extends Component {
             time: [],
             headerData: [],
             timesheetData: [],
-            timesheetVisible: false,
+            headerHrsData:[],
+            visible: false,
+            deleteRecord: false,
             addDescVisible: false,
             validation: false,
             selectedType: 'Select'
@@ -75,8 +77,6 @@ class TimesheetEntry extends Component {
             headerHrsData: this.props.navigation.state.params.headerHrsData
 
         }, () => {
-            console.log(this.state.timesheetData);
-
             lblMon = "Mon, " + moment(new Date(this.state.headerData[0].Mon_Date)).format("DD"),
                 lblTue = "Tue, " + moment(new Date(this.state.headerData[0].Tue_Date)).format("DD"),
                 lblWed = "Wed, " + moment(new Date(this.state.headerData[0].Wed_Date)).format("DD"),
@@ -84,14 +84,15 @@ class TimesheetEntry extends Component {
                 lblFri = "Fri, " + moment(new Date(this.state.headerData[0].Fri_Date)).format("DD"),
                 lblSat = "Sat, " + moment(new Date(this.state.headerData[0].Sat_Date)).format("DD"),
                 lblSun = "Sun, " + moment(new Date(this.state.headerData[0].Sun_Date)).format("DD"),
-                dvTotMon=  moment(new Date(this.state.headerData[0].Mon_Date)).format("MMM YYYY"),
-                dvTotTue=  moment(new Date(this.state.headerData[0].Tue_Date)).format("MMM YYYY"),
-                dvTotWed=  moment(new Date(this.state.headerData[0].Wed_Date)).format("MMM YYYY"),
-                dvTotThu=  moment(new Date(this.state.headerData[0].Thu_Date)).format("MMM YYYY"),
-                dvTotFri=  moment(new Date(this.state.headerData[0].Fri_Date)).format("MMM YYYY"),
-                dvTotSat=  moment(new Date(this.state.headerData[0].Sat_Date)).format("MMM YYYY"),
-                dvTotSun=  moment(new Date(this.state.headerData[0].Sun_Date)).format("MMM YYYY"),
+                dvTotMon = moment(new Date(this.state.headerData[0].Mon_Date)).format("MMM YYYY"),
+                dvTotTue = moment(new Date(this.state.headerData[0].Tue_Date)).format("MMM YYYY"),
+                dvTotWed = moment(new Date(this.state.headerData[0].Wed_Date)).format("MMM YYYY"),
+                dvTotThu = moment(new Date(this.state.headerData[0].Thu_Date)).format("MMM YYYY"),
+                dvTotFri = moment(new Date(this.state.headerData[0].Fri_Date)).format("MMM YYYY"),
+                dvTotSat = moment(new Date(this.state.headerData[0].Sat_Date)).format("MMM YYYY"),
+                dvTotSun = moment(new Date(this.state.headerData[0].Sun_Date)).format("MMM YYYY"),
                 this.setState({
+                    timesheetId: this.state.timesheetData.TimesheetId,
                     lblMon: lblMon, lblTue: lblTue,
                     lblWed: lblWed, lblThu: lblThu,
                     lblFri: lblFri, lblSat: lblSat, lblSun: lblSun,
@@ -102,10 +103,51 @@ class TimesheetEntry extends Component {
                 });
         });
     }
-    handleDeleteRecord = async()=>{
-        var data = await DeleteTimesheetRecord(this.props.user, )
+    handleDeleteRecord = () => {
+        this.setState({ visible: true })
     }
 
+    DeleteRecord = async() => {
+        var tsEntryId = []
+        if (this.state.timesheetData.Mon_AutoId !== null) { tsEntryId.push(this.state.timesheetData.Mon_AutoId) }
+        if (this.state.timesheetData.Tue_AutoId !== null) { tsEntryId.push(this.state.timesheetData.Tue_AutoId) }
+        if (this.state.timesheetData.Wed_AutoId !== null) { tsEntryId.push(this.state.timesheetData.Wed_AutoId) }
+        if (this.state.timesheetData.Thu_AutoId !== null) { tsEntryId.push(this.state.timesheetData.Thu_AutoId) }
+        if (this.state.timesheetData.Fri_AutoId !== null) { tsEntryId.push(this.state.timesheetData.Fri_AutoId) }
+        if (this.state.timesheetData.Sat_AutoId !== null) { tsEntryId.push(this.state.timesheetData.Sat_AutoId) }
+        if (this.state.timesheetData.Sun_AutoId !== null) { tsEntryId.push(this.state.timesheetData.Sun_AutoId) }
+
+        var data = await DeleteTimesheetRecord(this.props.user, this.state.timesheetId, tsEntryId.toString(), this.props.baseUrl)
+        if (data != null && data != "") {
+            if (data.Message != null && data.Message != "") {
+                showToast(data.Message);
+            }
+            if (data.SuccessList != undefined || data.ErrorList != undefined || data.ExceptionList != undefined) {
+                // validationRemove();
+                if (data.SuccessList != undefined) {
+                    showToast("Record deleted successfully.");
+                    this.props.navigation.navigate("TimeSheet")
+                    // this.empWeeklyTimesheetData(timesheetId);
+                }
+                else {
+                    showToast("Something happens wrong!");
+                }
+            }
+
+            else {
+                showToast("error has an occer");
+            }
+        }
+    }
+    handleEditRecord =() =>{
+        this.props.navigation.navigate('EditTimeSheet',{
+            "Edit":true,
+            "header": "Edit Timesheet Entry",
+            "timesheetData": this.state.timesheetData,
+            "headerData": this.state.headerData,
+            "headerHrsData": this.state.headerHrsData,
+        })
+    }
     render() {
 
         return (
@@ -117,6 +159,7 @@ class TimesheetEntry extends Component {
                         <Appbar navigation={this.props.navigation}
                             title={"Project Details"}
                             handleDeleteRecord={this.handleDeleteRecord}
+                            handleEditRecord={this.handleEditRecord}
                             details={true}
                         />
                     </View>
@@ -154,7 +197,7 @@ class TimesheetEntry extends Component {
                                             <Card style={styles.cards}>
                                                 <View style={styles.cardMenuSpasing}>
                                                     <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>PHASE</Text>
-                                                    <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.timesheetData.PhaseName}</Text>
+                                                    <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.timesheetData.PhaseName == null? "--Select--": this.state.timesheetData.PhaseName}</Text>
 
                                                 </View>
                                             </Card>
@@ -349,6 +392,47 @@ class TimesheetEntry extends Component {
                                             </View>
                                         </Dialog>
 
+                                        <Dialog
+                                            visible={this.state.visible}
+                                            onTouchOutside={() => this.setState({ visible: false })}
+                                            style={
+                                                {
+                                                    width: 400,
+                                                    // height:200
+                                                }
+                                            }
+                                        >
+
+                                            <Text style={{ fontSize: 20, marginBottom: 5, color: this.props.primaryColor }}>
+                                                {"Are you sure ?"}
+                                            </Text>
+                                            <Paragraph style={{ fontSize: 16 }}>
+                                                {"Once deleted, you will not be able to recover the record!"}
+                                            </Paragraph>
+
+                                            <View
+                                                style={{
+                                                    justifyContent: "flex-end",
+                                                    flexDirection: 'row',
+                                                    paddingVertical: 20,
+
+                                                }}
+                                            >
+                                                <Button
+                                                    text={'cancel'}
+                                                    style={{ borderWidth: .3, margin: 5, marginRight: 5 }}
+                                                    onPress={() => this.setState({ visible: false })}
+                                                />
+                                                <Button
+                                                    text={'Confirm Delete'}
+                                                    style={{ borderWidth: 1, margin: 5, borderColor: 'red' }}
+                                                    onPress={() =>
+                                                        this.setState({ visible: false, deleteRecord: true },()=>{this.DeleteRecord()})
+                                                        // this.props.navigation.navigate('SplashScreen')
+                                                    }
+                                                />
+                                            </View>
+                                        </Dialog>
 
                                     </>
 
