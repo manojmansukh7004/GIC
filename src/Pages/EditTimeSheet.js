@@ -254,7 +254,7 @@ class TimesheetEntry extends Component {
             if (data.SuccessList != undefined || data.ErrorList != undefined || data.ExceptionList != undefined) {
                 // validationRemove();
                 if (data.SuccessList != undefined) {
-                    showToast("Timesheet data updated sucessfully.");
+                    showToast("Timesheet data Saved sucessfully.");
                     this.props.navigation.navigate("TimeSheet")
                     // this.empWeeklyTimesheetData(timesheetId);
                 }

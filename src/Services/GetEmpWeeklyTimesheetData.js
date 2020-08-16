@@ -1,5 +1,5 @@
 async function GetEmpWeeklyTimesheetData(EmpID, TimesheetId, baseUrl) {
-console.log("weeeeee",EmpID, TimesheetId, baseUrl);
+console.log("weeeeeekly",EmpID, TimesheetId, baseUrl);
 
     const payload = {
       "loginDetails":

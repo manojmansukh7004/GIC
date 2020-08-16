@@ -66,16 +66,18 @@ class TimesheetEntry extends Component {
             deleteRecord: false,
             addDescVisible: false,
             validation: false,
-            selectedType: 'Select'
+            selectedType: 'Select',
+            editVisible: true
         }
     }
 
     async componentDidMount() {
         this.setState({
+
             timesheetData: this.props.navigation.state.params.timesheetData,
             headerData: this.props.navigation.state.params.headerData,
-            headerHrsData: this.props.navigation.state.params.headerHrsData
-
+            headerHrsData: this.props.navigation.state.params.headerHrsData,
+            editVisible: this.props.navigation.state.params.Status
         }, () => {
             lblMon = "Mon, " + moment(new Date(this.state.headerData[0].Mon_Date)).format("DD"),
                 lblTue = "Tue, " + moment(new Date(this.state.headerData[0].Tue_Date)).format("DD"),
@@ -161,7 +163,8 @@ class TimesheetEntry extends Component {
                             title={"Project Details"}
                             handleDeleteRecord={this.handleDeleteRecord}
                             handleEditRecord={this.handleEditRecord}
-                            details={true}
+                            details={this.state.editVisible}
+
                         />
                     </View>
                     <View style={{ height: '90%', backgroundColor: this.props.secColor }}>
@@ -234,9 +237,6 @@ class TimesheetEntry extends Component {
                                                         underlineColorAndroid="white"
                                                         keyboardType="default"
                                                         autoFocus={false}
-                                                        // maxLength={500}
-                                                        // dense
-                                                        // selectionColor={this.props.primaryColor}
                                                         value={this.state.timesheetData.TaskDesc}
                                                         onChangeText={desc => this.setState({ projectDesc: desc, })}
                                                         numberOfLines={5}
