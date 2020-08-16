@@ -20,8 +20,8 @@ class AppBar extends Component {
   toggleDrawer() {
     this.props.navigation.toggleDrawer()
   };
-  componentDidMount(){
-    
+  componentDidMount() {
+
     this.setState({
       calenderVisible: this.props.calenderVisible
     })
@@ -33,7 +33,7 @@ class AppBar extends Component {
       <View style={styles.subContiner1}>
 
         <View style={{ flexDirection: 'row', width: "85%" }}>
-          <View style={{ justifyContent: 'center', alignItems: 'center', width: "10%", marginLeft:5 }}>
+          <View style={{ justifyContent: 'center', alignItems: 'center', width: "10%", marginLeft: 5 }}>
             <TouchableOpacity onPress={() => this.toggleDrawer()}>
               <Image
                 source={require('../Assets/drawer.png')}
@@ -49,15 +49,17 @@ class AppBar extends Component {
         </View>
         <View style={{ width: "15%", flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
           <View style={{ margin: 5, }}>
-            {/* <TouchableOpacity onPress={() =>this.setState({calenderVisible: !this.state.calenderVisible},()=>{this.props.handleCalenderStatus(this.state.calenderVisible)})}> */}
-            <TouchableOpacity style={{height:50,width: 50,justifyContent: "center", alignItems: 'center'}}
-              onPress={() =>
-                this.setState({ calenderVisible: true },
-                  () => {this.props.handleCalenderStatus(this.state.calenderVisible) })}>
-              <Image style={styles.img} source={require('../Assets/darkCalendar.png')} />
-            </TouchableOpacity>
+            {
+              this.props.calender == true ?
+                <TouchableOpacity style={{ height: 50, width: 50, justifyContent: "center", alignItems: 'center' }}
+                  onPress={() =>
+                    this.setState({ calenderVisible: true },
+                      () => { this.props.handleCalenderStatus(this.state.calenderVisible) })}>
+                  <Image style={styles.img} source={require('../Assets/darkCalendar.png')} />
+                </TouchableOpacity> : null
+            }
           </View>
-          <View style={{ margin: 5, marginRight:15 }}>
+          <View style={{ margin: 5, marginRight: 15 }}>
             <ProfileAvtar {...this.props} />
           </View>
         </View>

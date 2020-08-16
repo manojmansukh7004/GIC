@@ -630,6 +630,7 @@ class TimeSheet extends Component {
                     <View style={{ height: "7%", backgroundColor: this.props.primaryColor }}>
                         <Appbar1 navigation={this.props.navigation}
                             title={"My Timesheet"}
+                            calender={true}
                             calenderVisible={this.state.calenderVisible}
                             handleCalenderStatus={this.handleCalenderStatus}
                         />

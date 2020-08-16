@@ -1,12 +1,17 @@
 import React, { Component } from "react";
-import { Text, View, TouchableOpacity, StyleSheet, Image, BackHandler, Alert, StatusBar } from "react-native";
+import { Text, View, TouchableOpacity, StyleSheet, Image, BackHandler, Alert, StatusBar, FlatList } from "react-native";
 import { Divider } from 'material-bread';
+import { Dialog, Button,Avatar } from 'material-bread';
+import ColorPalette from 'react-native-color-palette'
+
 // import DeviceInfo from 'react-native-device-info';
 import Icon from 'react-native-vector-icons/Ionicons';
-var count = 0
 import { connect } from 'react-redux'
 import { } from '../Redux/Action'
-import { color } from "react-native-reanimated";
+const title = 18
+const cardTitle = 16
+const cardDate = 14
+const subTitle = 14
 class DrawerComponent extends Component {
     constructor(props) {
         super(props);
@@ -14,11 +19,16 @@ class DrawerComponent extends Component {
         this.state = {
             role: false, // i used 1 for cashier and 0 for chef
             TimeSheet: false,
-            key: '',
+            key: 1,
             default: false,
             RedirectPage: '',
-
-        };
+            visible: false,
+            colors: [
+                '#4f2da6', '#cc405c', '#cf6017', '#d1d119', '#54d421',
+                '#4d41d4', '#1acfd9', '#25465e', '#625f63', '#2f8f7c',
+                '#027b99', '#eb4949', '#bd8b02', '#32a88f', '#655dcf'
+            ],
+        }
     }
     backAction = () => {
 
@@ -89,9 +99,9 @@ class DrawerComponent extends Component {
         const { navigation } = this.props;
         return (
             <View style={{ flex: 1, }}>
-                <StatusBar translucent barStyle="light-content" backgroundColor= {this.state.primaryColor} />
+                <StatusBar translucent barStyle="light-content" backgroundColor={this.state.primaryColor} />
 
-                <View style={[styles.sideMenuContainer,{backgroundColor: this.props.secColor}]}>
+                <View style={[styles.sideMenuContainer, { backgroundColor: this.props.secColor }]}>
 
                     <Image
                         source={require('../Assets/logo-sm.jpg')}
@@ -129,7 +139,7 @@ class DrawerComponent extends Component {
 
                     <TouchableOpacity style={styles.strip}
                         onPress={() => this.setState({ key: 2 }, () => {
-                            navigation.navigate("TimeSheet")
+                            navigation.navigate("TsApproval")
                         })}
                     >
                         <View style={{ marginRight: 10, marginLeft: 20 }}>
@@ -142,22 +152,80 @@ class DrawerComponent extends Component {
                     <Divider style={{ borderWidth: .3, borderColor: 'grey', backgroundColor: 'grey' }} />
 
                     <View style={styles.title}>
-                        <Text style={styles.Title}>Reports</Text>
+                        <Text style={styles.Title}>Settings</Text>
                     </View>
+                    {/* <TouchableOpacity
+                        style={styles.title}
+                        onPress={() => this.setState({ visible: 1 }, () => {
+                            // navigation.navigate("TimeSheet")
+                        })}
+                    >
+                        <View style={{ marginRight: 10, marginLeft: 20 }}>
+                            <Image style={{ height: 25, width: 25 }}
+                                source={require("../Assets/theme.png")} />
+                        </View>
+                        <Text style={[styles.text, { color: this.state.key === 1 ? 'blue' : 'black' }]}>Theme</Text>
+                    </TouchableOpacity> */}
+
+                    <Dialog
+                        visible={this.state.visible}
+                        style={{ backgroundColor: 'white', height: 250, width: 350 }}
+                        onTouchOutside={() => this.setState({ visible: false })}
+
+                    >
+                        <View style={{ backgroundColor: 'white', height: 300, width: 400, bottom: 25, right: 25 }}>
+                            <View style={{ height: 50, padding: 15, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
+                                <Text style={{ fontSize: title, color: this.props.fontColor }}>{'Select Theme Color'}</Text>
+                            </View>
+                            <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', right: 25 }}>
+
+                                <FlatList
+                                    data={Object.keys(this.state.colors)}
+                                    // horizontal={true}
+                                    renderItem={({ item, index }) => (
+                                        console.log(this.state.colors[item]),
+                                        <>
+                                        <Text>mj</Text>
+                                        <Text>mj</Text>
+                                        <Text>mj</Text>
+                                        </>
+                                    )}
+                                    />
+                                    </View>
+                                        {/* <ColorPalette
+                                    onChange={color => this.setState({selectedColor : color},()=>{console.log(this.state.selectedColor);
+                                    })}
+                                    paletteStyles={{flexWrap: "wrap"}}
+                                    value={this.state.selectedColor}
+                                    colors={['#ffffff', '#f28b82', 
+                                    '#fbbc04', '#fff475',
+                                    '#ccff90', '#a7ffeb', 
+                                    '#d7aefb', '#fdcfe8']}
+                                    title={""}
+                                    icon={
+                                        <Icon name={'check-circle-o'} size={25} color={'black'} />
+                                        // React-Native-Vector-Icons Example
+                                    }
+                                /> */}
+                            {/* </View> */}
+                        </View>
+                    </Dialog>
                 </View>
-            </View>
-        );
-    }
-}
+
+                </View>
+                );
+            }
+        }
 const mapStateToProps = state => {
     return {
-        userId: state.userId,
-        baseUrl: state.baseUrl,
-        primaryColor: state.primaryColor,
-        secColor: state.secColor,
-    }
-}
-
+                    userId: state.userId,
+                baseUrl: state.baseUrl,
+                primaryColor: state.primaryColor,
+                secColor: state.secColor,
+                fontColor: state.fontColor
+            }
+        }
+        
 // const mapDispatchToProps = dispatch => {
 //     return {
 //         setCountry: (country) => dispatch(setCountry(country)),
@@ -187,46 +255,46 @@ const mapStateToProps = state => {
 // }
 export default connect(mapStateToProps)(DrawerComponent)
 const styles = StyleSheet.create({
-    Title: {
-        fontSize: 14,
-        marginLeft: 15,
-        color: 'grey'
-        // fontWeight: 'bold',
-    },
-    title:{
-        flexDirection: 'row',
-        width: '100%',
-        alignItems: 'flex-start',
-        paddingTop: 10,
-        paddingBottom: 10,
-    },
+                    Title: {
+                    fontSize: 14,
+                marginLeft: 15,
+                color: 'grey'
+                // fontWeight: 'bold',
+            },
+    title: {
+                    flexDirection: 'row',
+                width: '100%',
+                alignItems: 'flex-start',
+                paddingTop: 10,
+                paddingBottom: 10,
+            },
     text: {
-        fontSize: 16,
-        margin: 5,
-        marginLeft: 15,
-        // fontWeight: 'bold',
-
-    },
+                    fontSize: 16,
+                margin: 5,
+                marginLeft: 15,
+                // fontWeight: 'bold',
+        
+            },
     icon: {
-        width: 24,
-        height: 24,
-        // margin: 5
-    },
+                    width: 24,
+                height: 24,
+                // margin: 5
+            },
     sideMenuContainer: {
-        width: '100%',
-        height: '100%',
-        // backgroundColor: '#fff',
-        // alignItems: 'flex-start',
-        marginTop: 20,
-    },
+                    width: '100%',
+                height: '100%',
+                // backgroundColor: '#fff',
+                // alignItems: 'flex-start',
+                marginTop: 20,
+            },
     sideMenuProfileIcon: {
-        justifyContent: 'center'
-    },
+                    justifyContent: 'center'
+            },
     strip: {
-        flexDirection: 'row',
-        width: '100%',
-        alignItems: 'flex-start',
-        paddingTop: 10,
-
-    }
+                    flexDirection: 'row',
+                width: '100%',
+                alignItems: 'flex-start',
+                paddingTop: 10,
+        
+            }
 });

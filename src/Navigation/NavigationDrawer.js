@@ -6,15 +6,15 @@ import { createSwitchNavigator, createAppContainer } from "react-navigation";
 import Icon1 from 'react-native-vector-icons/Ionicons';
 import DrawerComponent from "./DrawerComponent";
 import TimeSheet from '../Pages/TimeSheet';
+import TsApproval from '../Pages/TsApproval';
 
 import SplashScreen11 from '../Pages/SplashScreen'
 
 
-
-
 const DrawerNavigator = createDrawerNavigator({
     TimeSheet: { screen: TimeSheet },
-  
+    TsApproval: { screen: TsApproval },
+
 
 },
   {
