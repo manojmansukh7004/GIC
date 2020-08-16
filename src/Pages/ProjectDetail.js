@@ -118,6 +118,7 @@ class TimesheetEntry extends Component {
         if (this.state.timesheetData.Sun_AutoId !== null) { tsEntryId.push(this.state.timesheetData.Sun_AutoId) }
 
         var data = await DeleteTimesheetRecord(this.props.user, this.state.timesheetId, tsEntryId.toString(), this.props.baseUrl)
+       
         if (data != null && data != "") {
             if (data.Message != null && data.Message != "") {
                 showToast(data.Message);

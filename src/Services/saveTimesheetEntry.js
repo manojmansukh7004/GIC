@@ -1,5 +1,5 @@
 async function saveTimesheetEntry(EmpID,timesheetJsonData, baseUrl) {
-console.log(EmpID,timesheetJsonData, baseUrl);
+console.log("saveTimesheetEntry",EmpID,timesheetJsonData, baseUrl);
 
     const payload = {
         "loginDetails":

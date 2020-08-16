@@ -12,6 +12,7 @@ import { CreateNewTimesheet } from '../Services/CreateNewTimesheet'
 import { GetEmpTimesheetList } from '../Services/GetEmpTimesheetList'
 import { GetEmpWeeklyTimesheetData } from '../Services/GetEmpWeeklyTimesheetData'
 import { saveTimesheetEntry } from '../Services/saveTimesheetEntry'
+import { CheckPreviousEmpTSStatus } from '../Services/CheckPreviousTSStatus'
 import { setTsId } from '../Redux/Action'
 const showToast = (Msg) => {
     ToastAndroid.show(Msg, ToastAndroid.LONG);
@@ -85,7 +86,7 @@ class TimeSheet extends Component {
             TotalTime: "0.00",
             statusBarColor: "#297AF9",
             timesheetList: [],
-            attendanceData: [],
+            empAttendanceData: [],
             timesheetData: [],
             ratingData: [],
             headerData: [],
@@ -129,57 +130,7 @@ class TimeSheet extends Component {
         }
     }
 
-    empTimesheetList = async () => {
-        var timesheetList = await GetEmpTimesheetList(this.props.user, this.props.baseUrl)
-        this.setState({
-            timesheetList: timesheetList.EmpTimesheetList[0],
-        });
-    }
 
-    empWeeklyTimesheetData = async () => {
-        var timesheetData = await GetEmpWeeklyTimesheetData(this.props.user, this.state.selectedWeek.Value, this.props.baseUrl)
-        this.setState({
-            attendanceData: timesheetData.EmpAttendanceData[0],
-            timesheetData: timesheetData.EmpTimesheetData[0],
-            ratingData: timesheetData.RatingName[0],
-            headerData: timesheetData.TimesheetHeaderData[0],
-            headerHrsData: timesheetData.TimesheetTotalHrs[0],
-        }, () => {
-            this.setTimesheetData();
-        });
-    }
-
-    setTimesheetData = () => {
-
-        lblMon = "Mon, " + moment(new Date(this.state.headerData[0].Mon_Date)).format("DD"),
-            lblTue = "Tue, " + moment(new Date(this.state.headerData[0].Tue_Date)).format("DD"),
-            lblWed = "Wed, " + moment(new Date(this.state.headerData[0].Wed_Date)).format("DD"),
-            lblThu = "Thu, " + moment(new Date(this.state.headerData[0].Thu_Date)).format("DD"),
-            lblFri = "Fri, " + moment(new Date(this.state.headerData[0].Fri_Date)).format("DD"),
-            lblSat = "Sat, " + moment(new Date(this.state.headerData[0].Sat_Date)).format("DD"),
-            lblSun = "Sun, " + moment(new Date(this.state.headerData[0].Sun_Date)).format("DD"),
-            dvTotMon = this.state.headerHrsData[0].Mon_TotalTime == null ? "0:00" : (this.state.headerHrsData[0].Mon_TotalTime),
-            dvTotTue = this.state.headerHrsData[0].Tue_TotalTime == null ? "0:00" : (this.state.headerHrsData[0].Tue_TotalTime),
-            dvTotWed = this.state.headerHrsData[0].Wed_TotalTime == null ? "0:00" : (this.state.headerHrsData[0].Wed_TotalTime),
-            dvTotThu = this.state.headerHrsData[0].Thu_TotalTime == null ? "0:00" : (this.state.headerHrsData[0].Thu_TotalTime),
-            dvTotFri = this.state.headerHrsData[0].Fri_TotalTime == null ? "0:00" : (this.state.headerHrsData[0].Fri_TotalTime),
-            dvTotSat = this.state.headerHrsData[0].Sat_TotalTime == null ? "0:00" : (this.state.headerHrsData[0].Sat_TotalTime),
-            dvTotSun = this.state.headerHrsData[0].Sun_TotalTime == null ? "0:00" : (this.state.headerHrsData[0].Sun_TotalTime),
-            TotalTime = this.state.headerHrsData[0].TotalTime == null ? "0:00" : (this.state.headerHrsData[0].TotalTime);
-        this.setState({
-            timeSheetStatus: this.state.timesheetData[0] !== undefined ? this.state.timesheetData[0].Status : "",
-            lblMon: lblMon, lblTue: lblTue,
-            lblWed: lblWed, lblThu: lblThu,
-            lblFri: lblFri, lblSat: lblSat, lblSun: lblSun,
-            dvTotMon: dvTotMon, dvTotTue: dvTotTue,
-            dvTotWed: dvTotWed, dvTotThu: dvTotThu,
-            dvTotFri: dvTotFri, dvTotSat: dvTotSat,
-            dvTotSun: dvTotSun, TotalTime: TotalTime
-        }, () => {
-            lblMon = "", lblTue = "", lblWed = "", lblThu = "", lblFri = "", lblSat = "", lblSun = ""
-            TotalTime = "", dvTotMon = "", dvTotTue = "", dvTotWed = "", dvTotThu = "", dvTotFri = "", dvTotSat = "", dvTotSun = ""
-        });
-    }
 
     handleAddDescription = () => {
 
@@ -245,7 +196,8 @@ class TimeSheet extends Component {
         this.setState({ timesheetData });
     }
 
-    insertUpdateTimesheetEntry = async () => {
+    insertUpdateTimesheetEntry = async (status1) => {
+        
         var timesheetData = []
         var data = this.state.timesheetData
         Object.keys(data).map((item, index) => {
@@ -257,7 +209,7 @@ class TimeSheet extends Component {
             activityId = data[item].ActivityId
             workOrderId = data[item].WorkOrderId
             taskDesc = data[item].TaskDesc
-            status = "Saved"
+            status = status1
 
             for (var dayField = 1; dayField <= 7; dayField++) {
                 if (dayField == 1) {
@@ -302,6 +254,7 @@ class TimeSheet extends Component {
                     date = this.state.headerData[0].Sun_Date
                     autoId = data[item].Sun_AutoId
                 }
+                console.log("status1",data[item].Saved);
 
                 timesheetData.push({
                     Action: 10,
@@ -318,8 +271,8 @@ class TimeSheet extends Component {
                     DailyTaskComments: dailyTaskComments == null ? '' : dailyTaskComments,
                     Duration: duration == null ? '' : duration,
                     TimesheetEntryId: autoId == null ? '' : autoId,
-                    Status: status,
-                    CurrRecordStatus: status
+                    Status: status1,
+                    CurrRecordStatus: data[item].Saved == null ? '':data[item].Saved
 
                 });
             }
@@ -331,7 +284,7 @@ class TimeSheet extends Component {
             }
             if (data.SuccessList != undefined || data.ErrorList != undefined || data.ExceptionList != undefined) {
                 // validationRemove();
-                showToast("Timesheet data updated sucessfully.");
+                showToast('Timesheet data '+status1+' sucessfully.');
                 if (data.SuccessList != undefined) {
                     this.empWeeklyTimesheetData(this.statetimesheetId);
 
@@ -343,12 +296,304 @@ class TimeSheet extends Component {
             }
         }
     }
+
+    submitTimesheetEntry = async () => {
+        // console.log("submit",this.state.headerData);
+        // var timesheeData =
+        var timesheetData = [];
+        var errMinCnt = 0;
+        var errMaxCnt = 0;
+        var errAtt = 0;
+        var errCheckMsg = "";
+        var minHrs = (this.state.headerData[0].MinHrsPerDay).toString();
+        var maxHrs = (this.state.headerData[0].MaxHrsPerDay).toString();
+        var minHrsTime = minHrs.search(":") == -1 ? (parseInt(minHrs * 60)) : (parseInt(minHrs.split(':')[0] * 60) + (minHrs.split(':')[1] == undefined ? 0 : parseInt(minHrs.split(':')[1])));
+        var maxHrsTime = maxHrs.search(":") == -1 ? (parseInt(maxHrs * 60)) : (parseInt(maxHrs.split(':')[0] * 60) + (maxHrs.split(':')[1] == undefined ? 0 : parseInt(maxHrs.split(':')[1])));
+        var Mon = [], Tue = [], Wed = [], Thu = [], Fri = [], Sat = [], Sun = [];
+        var mon = 0, tue = 0, wed = 0, thu = 0, fri = 0, sat = 0, sun = 0;
+        console.log("minHrsTime", minHrsTime, maxHrsTime);
+        var data = this.state.timesheetData
+        var empAttendanceData = this.state.empAttendanceData
+        var i = 0
+       
+        for (i; i < data.length; i++) {
+            Mon.push({
+                autoId: (data[i].Mon_AutoId == null) ? "" : data[i].Mon_AutoId,
+                duration: data[i].Mon == null ? "0:00" : data[i].Mon,
+                dailyComments: data[i].Mon_TaskComments,
+                day: "Monday",
+                attendance: this.state.empAttendanceData[0].Mon
+            });
+
+            Tue.push({
+                autoId: (data[i].Tue_AutoId == null) ? "" : data[i].Tue_AutoId,
+                duration: data[i].Tue == null ? "0:00" : data[i].Tue,
+                dailyComments: data[i].Tue_TaskComments,
+                day: "TuesDay",
+                attendance: empAttendanceData[0].Tue
+            });
+
+            Wed.push({
+                autoId: (data[i].Wed_AutoId == null) ? "" : data[i].Wed_AutoId,
+                duration: data[i].Wed == null ? "0:00" : data[i].Wed,
+                dailyComments: data[i].Wed_TaskComments,
+                day: "WednesDay",
+                attendance: empAttendanceData[0].Wed
+            });
+
+            Thu.push({
+                autoId: (data[i].Thu_AutoId == null) ? "" : data[i].Thu_AutoId,
+                duration: data[i].Thu == null ? "0:00" : data[i].Thu,
+                dailyComments: data[i].Thu_TaskComments,
+                day: "ThursDay",
+                attendance: empAttendanceData[0].Thu
+            });
+
+            Fri.push({
+                autoId: (data[i].Fri_AutoId == null) ? "" : data[i].Fri_AutoId,
+                duration: data[i].Fri == null ? "0:00" : data[i].Fri,
+                dailyComments: data[i].Fri_TaskComments,
+                day: "FriDay",
+                attendance: empAttendanceData[0].Fri
+            });
+
+            Sat.push({
+                autoId: (data[i].Sat_AutoId == null) ? "" : data[i].Sat_AutoId,
+                duration: data[i].Sat == null ? "0:00" : data[i].Sat,
+                dailyComments: data[i].Sat_TaskComments,
+                day: "SaturDay",
+                attendance: empAttendanceData[0].Sat
+            });
+
+            Sun.push({
+                autoId: (data[i].Sun_AutoId == null) ? "" : data[i].Sun_AutoId,
+                duration: data[i].Sun == null ? "0:00" : data[i].Sun,
+                dailyComments: data[i].Sun_TaskComments,
+                day: "SunDay",
+                attendance: empAttendanceData[0].Sun
+            });
+
+        }
+        var arr = [Mon, Tue, Wed, Thu, Fri, Sat, Sun];
+
+        for (i = 0; i < arr.length; i++) {
+            var day = arr[i]
+            for (var j = 0; j < day.length; j++) {
+                var duration = day[j].duration;
+                var dayName = day[j].day
+
+                if (dayName == "Monday") {
+                    mon += (parseInt(duration.split(':')[0] * 60) + (duration.split(':')[1] == undefined ? 0 : parseInt(duration.split(':')[1])))
+                } else if (dayName == "TuesDay") {
+                    tue += (parseInt(duration.split(':')[0] * 60) + (duration.split(':')[1] == undefined ? 0 : parseInt(duration.split(':')[1])))
+                } else if (dayName == "WednesDay") {
+                    wed += (parseInt(duration.split(':')[0] * 60) + (duration.split(':')[1] == undefined ? 0 : parseInt(duration.split(':')[1])))
+                } else if (dayName == "ThursDay") {
+                    thu += (parseInt(duration.split(':')[0] * 60) + (duration.split(':')[1] == undefined ? 0 : parseInt(duration.split(':')[1])))
+                } else if (dayName == "FriDay") {
+                    fri += (parseInt(duration.split(':')[0] * 60) + (duration.split(':')[1] == undefined ? 0 : parseInt(duration.split(':')[1])))
+                } else if (dayName == "SaturDay") {
+                    sat += (parseInt(duration.split(':')[0] * 60) + (duration.split(':')[1] == undefined ? 0 : parseInt(duration.split(':')[1])))
+                } else if (dayName == "SunDay") {
+                    sun += (parseInt(duration.split(':')[0] * 60) + (duration.split(':')[1] == undefined ? 0 : parseInt(duration.split(':')[1])))
+                }
+
+            }
+        }
+   
+        if (empAttendanceData[0].Mon == 0 && empAttendanceData[0].AttendanceValidation.toLowerCase() == "true") {
+            if (parseInt(mon) > 0)
+                errAtt++;
+        }
+        if (minHrs != "") {
+            if (mon != 0 && (mon < minHrsTime))
+                errMinCnt++;
+        }
+        if (maxHrs != "") {
+            if ((mon > maxHrsTime))
+                errMaxCnt++;
+        }
+
+        //tue vaidation
+        if (empAttendanceData[0].Tue == 0 && empAttendanceData[0].AttendanceValidation == "true") {
+            if (parseInt(tue) > 0)
+                errAtt++;
+        }
+        if (minHrs != "") {
+            if (tue != 0 && (tue < minHrsTime))
+                errMinCnt++;
+        }
+        if (maxHrs != "") {
+            if ((tue > maxHrsTime))
+                errMaxCnt++;
+        }
+
+        //wed vaidation
+        if (empAttendanceData[0].Wed == 0 && empAttendanceData[0].AttendanceValidation == "true") {
+            if (parseInt(wed) > 0)
+                errAtt++;
+        }
+        if (minHrs != "") {
+            if (wed != 0 && (wed < minHrsTime))
+                errMinCnt++;
+        }
+        if (maxHrs != "") {
+            if ((wed > maxHrsTime))
+                errMaxCnt++;
+        }
+
+        //thu vaidation
+        if (empAttendanceData[0].Thu == 0 && empAttendanceData[0].AttendanceValidation.toLowerCase() == 'true') {
+            if (parseInt(thu) > 0)
+                errAtt++;
+        }
+        if (minHrs != "") {
+            if (thu != 0 && (thu < minHrsTime))
+                errMinCnt++;
+        }
+        if (maxHrs != "") {
+            if ((thu > maxHrsTime))
+                errMaxCnt++;
+        }
+
+        //fri vaidation
+        if (empAttendanceData[0].Fri == 0 && empAttendanceData[0].AttendanceValidation.toLowerCase() == "true") {
+            if (parseInt(fri) > 0)
+                errAtt++;
+        }
+        if (minHrs != "") {
+            if (fri != 0 && (fri < minHrsTime))
+                errMinCnt++;
+        }
+        if (maxHrs != "") {
+            if ((fri > maxHrsTime))
+                errMaxCnt++;
+        }
+
+        //sat vaidation
+        if (empAttendanceData[0].Sat == 0 && empAttendanceData[0].AttendanceValidation.toLowerCase() == "true") {
+            if (parseInt(sat) > 0)
+                errAtt++;
+        }
+        if (minHrs != "") {
+            if (sat != 0 && (sat < minHrsTime))
+                errMinCnt++;
+        }
+        if (maxHrs != "") {
+            if ((sat > maxHrsTime))
+                errMaxCnt++;
+        }
+
+        //sun vaidation
+        if (empAttendanceData[0].Sun == 0 && empAttendanceData[0].AttendanceValidation.toLowerCase() == "true") {
+            if (parseInt(sun) > 0)
+                errAtt++;
+        }
+        if (minHrs != "") {
+            if (sun != 0 && (sun < minHrsTime))
+                errMinCnt++;
+        }
+        if (maxHrs != "") {
+            if ((sun > maxHrsTime))
+                errMaxCnt++;
+        }
+
+         //check Previous status
+         var data = await CheckPreviousEmpTSStatus(this.props.user, this.props.tsId, this.props.baseUrl);
+         if (data != null && data != "") {
+            if (data.Message != null && data.Message != "") {
+                showToast(data.Message);
+            }
+            else if (data.SuccessList != undefined || data.ErrorList != undefined || data.ExceptionList != undefined) {
+                if (data.ErrorList != undefined) {
+                    errCheckMsg = data.ErrorList[0];
+                }
+            }
+        }
+        
+        if (errMinCnt > 0 || errMaxCnt > 0 || errAtt > 0 || errCheckMsg != "") {
+            if (errCheckMsg != "") {  //to show an error msg on submit  when previous timesheet is not submitted
+                var errCheckMsg =errCheckMsg.split("$")[1]
+                alert(errCheckMsg.replace(/<[^>]*>/g, '.\n'))
+            } else {
+                if (errAtt > 0) { //to show an error msg on submit when time is enetered but attendance is not marked for the day
+                    alert(" The timesheet can not be submitted as your attendance record for the week has not been updated by the administrator. Please contact the administrator to update the attendance data.");
+                } else {
+                    if (errMinCnt > 0 && errMaxCnt > 0) { //MinMaxHrsValidity to show an error msg on submit when time enetered per day does not siffice min and max hrs
+                       showToast(' Minimum time and Maximum time allowed per day is exceeding.');
+                    } else if (errMinCnt > 0) { //MinimumHrsValidity to show an error msg on submit when time enetered per day does not siffice min  hrs
+                        showToast(" Minimum time duration allowed per day is " +minHrs+" hours.")
+                    } else if (errMaxCnt > 0) { //MaximumHrsValidity to show an error msg on submit when time enetered per day does not siffice max  hrs
+                        showToast(" Maximum time duration allowed per day is " +maxHrs+" hours.")
+                    }
+                }
+            }
+        }
+        else {
+            this.insertUpdateTimesheetEntry("Submitted");
+        }
+    
+    }
+
+    empTimesheetList = async () => {
+        var timesheetList = await GetEmpTimesheetList(this.props.user, this.props.baseUrl)
+        this.setState({
+            timesheetList: timesheetList.EmpTimesheetList[0],
+        });
+    }
+
+    empWeeklyTimesheetData = async () => {
+        var timesheetData = await GetEmpWeeklyTimesheetData(this.props.user, this.state.selectedWeek.Value, this.props.baseUrl)
+        this.setState({
+            empAttendanceData: timesheetData.EmpAttendanceData[0],
+            timesheetData: timesheetData.EmpTimesheetData[0],
+            ratingData: timesheetData.RatingName[0],
+            headerData: timesheetData.TimesheetHeaderData[0],
+            headerHrsData: timesheetData.TimesheetTotalHrs[0],
+        }, () => {
+            this.setTimesheetData();
+        });
+    }
+
+    setTimesheetData = () => {
+
+        lblMon = "Mon, " + moment(new Date(this.state.headerData[0].Mon_Date)).format("DD"),
+            lblTue = "Tue, " + moment(new Date(this.state.headerData[0].Tue_Date)).format("DD"),
+            lblWed = "Wed, " + moment(new Date(this.state.headerData[0].Wed_Date)).format("DD"),
+            lblThu = "Thu, " + moment(new Date(this.state.headerData[0].Thu_Date)).format("DD"),
+            lblFri = "Fri, " + moment(new Date(this.state.headerData[0].Fri_Date)).format("DD"),
+            lblSat = "Sat, " + moment(new Date(this.state.headerData[0].Sat_Date)).format("DD"),
+            lblSun = "Sun, " + moment(new Date(this.state.headerData[0].Sun_Date)).format("DD"),
+            dvTotMon = this.state.headerHrsData[0].Mon_TotalTime == null ? "0:00" : (this.state.headerHrsData[0].Mon_TotalTime),
+            dvTotTue = this.state.headerHrsData[0].Tue_TotalTime == null ? "0:00" : (this.state.headerHrsData[0].Tue_TotalTime),
+            dvTotWed = this.state.headerHrsData[0].Wed_TotalTime == null ? "0:00" : (this.state.headerHrsData[0].Wed_TotalTime),
+            dvTotThu = this.state.headerHrsData[0].Thu_TotalTime == null ? "0:00" : (this.state.headerHrsData[0].Thu_TotalTime),
+            dvTotFri = this.state.headerHrsData[0].Fri_TotalTime == null ? "0:00" : (this.state.headerHrsData[0].Fri_TotalTime),
+            dvTotSat = this.state.headerHrsData[0].Sat_TotalTime == null ? "0:00" : (this.state.headerHrsData[0].Sat_TotalTime),
+            dvTotSun = this.state.headerHrsData[0].Sun_TotalTime == null ? "0:00" : (this.state.headerHrsData[0].Sun_TotalTime),
+            TotalTime = this.state.headerHrsData[0].TotalTime == null ? "0:00" : (this.state.headerHrsData[0].TotalTime);
+        this.setState({
+            timeSheetStatus: this.state.timesheetData[0] !== undefined ? this.state.timesheetData[0].Status : "",
+            lblMon: lblMon, lblTue: lblTue,
+            lblWed: lblWed, lblThu: lblThu,
+            lblFri: lblFri, lblSat: lblSat, lblSun: lblSun,
+            dvTotMon: dvTotMon, dvTotTue: dvTotTue,
+            dvTotWed: dvTotWed, dvTotThu: dvTotThu,
+            dvTotFri: dvTotFri, dvTotSat: dvTotSat,
+            dvTotSun: dvTotSun, TotalTime: TotalTime
+        }, () => {
+            lblMon = "", lblTue = "", lblWed = "", lblThu = "", lblFri = "", lblSat = "", lblSun = ""
+            TotalTime = "", dvTotMon = "", dvTotTue = "", dvTotWed = "", dvTotThu = "", dvTotFri = "", dvTotSat = "", dvTotSun = ""
+        });
+    }
     componentDidMount() {
         this.empTimesheetList()
     }
 
     render() {
         const startDate = this.state.selectedDate ? this.state.selectedDate.toString() : '';
+        console.log(" this.state.timesheetData.", this.state.timesheetData);
+        
         return (
             <>
                 <StatusBar translucent barStyle="light-content" backgroundColor={this.props.primaryColor} />
@@ -399,11 +644,11 @@ class TimeSheet extends Component {
                                                 {
                                                     this.state.timesheetData.length !== 0 ?
                                                         <>
-                                                            <TouchableOpacity onPress={() => this.insertUpdateTimesheetEntry()}
+                                                            <TouchableOpacity onPress={() => this.insertUpdateTimesheetEntry("Saved")}
                                                                 style={styles.saveButton}>
                                                                 <Text style={styles.text}> {"Save"}</Text>
                                                             </TouchableOpacity>
-                                                            <TouchableOpacity onPress={() => alert("Submit")}
+                                                            <TouchableOpacity onPress={() => this.submitTimesheetEntry("Submitted")}
                                                                 style={styles.saveButton}>
                                                                 <Text style={styles.text}> {"Submit"}</Text>
                                                             </TouchableOpacity>
@@ -493,14 +738,15 @@ class TimeSheet extends Component {
                                                             <Text style={{ color: this.props.fontColor }}>{"APPROVER"}</Text>
                                                             {/* <Text style={{ color: this.props.fontColor }}>{this.state.dvTotFri}</Text> */}
                                                         </View>
-                                                        <View style={[styles.approver, { backgroundColor: this.props.stripHeaderColor }]}>
-                                                            <Text style={{ color: this.props.fontColor }}>{"QUALITY  OF"}</Text>
-                                                            <Text style={{ color: this.props.fontColor }}>{"WORK"}</Text>
-                                                        </View>
                                                         <View style={[styles.OTP, { backgroundColor: this.props.stripHeaderColor }]}>
                                                             <Text style={{ color: this.props.fontColor }}>{"ON TIME"}</Text>
                                                             <Text style={{ color: this.props.fontColor }}>{"PERFORMANCE"}</Text>
                                                         </View>
+                                                        <View style={[styles.approver, { backgroundColor: this.props.stripHeaderColor }]}>
+                                                            <Text style={{ color: this.props.fontColor }}>{"QUALITY  OF"}</Text>
+                                                            <Text style={{ color: this.props.fontColor }}>{"WORK"}</Text>
+                                                        </View>
+
                                                     </View>
                                                     <View style={{ flexDirection: 'row', }}>
                                                         <FlatList
@@ -584,16 +830,17 @@ class TimeSheet extends Component {
                                                                         {/* <Text>{"mj"}</Text> */}
                                                                         {/* </View> */}
                                                                     </View>
-                                                                    <View style={[styles.approver, { backgroundColor: this.props.stripColor }]}>
-                                                                        {/* <View style={styles.hrsData1}> */}
-                                                                        <Text>{this.state.timesheetData[item].ApprQOWRating}</Text>
-                                                                        {/* </View> */}
-                                                                    </View>
                                                                     <View style={[styles.OTP, { backgroundColor: this.props.stripColor }]}>
                                                                         {/* <View style={styles.hrsData1}> */}
                                                                         <Text>{this.state.timesheetData[item].ApprOTPRating}</Text>
                                                                         {/* </View> */}
                                                                     </View>
+                                                                    <View style={[styles.approver, { backgroundColor: this.props.stripColor }]}>
+                                                                        {/* <View style={styles.hrsData1}> */}
+                                                                        <Text>{this.state.timesheetData[item].ApprQOWRating}</Text>
+                                                                        {/* </View> */}
+                                                                    </View>
+
                                                                 </View>
                                                             )}
                                                         />
@@ -703,11 +950,14 @@ class TimeSheet extends Component {
                                                                 }}
                                                                     style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 15 }}>
                                                                     <View style={{ width: '100%', }}>
+
+                                                                        {
+                                                                            firstDate = moment(new Date(this.state.timesheetList[item].Text.slice(0, 10).split('-').reverse().join('/'))).format("DD MMM"),
+                                                                            lastDate = moment(new Date(this.state.timesheetList[item].Text.slice(14, 24).split('-').reverse().join('/'))).format("DD MMM YYYY"),
+                                                                            console.log(" ")
+                                                                        }
                                                                         <Text style={styles.textPopup}>
-                                                                            {
-                                                                                firstDate = moment(new Date(this.state.timesheetList[item].Text.slice(0, 10).split('-').reverse().join('/'))).format("DD MMM"),
-                                                                                lastDate = moment(new Date(this.state.timesheetList[item].Text.slice(14, 24).split('-').reverse().join('/'))).format("DD MMM YYYY")
-                                                                            }
+
                                                                             {firstDate.toUpperCase() + " - " + lastDate.toUpperCase()}
                                                                         </Text>
                                                                         <Divider />
