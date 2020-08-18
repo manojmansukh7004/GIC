@@ -46,27 +46,11 @@ export default class Example extends Component {
     render() {
         return (
 
-            <DropDownPicker
-                items={[
-                    { label: "1002 : Circular Angle", value: "1002" },
-                    { label: "1001 : General Industrial Controls", value: "1001" },
-                ]}
-                searchable={true}
-                searchablePlaceholder="Search for an item"
-                searchablePlaceholderTextColor="gray"
-                seachableStyle={{}}
-                searchableError={() => <Text>Not Found</Text>}
-                defaultValue={this.state.country}
-                containerStyle={{ height: 40 }}
-                style={{ backgroundColor: '#fafafa' }}
-                itemStyle={{
-                    justifyContent: 'flex-start'
-                }}
-                dropDownStyle={{ backgroundColor: '#fafafa' }}
-                onChangeItem={item => this.setState({
-                    country: item.value
-                })}
-            />
+            <View style={{flex: 1,   }}>
+            <View style={{width: '100%', height: '10%', backgroundColor: 'steelblue'}} />
+           <View style={{width: '100%', height: '80%', backgroundColor: 'powderblue'}} />
+             <View style={{width: '100%', height: '10%', backgroundColor: 'skyblue'}} />
+          </View>
         )
     }
 }

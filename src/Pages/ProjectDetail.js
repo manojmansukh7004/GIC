@@ -61,7 +61,7 @@ class TimesheetEntry extends Component {
             time: [],
             headerData: [],
             timesheetData: [],
-            headerHrsData:[],
+            headerHrsData: [],
             visible: false,
             deleteRecord: false,
             addDescVisible: false,
@@ -109,7 +109,7 @@ class TimesheetEntry extends Component {
         this.setState({ visible: true })
     }
 
-    DeleteRecord = async() => {
+    DeleteRecord = async () => {
         var tsEntryId = []
         if (this.state.timesheetData.Mon_AutoId !== null) { tsEntryId.push(this.state.timesheetData.Mon_AutoId) }
         if (this.state.timesheetData.Tue_AutoId !== null) { tsEntryId.push(this.state.timesheetData.Tue_AutoId) }
@@ -120,7 +120,7 @@ class TimesheetEntry extends Component {
         if (this.state.timesheetData.Sun_AutoId !== null) { tsEntryId.push(this.state.timesheetData.Sun_AutoId) }
 
         var data = await DeleteTimesheetRecord(this.props.user, this.state.timesheetId, tsEntryId.toString(), this.props.baseUrl)
-       
+
         if (data != null && data != "") {
             if (data.Message != null && data.Message != "") {
                 showToast(data.Message);
@@ -142,9 +142,9 @@ class TimesheetEntry extends Component {
             }
         }
     }
-    handleEditRecord =() =>{
-        this.props.navigation.navigate('EditTimeSheet',{
-            "Edit":true,
+    handleEditRecord = () => {
+        this.props.navigation.navigate('EditTimeSheet', {
+            "Edit": true,
             "header": "Edit Timesheet Entry",
             "timesheetData": this.state.timesheetData,
             "headerData": this.state.headerData,
@@ -154,11 +154,11 @@ class TimesheetEntry extends Component {
     render() {
 
         return (
-            <View>
+            <>
 
                 <StatusBar translucent barStyle="light-content" backgroundColor='#297AF9' />
-                <View style={{ height: "100%", width: '100%', top: '3%' }}>
-                    <View style={{ height: '7%', backgroundColor: this.props.primaryColor, }}>
+                <View style={[styles.Container, { backgroundColor: '#F9F9F9' }]}>
+                    <View style={{ height: 50, backgroundColor: this.props.primaryColor, }}>
                         <Appbar navigation={this.props.navigation}
                             title={"Project Details"}
                             handleDeleteRecord={this.handleDeleteRecord}
@@ -167,8 +167,10 @@ class TimesheetEntry extends Component {
 
                         />
                     </View>
-                    <View style={{ height: '90%', backgroundColor: this.props.secColor }}>
-                        <KeyboardAwareScrollView contentContainerStyle={styles.container}>
+                        <View style={{ flex:1 }}>
+                        <ScrollView showsVerticalScrollIndicator={false}
+                         style={styles.container}>
+                            <View style={{ height: '88%',backgroundColor:'#F9F9F9' }}>
                             {
                                 this.state.timesheetData.length !== 0 ?
                                     <>
@@ -201,7 +203,7 @@ class TimesheetEntry extends Component {
                                             <Card style={styles.cards}>
                                                 <View style={styles.cardMenuSpasing}>
                                                     <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>PHASE</Text>
-                                                    <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.timesheetData.PhaseName == null? "--Select--": this.state.timesheetData.PhaseName}</Text>
+                                                    <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.timesheetData.PhaseName == null ? "--Select--" : this.state.timesheetData.PhaseName}</Text>
 
                                                 </View>
                                             </Card>
@@ -428,7 +430,7 @@ class TimesheetEntry extends Component {
                                                     text={'Confirm Delete'}
                                                     style={{ borderWidth: 1, margin: 5, borderColor: 'red' }}
                                                     onPress={() =>
-                                                        this.setState({ visible: false, deleteRecord: true },()=>{this.DeleteRecord()})
+                                                        this.setState({ visible: false, deleteRecord: true }, () => { this.DeleteRecord() })
                                                         // this.props.navigation.navigate('SplashScreen')
                                                     }
                                                 />
@@ -439,14 +441,14 @@ class TimesheetEntry extends Component {
 
                                     : null
                             }
+                            </View>
+                    </ScrollView>
 
-                        </KeyboardAwareScrollView>
-                    </View>
-
+                        </View>
                 </View>
 
 
-            </View>
+            </>
         )
     }
 }
@@ -466,12 +468,19 @@ const mapStateToProps = state => {
 }
 export default connect(mapStateToProps)(TimesheetEntry)
 const styles = StyleSheet.create({
+    Container: {
+        flex: 1,
+        display: 'flex',
+        top: 23.5,
+        width: '100%',
+        height: '100%',
+    },
     container: {
+        // flex: 1,
         paddingLeft: 10,
         paddingRight: 10,
         backgroundColor: '#F9F9F9',
-        paddingBottom: 10,
-        flexGrow: 1
+        marginBottom:30,
     },
     cards: {
         elevation: 3,

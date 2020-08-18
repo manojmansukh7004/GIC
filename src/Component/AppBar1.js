@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   },
   subContiner1: {
     flexDirection: 'row',
-    height: "100%"
+    height: 50,
     // borderWidth: 0.2,
     // borderColor: '#C1C0B9',
     // borderRadius: 5,
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     // marginBottom: 5,
     // top: 3,
     // justifyContent: 'space-between',
-    // backgroundColor: "white"
+    // backgroundColor: "pink"
   },
   img: {
     width: 25,

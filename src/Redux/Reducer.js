@@ -31,7 +31,7 @@ const initialState ={
     fontColor: '#FFFF',
     bgColor:'#FFFF',
     primaryColor: "#297AF9",
-    secColor:"#F2F7F4",
+    secColor:"#E9ECEF",
     stripColor: '#F8FBF9',
     stripHeaderColor: '#747474',
     time: time,
