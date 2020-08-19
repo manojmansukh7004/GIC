@@ -3,7 +3,7 @@ import { StyleSheet, } from 'react-native';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { createStackNavigator, } from 'react-navigation-stack';
 import { createSwitchNavigator, createAppContainer } from "react-navigation";
-import Icon1 from 'react-native-vector-icons/Ionicons';
+// import Icon1 from 'react-native-vector-icons/Ionicons';
 import DrawerComponent from "./DrawerComponent";
 import TimeSheet from '../Pages/TimeSheet';
 import TsApproval from '../Pages/TsApproval';

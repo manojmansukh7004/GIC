@@ -610,12 +610,12 @@ class TimesheetEntry extends Component {
                                 onTouchOutside={() => this.setState({ fieldVisible: false }, () => { })}
 
                             >
-                                <View style={{ backgroundColor: 'white', width: 400, height: 300, bottom: 25, right: 25 }}>
+                                <View style={{ backgroundColor: 'white', height: 300, bottom: 25, right: 25, width: 350  }}>
                                     <View style={{ height: 50, padding: 15, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
                                         <Text style={{ fontSize: title, color: this.props.fontColor }}>{this.state.title}</Text>
                                     </View>
                                     <View style={{ justifyContent: 'flex-start', alignItems: 'flex-start', top: 15 }}>
-                                        <View style={{ borderRadius: 5, width: 340, width: 350, height: 275, }}>
+                                        <View style={{ borderRadius: 5, height: 275, }}>
                                             {
                                                 this.state.data.length == 0 ?
                                                     <View style={{ width: '100%', }}>
