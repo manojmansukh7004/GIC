@@ -478,24 +478,6 @@ class TimesheetEntry extends Component {
                                         <Text numberOfLines={1} style={[styles.twoCardLabel1, { color: "#4D504F" }]}>{this.state.activityName == '' ? "--select--" : this.state.activityName}</Text>
                                     </TouchableOpacity>
                                 </Card>
-
-                                {/* <Card style={styles.cards}>
-                                    <View style={styles.cardMenuSpasing}>
-                                        <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>WORK ORDER</Text>
-                                        <Picker
-                                            mode="dropdown"
-                                            selectedValue={this.state.workOrder}
-                                            style={styles.pickers}
-                                            // enabled={this.item.AttStatus !== 'MissingPunches'}
-                                            onValueChange={(itemValue) => this.setState({ workOrder: itemValue })}
-                                        >
-                                            <Picker.Item label="--Select--" value="0" />
-                                            {this.state.workOrderList.map((item, index) => {
-                                                return (<Picker.Item label={item.Text} value={index} key={index} />)
-                                            })}
-                                        </Picker>
-                                    </View>
-                                </Card> */}
                             </View>
                             <Card style={[styles.descCard, { borderWidth: 1, borderColor: this.state.validation == true && this.state.projectDesc == "" ? 'red' : "transparent" }]}>
                                 <View style={styles.reasonView}>

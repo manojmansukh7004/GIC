@@ -14,6 +14,7 @@ class AppBar extends Component {
       visible: false,
       dialogVisible: false,
       calenderVisible: false,
+      sideDrawerVisible: true,
     }
   }
 
@@ -58,8 +59,17 @@ class AppBar extends Component {
                   <Image style={styles.img} source={require('../Assets/darkCalendar.png')} />
                 </TouchableOpacity> : null
             }
+            {
+              this.props.filter == true ?
+                <TouchableOpacity style={{ height: 50, width: 50, justifyContent: "center", alignItems: 'center' }}
+                  onPress={() =>
+                    this.setState({ sideDrawerVisible: true },
+                      () => { this.props.sideDrawerVisible(this.state.sideDrawerVisible) })}>
+                  <Image style={styles.img1} source={require('../Assets/filter.png')} />
+                </TouchableOpacity> : null
+            }
           </View>
-          <View style={{ margin: 5, marginRight: 15 }}>
+          <View style={{ margin: 3, marginRight: 15 }}>
             <ProfileAvtar {...this.props} />
           </View>
         </View>
@@ -112,6 +122,12 @@ const styles = StyleSheet.create({
   img: {
     width: 25,
     height: 25,
+    margin: 3,
+    tintColor: '#FFFF'
+  },
+  img1: {
+    width: 30,
+    height: 30,
     margin: 3,
     tintColor: '#FFFF'
   },

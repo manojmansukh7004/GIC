@@ -702,15 +702,15 @@ class TimeSheet extends Component {
                                     this.state.timesheetData.length !== 0 ?
                                         <View style={{ flexDirection: 'row', marginLeft: 5, }}>
                                             <View style={{ flexDirection: 'column', }}>
-                                            <View style={{  height: 75,  backgroundColor: 'transparent' }}>
-                                                <View style={[styles.sheetHeader, { justifyContent: 'center', alignItems: 'center', backgroundColor: this.props.stripHeaderColor }]}>
-                                                    <View style={{ flexDirection: 'row' }}>
-                                                        <Text style={{ fontSize: 18, fontWeight: '900', color: this.props.fontColor }}>{"Project"}</Text>
-                                                        <Text style={{ fontSize: 16, color: this.props.fontColor }}>{"  (Client)"}</Text>
-                                                    </View>
-                                                    <View>
-                                                        <Text style={{ fontSize: 16, color: this.props.fontColor }}>{"Description"}</Text>
-                                                    </View>
+                                                <View style={{ height: 75, backgroundColor: 'transparent' }}>
+                                                    <View style={[styles.sheetHeader, { justifyContent: 'center', alignItems: 'center', backgroundColor: this.props.stripHeaderColor }]}>
+                                                        <View style={{ flexDirection: 'row' }}>
+                                                            <Text style={{ fontSize: 18, fontWeight: '900', color: this.props.fontColor }}>{"Project"}</Text>
+                                                            <Text style={{ fontSize: 16, color: this.props.fontColor }}>{"  (Client)"}</Text>
+                                                        </View>
+                                                        <View>
+                                                            <Text style={{ fontSize: 16, color: this.props.fontColor }}>{"Description"}</Text>
+                                                        </View>
                                                     </View>
                                                 </View>
                                                 {
@@ -719,14 +719,14 @@ class TimeSheet extends Component {
                                                             <FlatList
                                                                 data={Object.keys(this.state.timesheetData)}
                                                                 renderItem={({ item }) => (
-                                                                    <View  style={[styles.sheetData1, { backgroundColor: this.props.stripColor , flexDirection:'row'}]}>
+                                                                    <View style={[styles.sheetData1, { backgroundColor: this.props.stripColor, flexDirection: 'row' }]}>
                                                                         {
                                                                             this.state.timesheetData[item].ApproverAction == "Rejected" ?
                                                                                 <View style={[styles.rejected, { backgroundColor: "red" }]} /> : null
                                                                         }
-                                                                        <TouchableOpacity 
+                                                                        <TouchableOpacity
                                                                             onPress={() => this.props.navigation.navigate('ProjectDetail', { "timesheetData": this.state.timesheetData[item], "headerData": this.state.headerData, "headerHrsData": this.state.headerHrsData, "Status": this.state.timesheetData[item].Status == "Saved" ? true : false })}
-                                                                           >
+                                                                        >
                                                                             <Text numberOfLines={1} style={{ fontSize: 18, fontWeight: '900', }}>{this.state.timesheetData[item].ProjectName}</Text>
                                                                             <Text numberOfLines={1} style={{ color: "#4D504F" }}>{"(" + this.state.timesheetData[item].ClientName + ")"}</Text>
                                                                             <Text numberOfLines={1} style={{ color: "#4D504F" }}>{this.state.timesheetData[item].TaskDesc}</Text>
@@ -743,8 +743,9 @@ class TimeSheet extends Component {
                                                 scrollEnabled={this.state.content}
                                                 showsVerticalScrollIndicator={false}
                                             >
-                                                <View style={{ flexDirection: 'column',marginRight: 5, }}>
-                                                    <View style={{ flexDirection: 'row', height: 75,top:5, backgroundColor: this.props.stripHeaderColor }}>
+                                                <View style={{ flexDirection: 'column', marginRight: 5, }}>
+                                                    <View style={{ flexDirection: 'row', height: 75, top: 5, backgroundColor: this.props.stripHeaderColor }}>
+                                                       
                                                         <View style={[styles.sheetData, { backgroundColor: this.props.stripHeaderColor }]}>
                                                             <Text style={{ color: this.props.fontColor }}>{this.state.lblMon}</Text>
                                                             <Text style={{ color: this.props.fontColor }}>{this.state.dvTotMon}</Text>
@@ -796,7 +797,7 @@ class TimeSheet extends Component {
 
                                                                 <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
                                                                     <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.timesheetData[item].Status == "Saved" ? true : false, dayField: 'Mon', dayIndex: index, dayField: 1, }) }}
-                                                                        style={[styles.hrsData,{backgroundColor: this.state.timesheetData[item].Status == "Saved"? '#FFFF': "#E9ECEF"}]}>
+                                                                        style={[styles.hrsData, { backgroundColor: this.state.timesheetData[item].Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
                                                                         <Text>{this.state.timesheetData[item].Mon}</Text>
                                                                     </TouchableOpacity>
                                                                     <TouchableOpacity onPress={() =>
@@ -806,8 +807,8 @@ class TimeSheet extends Component {
                                                                     </TouchableOpacity>
                                                                 </View>
                                                                 <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
-                                                                    <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.timesheetData[item].Status == "Saved" ? true : false, dayField: 'Tue', dayIndex: index, dayField: 2, }) }} 
-                                                                        style={[styles.hrsData,{backgroundColor: this.state.timesheetData[item].Status == "Saved"? '#FFFF': "#E9ECEF"}]}>
+                                                                    <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.timesheetData[item].Status == "Saved" ? true : false, dayField: 'Tue', dayIndex: index, dayField: 2, }) }}
+                                                                        style={[styles.hrsData, { backgroundColor: this.state.timesheetData[item].Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
                                                                         <Text>{this.state.timesheetData[item].Tue}</Text>
                                                                     </TouchableOpacity>
                                                                     <TouchableOpacity onPress={() =>
@@ -817,8 +818,8 @@ class TimeSheet extends Component {
                                                                     </TouchableOpacity>
                                                                 </View>
                                                                 <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
-                                                                    <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.timesheetData[item].Status == "Saved" ? true : false, dayField: 'Wed', dayIndex: index, dayField: 3, }) }} 
-                                                                        style={[styles.hrsData,{backgroundColor: this.state.timesheetData[item].Status == "Saved"? '#FFFF': "#E9ECEF"}]}>
+                                                                    <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.timesheetData[item].Status == "Saved" ? true : false, dayField: 'Wed', dayIndex: index, dayField: 3, }) }}
+                                                                        style={[styles.hrsData, { backgroundColor: this.state.timesheetData[item].Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
                                                                         <Text>{this.state.timesheetData[item].Wed}</Text>
                                                                     </TouchableOpacity>
                                                                     <TouchableOpacity onPress={() =>
@@ -828,8 +829,8 @@ class TimeSheet extends Component {
                                                                     </TouchableOpacity>
                                                                 </View>
                                                                 <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
-                                                                    <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.timesheetData[item].Status == "Saved" ? true : false, dayField: 'Thu', dayIndex: index, dayField: 4, }) }} 
-                                                                        style={[styles.hrsData,{backgroundColor: this.state.timesheetData[item].Status == "Saved"? '#FFFF': "#E9ECEF"}]}>
+                                                                    <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.timesheetData[item].Status == "Saved" ? true : false, dayField: 'Thu', dayIndex: index, dayField: 4, }) }}
+                                                                        style={[styles.hrsData, { backgroundColor: this.state.timesheetData[item].Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
                                                                         <Text>{this.state.timesheetData[item].Thu}</Text>
                                                                     </TouchableOpacity>
                                                                     <TouchableOpacity onPress={() =>
@@ -840,7 +841,7 @@ class TimeSheet extends Component {
                                                                 </View>
                                                                 <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
                                                                     <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.timesheetData[item].Status == "Saved" ? true : false, dayField: 'Fri', dayIndex: index, dayField: 5, }) }}
-                                                                        style={[styles.hrsData,{backgroundColor: this.state.timesheetData[item].Status == "Saved"? '#FFFF': "#E9ECEF"}]}>
+                                                                        style={[styles.hrsData, { backgroundColor: this.state.timesheetData[item].Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
                                                                         <Text>{this.state.timesheetData[item].Fri}</Text>
                                                                     </TouchableOpacity>
                                                                     <TouchableOpacity onPress={() =>
@@ -851,7 +852,7 @@ class TimeSheet extends Component {
                                                                 </View>
                                                                 <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
                                                                     <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.timesheetData[item].Status == "Saved" ? true : false, dayField: 'Sat', dayIndex: index, dayField: 6, }) }}
-                                                                        style={[styles.hrsData,{backgroundColor: this.state.timesheetData[item].Status == "Saved"? '#FFFF': "#E9ECEF"}]}>
+                                                                        style={[styles.hrsData, { backgroundColor: this.state.timesheetData[item].Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
                                                                         <Text>{this.state.timesheetData[item].Sat}</Text>
                                                                     </TouchableOpacity>
                                                                     <TouchableOpacity onPress={() =>
@@ -861,8 +862,8 @@ class TimeSheet extends Component {
                                                                     </TouchableOpacity>
                                                                 </View>
                                                                 <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
-                                                                    <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.timesheetData[item].Status == "Saved" ? true : false, dayField: 'Sun', dayIndex: index, dayField: 7, }) }} 
-                                                                        style={[styles.hrsData,{backgroundColor: this.state.timesheetData[item].Status == "Saved"? '#FFFF': "#E9ECEF"}]}>
+                                                                    <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.timesheetData[item].Status == "Saved" ? true : false, dayField: 'Sun', dayIndex: index, dayField: 7, }) }}
+                                                                        style={[styles.hrsData, { backgroundColor: this.state.timesheetData[item].Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
                                                                         <Text>{this.state.timesheetData[item].Sun}</Text>
                                                                     </TouchableOpacity>
                                                                     <TouchableOpacity onPress={() =>
@@ -909,8 +910,8 @@ class TimeSheet extends Component {
                                         <View style={{ height: 50, padding: 15, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
                                             <Text style={{ fontSize: title, color: this.props.fontColor }}>{'Additional Description'}</Text>
                                         </View>
-                                        <View style={{ justifyContent: 'center', alignItems: 'center',  }}>
-                                            <View style={{ borderRadius: 5, borderWidth: .5, width: 300, height: 170, margin:15, backgroundColor: this.state.descEdit == true? "white": "#E9ECEF" }}>
+                                        <View style={{ justifyContent: 'center', alignItems: 'center', }}>
+                                            <View style={{ borderRadius: 5, borderWidth: .5, width: 300, height: 170, margin: 15, backgroundColor: this.state.descEdit == true ? "white" : "#E9ECEF" }}>
                                                 {this.state.descEdit == true ?
                                                     <TextInput
                                                         multiline={true}

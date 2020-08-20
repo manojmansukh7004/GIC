@@ -1,5 +1,4 @@
 async function GetTSListOnEmpChange(EmpID,Status, resource,baseUrl) {
-    console.log("GetTSListOnEmpChange",EmpID, Status, baseUrl);
     
         const payload = {
             "loginDetails":
