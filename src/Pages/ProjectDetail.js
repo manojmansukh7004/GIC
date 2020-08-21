@@ -77,7 +77,9 @@ class TimesheetEntry extends Component {
             timesheetData: this.props.navigation.state.params.timesheetData,
             headerData: this.props.navigation.state.params.headerData,
             headerHrsData: this.props.navigation.state.params.headerHrsData,
-            editVisible: this.props.navigation.state.params.Status
+            editVisible: this.props.navigation.state.params.Status,
+            Type: this.props.navigation.state.params.Type
+
         }, () => {
             lblMon = "Mon, " + moment(new Date(this.state.headerData[0].Mon_Date)).format("DD"),
                 lblTue = "Tue, " + moment(new Date(this.state.headerData[0].Tue_Date)).format("DD"),
@@ -164,7 +166,7 @@ class TimesheetEntry extends Component {
                             handleDeleteRecord={this.handleDeleteRecord}
                             handleEditRecord={this.handleEditRecord}
                             details={this.state.editVisible}
-
+                            backNavigation={ this.props.navigation.state.params.backNavigation}
                         />
                     </View>
                         <View style={{ flex:1 }}>

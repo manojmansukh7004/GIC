@@ -8,12 +8,15 @@ class AppBar extends Component {
     super(props)
 
     this.state = {
-
+      backNavigation:'',
     }
   }
 
   async componentDidMount() {
+    this.setState({
 
+      backNavigation: this.props.navigation.state.params.backNavigation,
+    })
   }
 
 
@@ -32,7 +35,7 @@ class AppBar extends Component {
             <TouchableOpacity onPress={() =>
             this.props.title == "Timesheet Entry"? this.props.navigation.navigate('TimeSheet'):
             this.props.title == "Edit Timesheet Entry"? this.props.navigation.navigate('ProjectDetail'):
-            this.props.title == "Project Details"? this.props.navigation.navigate('TimeSheet'): 
+            this.props.title == "Project Details"? this.state.backNavigation=="TsApproval"? this.props.navigation.navigate('TsApproval'): this.props.navigation.navigate('TimeSheet'): 
             null
           }>
               <Image

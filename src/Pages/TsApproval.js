@@ -87,6 +87,9 @@ class TimeSheet extends Component {
             headerData: [],
             headerHrsData: [],
             ratingVisible: false,
+            actionVisible: false,
+            singleRecord: false,
+            autoId: '',
             action: '',
             RatingText: '',
             rating: false,
@@ -288,7 +291,12 @@ class TimeSheet extends Component {
         else if (this.state.resource.length == 0) { showToast("Fill-up Quality of work.") }
         else {
             this.setState({ ratingVisible: false, validation: false })
-            this.handleTsEntryId()
+            if (this.state.singleRecord == true) {
+                this.SaveUpdateApproverActionData(this.state.autoId)
+            }
+            else {
+                this.handleTsEntryId()
+            }
         }
     }
 
@@ -297,7 +305,12 @@ class TimeSheet extends Component {
         if (this.state.rating3 == '') { showToast("Give the Remark .") }
         else {
             this.setState({ ratingVisible: false, validation: false })
-            this.handleTsEntryId()
+            if (this.state.singleRecord == true) {
+                this.SaveUpdateApproverActionData(this.state.autoId)
+            }
+            else {
+                this.handleTsEntryId()
+            }
         }
     }
 
@@ -313,8 +326,8 @@ class TimeSheet extends Component {
         this.SaveUpdateApproverActionData(tsEntryId)
     }
 
-    SaveUpdateApproverActionData = async (tsEntryId) => {
-        console.log("tsEntryId", tsEntryId, this.state.OTP, this.state.QOW, this.state.rating3);
+    SaveUpdateApproverActionData = async (EntryId) => {
+        console.log("tsEntryId", EntryId, this.state.OTP, this.state.QOW, this.state.rating3);
         var status = ''
         var rating1 = this.state.rating1.length !== 0 ? this.state.rating1[0].Value : ''
         var rating2 = this.state.rating2.length !== 0 ? this.state.rating2[0].Value : ''
@@ -323,7 +336,7 @@ class TimeSheet extends Component {
         } else {
             status = "Saved";
         }
-        var data = await SaveUpdateApproverAction(this.props.user, this.state.resource, tsEntryId,
+        var data = await SaveUpdateApproverAction(this.props.user, this.state.resource, EntryId,
             rating1, rating2, this.state.rating3, this.state.action, status, this.props.baseUrl)
         console.log("ressss", data);
 
@@ -381,7 +394,7 @@ class TimeSheet extends Component {
 
                     <View style={{ height: "7%", backgroundColor: this.props.primaryColor }}>
                         <Appbar1 navigation={this.props.navigation}
-                            title={"Timesheet Approval"}
+                            title={"Subordinate's Timesheet"}
                             filter={true}
                             sideDrawerVisible={this.sideDrawerVisible}
                         // handleCalenderStatus={this.handleCalenderStatus}
@@ -400,6 +413,18 @@ class TimeSheet extends Component {
 
                                 {this.state.dataTable == true ?
                                     <>
+                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: this.props.primaryColor }}>
+                                            <View style={{ bottom: 3, margin: 5, }}>
+                                                <Text style={styles.totalHrs}> { this.state.resourceName}</Text>
+                                            </View>
+                                            <TouchableOpacity onPress={() => this.setState({ weekVisible: true })}
+                                                style={{ flexDirection: 'row', width: 200, justifyContent: 'center', alignItems: 'center', bottom: 3, borderWidth: 1, margin: 5, borderRadius: 3, borderColor: 'white' }}>
+                                                <Image style={{ height: 20, width: 20, marginLeft: 5, tintColor: 'white' }} source={require("../Assets/calendar.png")} />
+                                                <Text style={styles.text}> {this.state.timesheet == '' ? "--select--" :
+                                                    moment(new Date(this.state.timesheet.slice(0, 10).split('-').reverse().join('/'))).format("DD MMM")
+                                                    + ' - ' + moment(new Date(this.state.timesheet.slice(14, 24).split('-').reverse().join('/'))).format("DD MMM YYYY")}</Text>
+                                            </TouchableOpacity>
+                                        </View>
                                         {
                                             this.state.timesheetData.length !== 0 ?
                                                 <View style={{ flexDirection: 'row', marginLeft: 5, }}>
@@ -427,7 +452,7 @@ class TimeSheet extends Component {
                                                                                         <View style={[styles.rejected, { backgroundColor: "red" }]} /> : null
                                                                                 }
                                                                                 <TouchableOpacity
-                                                                                    onPress={() => this.props.navigation.navigate('ProjectDetail', { "timesheetData": this.state.timesheetData[item], "headerData": this.state.headerData, "headerHrsData": this.state.headerHrsData, "Status": this.state.timesheetData[item].Status == "Saved" ? true : false })}
+                                                                                    onPress={() => this.props.navigation.navigate('ProjectDetail', { "timesheetData": this.state.timesheetData[item], "headerData": this.state.headerData, "headerHrsData": this.state.headerHrsData, "Status": this.state.timesheetData[item].Status == "Saved" ? true : false, "backNavigation": "TsApproval", "Type": this.state.type })}
                                                                                 >
                                                                                     <Text numberOfLines={1} style={{ fontSize: 18, fontWeight: '900', }}>{this.state.timesheetData[item].ProjectName}</Text>
                                                                                     <Text numberOfLines={1} style={{ color: "#4D504F" }}>{"(" + this.state.timesheetData[item].ClientName + ")"}</Text>
@@ -537,81 +562,81 @@ class TimeSheet extends Component {
                                                                                     </View>
                                                                                 </>
                                                                         }
-                                                                      
+
                                                                         <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
-                                                                            <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.timesheetData[item].Status == "Saved" ? true : false, dayField: 'Mon', dayIndex: index, dayField: 1, }) }}
+                                                                            <TouchableOpacity onPress={() => { this.setState({ actionVisible: this.state.type == "Pending" && this.state.timesheetData[item].Mon !== "" ? true : false, autoId: this.state.timesheetData[item].Mon_AutoId }) }}
                                                                                 style={[styles.hrsData, { backgroundColor: this.state.timesheetData[item].Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
-                                                                                <Text>{this.state.timesheetData[item].Mon== ""? '--:--': this.state.timesheetData[item].Mon}</Text>
+                                                                                <Text>{this.state.timesheetData[item].Mon == "" ? '--:--' : this.state.timesheetData[item].Mon}</Text>
                                                                             </TouchableOpacity>
                                                                             <TouchableOpacity
                                                                             //  onPress={() =>this.setState({ addDescVisible: true, descEdit: this.state.timesheetData[item].Status == "Saved" ? true : false, addDesc: this.state.timesheetData[item].Mon_TaskComments, addDescField: 1, addDescIndex: index })}
-                                                                                >
+                                                                            >
                                                                                 <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
                                                                             </TouchableOpacity>
                                                                         </View>
                                                                         <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
-                                                                            <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.timesheetData[item].Status == "Saved" ? true : false, dayField: 'Tue', dayIndex: index, dayField: 2, }) }}
+                                                                            <TouchableOpacity onPress={() => { this.setState({ actionVisible: this.state.type == "Pending" && this.state.timesheetData[item].Tue !== "" ? true : false, autoId: this.state.timesheetData[item].Tue_AutoId }) }}
                                                                                 style={[styles.hrsData, { backgroundColor: this.state.timesheetData[item].Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
-                                                                                <Text>{this.state.timesheetData[item].Tue == ""? '--:--': this.state.timesheetData[item].Tue}</Text>
+                                                                                <Text>{this.state.timesheetData[item].Tue == "" ? '--:--' : this.state.timesheetData[item].Tue}</Text>
                                                                             </TouchableOpacity>
                                                                             <TouchableOpacity
                                                                             //  onPress={() =>this.setState({ addDescVisible: true, descEdit: this.state.timesheetData[item].Status == "Saved" ? true : false, addDesc: this.state.timesheetData[item].Tue_TaskComments, addDescField: 2, addDescIndex: index })}
-                                                                                   >
+                                                                            >
                                                                                 <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
                                                                             </TouchableOpacity>
                                                                         </View>
                                                                         <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
-                                                                            <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.timesheetData[item].Status == "Saved" ? true : false, dayField: 'Wed', dayIndex: index, dayField: 3, }) }}
+                                                                            <TouchableOpacity onPress={() => { this.setState({ actionVisible: this.state.type == "Pending" && this.state.timesheetData[item].Wed !== "" ? true : false, autoId: this.state.timesheetData[item].Wed_AutoId }) }}
                                                                                 style={[styles.hrsData, { backgroundColor: this.state.timesheetData[item].Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
-                                                                                <Text>{this.state.timesheetData[item].Wed == ""? '--:--': this.state.timesheetData[item].Wed}</Text>
+                                                                                <Text>{this.state.timesheetData[item].Wed == "" ? '--:--' : this.state.timesheetData[item].Wed}</Text>
                                                                             </TouchableOpacity>
-                                                                            <TouchableOpacity 
+                                                                            <TouchableOpacity
                                                                             // onPress={() =>this.setState({ addDescVisible: true, descEdit: false, addDesc: this.state.timesheetData[item].Wed_TaskComments, addDescField: 3, addDescIndex: index })}
-                                                                                >
+                                                                            >
                                                                                 <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
                                                                             </TouchableOpacity>
                                                                         </View>
                                                                         <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
-                                                                            <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.timesheetData[item].Status == "Saved" ? true : false, dayField: 'Thu', dayIndex: index, dayField: 4, }) }}
+                                                                            <TouchableOpacity onPress={() => { this.setState({ actionVisible: this.state.type == "Pending" && this.state.timesheetData[item].Thu !== "" ? true : false, autoId: this.state.timesheetData[item].Thu_AutoId }) }}
                                                                                 style={[styles.hrsData, { backgroundColor: this.state.timesheetData[item].Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
-                                                                                <Text>{this.state.timesheetData[item].Thu == ""? '--:--': this.state.timesheetData[item].Thu}</Text>
+                                                                                <Text>{this.state.timesheetData[item].Thu == "" ? '--:--' : this.state.timesheetData[item].Thu}</Text>
                                                                             </TouchableOpacity>
                                                                             <TouchableOpacity
                                                                             //  onPress={() =>this.setState({ addDescVisible: true, descEdit: this.state.timesheetData[item].Status == "Saved" ? true : false, addDesc: this.state.timesheetData[item].Thu_TaskComments, addDescField: 4, addDescIndex: index }}
-                                                                                >
+                                                                            >
                                                                                 <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
                                                                             </TouchableOpacity>
                                                                         </View>
                                                                         <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
-                                                                            <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.timesheetData[item].Status == "Saved" ? true : false, dayField: 'Fri', dayIndex: index, dayField: 5, }) }}
+                                                                            <TouchableOpacity onPress={() => { this.setState({ actionVisible: this.state.type == "Pending" && this.state.timesheetData[item].Fri !== "" ? true : false, autoId: this.state.timesheetData[item].Fri_AutoId }) }}
                                                                                 style={[styles.hrsData, { backgroundColor: this.state.timesheetData[item].Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
-                                                                                <Text>{this.state.timesheetData[item].Fri == ""? '--:--': this.state.timesheetData[item].Fri}</Text>
+                                                                                <Text>{this.state.timesheetData[item].Fri == "" ? '--:--' : this.state.timesheetData[item].Fri}</Text>
                                                                             </TouchableOpacity>
-                                                                            <TouchableOpacity 
+                                                                            <TouchableOpacity
                                                                             // onPress={() =>this.setState({ addDescVisible: true, descEdit: this.state.timesheetData[item].Status == "Saved" ? true : false, addDesc: this.state.timesheetData[item].Fri_TaskComments, addDescField: 5, addDescIndex: index }}
-                                                                                >
+                                                                            >
                                                                                 <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
                                                                             </TouchableOpacity>
                                                                         </View>
                                                                         <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
-                                                                            <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.timesheetData[item].Status == "Saved" ? true : false, dayField: 'Sat', dayIndex: index, dayField: 6, }) }}
+                                                                            <TouchableOpacity onPress={() => { this.setState({ actionVisible: this.state.type == "Pending" && this.state.timesheetData[item].Sat !== "" ? true : false, autoId: this.state.timesheetData[item].Sat_AutoId }) }}
                                                                                 style={[styles.hrsData, { backgroundColor: this.state.timesheetData[item].Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
-                                                                                <Text>{this.state.timesheetData[item].Sat == ""? '--:--': this.state.timesheetData[item].Sat}</Text>
+                                                                                <Text>{this.state.timesheetData[item].Sat == "" ? '--:--' : this.state.timesheetData[item].Sat}</Text>
                                                                             </TouchableOpacity>
-                                                                            <TouchableOpacity 
+                                                                            <TouchableOpacity
                                                                             // onPress={() =>this.setState({ addDescVisible: true, descEdit: this.state.timesheetData[item].Status == "Saved" ? true : false, addDesc: this.state.timesheetData[item].Sat_TaskComments, addDescField: 6, addDescIndex: index }}
                                                                             >
                                                                                 <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
                                                                             </TouchableOpacity>
                                                                         </View>
                                                                         <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
-                                                                            <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.timesheetData[item].Status == "Saved" ? true : false, dayField: 'Sun', dayIndex: index, dayField: 7, }) }}
+                                                                            <TouchableOpacity onPress={() => { this.setState({ actionVisible: this.state.type == "Pending" && this.state.timesheetData[item].Sun !== "" ? true : false, autoId: this.state.timesheetData[item].Sun_AutoId }) }}
                                                                                 style={[styles.hrsData, { backgroundColor: this.state.timesheetData[item].Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
-                                                                                <Text>{this.state.timesheetData[item].Sun == ""? '--:--': this.state.timesheetData[item].Sun}</Text>
+                                                                                <Text>{this.state.timesheetData[item].Sun == "" ? '--:--' : this.state.timesheetData[item].Sun}</Text>
                                                                             </TouchableOpacity>
-                                                                            <TouchableOpacity 
+                                                                            <TouchableOpacity
                                                                             // onPress={() =>this.setState({ addDescVisible: true, descEdit: this.state.timesheetData[item].Status == "Saved" ? true : false, addDesc: this.state.timesheetData[item].Sun_TaskComments, addDescField: 7, addDescIndex: index }}
-                                                                                   >
+                                                                            >
                                                                                 <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
                                                                             </TouchableOpacity>
                                                                         </View>
@@ -809,8 +834,26 @@ class TimeSheet extends Component {
 
                                             </View>
                                         </View>
-                                        {/* </KeyboardAwareScrollView> */}
+                                    </View>
+                                </Dialog>
 
+                                <Dialog
+                                    visible={this.state.actionVisible}
+                                    style={{ backgroundColor: 'white', width: 150, height: 80, justifyContent: 'center', alignItems: 'center' }}
+                                    onTouchOutside={() => this.setState({ multiPickerVisible: false, selectedVal: [] }, () => { })}
+                                >
+
+                                    <View style={[{ flexDirection: 'row', bottom: 12, right: 12, }]}>
+                                        <TouchableOpacity onPress={() =>
+                                            this.setState({ ratingVisible: true, action: 'Approved', singleRecord: true, actionVisible: false },
+                                                () => { })}>
+                                            <Image style={{ height: 70, width: 70 }} source={require('../Assets/greenTick.png')} />
+                                        </TouchableOpacity>
+                                        <TouchableOpacity onPress={() =>
+                                            this.setState({ ratingVisible: true, action: 'Rejected', singleRecord: true, actionVisible: false },
+                                                () => { })}>
+                                            <Image style={{ height: 55, width: 55, top: 8 }} source={require('../Assets/cross.png')} />
+                                        </TouchableOpacity>
                                     </View>
                                 </Dialog>
 
