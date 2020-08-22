@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    ToastAndroid, Text, View, StyleSheet, Picker, TouchableOpacity, Image, FlatList, ScrollView, StatusBar, TextInput
+    ToastAndroid, Text, View, StyleSheet, Dimensions, TouchableOpacity, Image, FlatList, ScrollView, StatusBar, TextInput
 } from 'react-native';
 import { Divider, Card } from 'react-native-paper';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -29,6 +29,7 @@ class TimesheetEntry extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            orientation:'',
             title: '',
             timesheetId: '',
             timesheetData: [],
@@ -41,7 +42,9 @@ class TimesheetEntry extends Component {
             activityName: '',
             clientName: '',
             projectName: '',
+            projectGroupName:'',
             typeOfWork: "",
+            projectGroup:'',
             phaseName: '',
             workOrderName: '',
             field: '',
@@ -84,6 +87,7 @@ class TimesheetEntry extends Component {
             headerData: [],
             clientList: [],
             typeOfWorkList: [],
+            projectGrpList:[],
             projetList: [],
             phaseList: [],
             activityList: [],
@@ -153,7 +157,7 @@ class TimesheetEntry extends Component {
         this.setState({ validation: true })
         if (this.state.client == 0) { showToast("Select client details.") }
         else if (this.state.project == 0) { showToast("Select project details.") }
-        else if (this.state.typeOfWorkId == 0) { showToast("Select type of work.") }
+        // else if (this.state.typeOfWorkId == 0) { showToast("Select type of work.") }
         else if (this.state.activity == 0) { showToast("Select activity.") }
         else if (this.state.projectDesc == "") { showToast("Fill up project description.") }
         else if (this.state.lblMon == "" && this.state.lblTue == "" && this.state.lblWed == "" && this.state.lblFri == "" &&
@@ -271,22 +275,28 @@ class TimesheetEntry extends Component {
 
 
     handleDataOnClientChange = async () => {
-        var clientChange = await getDataOnClientChange(this.props.user, this.state.timesheetId, this.state.client, this.props.baseUrl)
+        var clientChange = await getDataOnClientChange(this.props.user, this.state.timesheetId, this.state.client, this.state.projectGroup, this.props.baseUrl)
         this.setState({
             projetList: clientChange.ProjectList[0],
         });
     }
     handleDataOnProjectChange = async () => {
         var projectChange = await getDataOnProjectChange(this.props.user, this.state.timesheetId, this.state.project, this.props.baseUrl)
+        
         this.setState({
             phaseList: projectChange.PhaseList[0],
             activityList: projectChange.ActivityList[0],
             workOrderList: projectChange.WorkOrderList[0],
         });
     }
+
     handleDataOnPhaseChange = async () => {
+        console.log("phase change", this.state.phase);
+        
         if (this.state.phase !== null) {
-            var phaseChange = await GetDataOnPhaseChange(this.props.user, this.state.timesheetId, this.state.project, this.state.phase == 0 ? "" : this.state.phase, this.props.baseUrl)
+            var phaseChange = await GetDataOnPhaseChange(this.props.user, this.state.timesheetId, this.state.project, this.state.phase == null ? "" : this.state.phase, this.props.baseUrl)
+           console.log("phasss",phaseChange);
+           
             this.setState({
                 activityList: phaseChange.ActivityList[0],
                 workOrderList: phaseChange.WorkOrderList[0],
@@ -294,11 +304,30 @@ class TimesheetEntry extends Component {
         }
     }
 
+    getOrientation = () => {
+
+        if (this.refs.rootView) {
+            if (Dimensions.get('window').width < Dimensions.get('window').height) {
+                this.setState({ orientation: 'portrait' });
+            }
+            else {
+                this.setState({ orientation: 'landscape' });
+            }
+        }
+    }
+
     async componentDidMount() {
+        this.getOrientation();
+        Dimensions.addEventListener('change', () => {
+            this.getOrientation();
+        });
         var dropdownData = await getTsEntryDropdownData(this.props.user, this.props.baseUrl)
+        console.log(dropdownData.ProjectGrpList[0]);
+        
         this.setState({
             clientList: dropdownData.ClientList[0],
             typeOfWorkList: dropdownData.TypeOfWorkList[0],
+            projectGrpList: dropdownData.ProjectGrpList[0],
             timesheetId: this.props.tsId,
             time: this.props.time,
             header: this.props.navigation.state.params.header,
@@ -334,7 +363,8 @@ class TimesheetEntry extends Component {
 
                 }, () => {
                     if (this.state.edit == true) {
-
+                        console.log("eeeeeeeeeee",this.state.projectGrpList);
+                        
                         this.editTimesheet()
                     }
                 });
@@ -344,16 +374,18 @@ class TimesheetEntry extends Component {
     editTimesheet = () => {
         this.setState({
 
+            // projectGroup: this.state.projectGrpList.
+            // projectGroupName: this.state.projectGrpList.
             client: this.state.timesheetData.ClientCode,
             clientName: this.state.timesheetData.ClientName,
             project: this.state.timesheetData.ProjectCode,
-            projectName: this.state.timesheetData.ProjectName,
+            // projectName: this.state.timesheetData.ProjectName,
             typeOfWorkId: this.state.timesheetData.TypeOfWorkId,
             typeOfWork: this.state.timesheetData.TypeOfWork,
             phase: this.state.timesheetData.PhaseId,
-            phaseName: this.state.timesheetData.phaseName,
+            // phaseName: this.state.timesheetData.PhaseName,
             activity: this.state.timesheetData.ActivityId,
-            activityName: this.state.timesheetData.ActivityName,
+            // activityName: this.state.timesheetData.ActivityName,
             projectDesc: this.state.timesheetData.TaskDesc,
             lblMon: this.state.timesheetData.Mon,
             lblTue: this.state.timesheetData.Tue,
@@ -374,11 +406,20 @@ class TimesheetEntry extends Component {
             this.handleDataOnClientChange()
             this.handleDataOnProjectChange()
             this.handleDataOnPhaseChange()
+            this.flushData()
         });
     }
 
+    flushData = () =>{
+        this.setState({project:[], phase:[], activity:[]})
+    }
     handleSelectedData = (item, index) => {
-        if (this.state.field == 1) {
+        if (this.state.field == 0) {
+            this.setState({
+                projectGroupName: item.Text, projectGroup: item.Value, fieldVisible: false, data: []
+            }, () => {   this.state.client !== "" ?  this.handleDataOnClientChange():null})
+        }
+        else if (this.state.field == 1) {
             this.setState({
                 clientName: item.Text, client: item.Value, fieldVisible: false, project: "", projectName: '',
                 typeOfWorkId: '', typeOfWork: '', phase: '', phaseName: '', activity: '', activityName: '',
@@ -398,7 +439,7 @@ class TimesheetEntry extends Component {
         }
         else if (this.state.field == 4) {
             this.setState({
-                phaseName: item.Text, Phase: item.Value, fieldVisible: false, activityName: '', activityList: [], activity: ''
+                phaseName: item.Text, phase: item.Value, fieldVisible: false, activityName: '', activityList: [], activity: ''
             }, () => { this.handleDataOnPhaseChange() })
         }
         else if (this.state.field == 5) {
@@ -410,32 +451,33 @@ class TimesheetEntry extends Component {
 
 
     render() {
+        console.log("projectGroup",this.state.projectGroup);
+        
         return (
             <>
 
                 <StatusBar translucent barStyle="light-content" backgroundColor='#297AF9' />
-                <View style={[styles.Container, { backgroundColor: this.props.primaryColor }]}>
-                    <View style={{ height: 50, backgroundColor: this.props.primaryColor, }}>
+                <View ref="rootView" style={[styles.Container, { backgroundColor: this.props.primaryColor }]}>
+                    <View style={{ height:  this.state.orientation == 'landscape' ? '11%' : '7%', backgroundColor: this.props.primaryColor, }}>
                         <Appbar navigation={this.props.navigation}
                             title={this.state.header}
                             handleSave={this.handleSave}
                             timeSheetEntry={true}
                         />
                     </View>
-                    <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
-
-                    <View style={{ height: '90%', }}>
-                          
-
+                    <View style={[styles.container,{ height: this.state.orientation == 'landscape'?'86%': '90%',backgroundColor: this.props.secColor}]}>
+                        <ScrollView
+                            style={{ marginBottom: 15 }}
+                            showsVerticalScrollIndicator={false}>
                             <View style={styles.horizontalContainer}>
-                                <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.project == 0 ? 'red' : "transparent" }]}>
-                                    <TouchableOpacity onPress={() => this.setState({ title: "Project List", data: this.state.projetList, fieldVisible: true, field: 2, })}
+                                <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.projectGroup == '' ? 'red' : "transparent" }]}>
+                                    <TouchableOpacity onPress={() => this.setState({ title: "Project Group", data: this.state.projectGrpList, fieldVisible: true, field: 0, })}
                                         style={styles.cardMenuSpasing}>
                                         <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>PROJECT GROUP</Text>
-                                        <Text numberOfLines={1} style={[styles.twoCardLabel1, { color: "#4D504F" }]}>{this.state.projectName == '' ? "--select--" : this.state.projectName}</Text>
+                                        <Text numberOfLines={1} style={[styles.twoCardLabel1, { color: "#4D504F" }]}>{this.state.projectGroup == '' ? "--select--" : this.state.projectGroupName}</Text>
                                     </TouchableOpacity>
                                 </Card>
-                                <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.client == 0 ? 'red' : "transparent" }]}>
+                                <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.client == '' ? 'red' : "transparent" }]}>
                                     <TouchableOpacity onPress={() => this.setState({ title: "Client List", fieldVisible: true, field: 1, data: this.state.clientList })}
                                         style={styles.cardMenuSpasing}>
                                         <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>CLIENT</Text>
@@ -445,7 +487,7 @@ class TimesheetEntry extends Component {
                             </View>
 
                             <View style={styles.horizontalContainer}>
-                                <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.project == 0 ? 'red' : "transparent" }]}>
+                                <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.project == '' ? 'red' : "transparent" }]}>
                                     <TouchableOpacity onPress={() => this.setState({ title: "Project List", data: this.state.projetList, fieldVisible: true, field: 2, })}
                                         style={styles.cardMenuSpasing}>
                                         <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>PROJECT</Text>
@@ -691,8 +733,9 @@ class TimesheetEntry extends Component {
 
                                 </View>
                             </Dialog>
+                            </ScrollView>
                     </View>
-                    </ScrollView>
+                    
 
                 </View>
 
@@ -731,8 +774,8 @@ const styles = StyleSheet.create({
     container: {
         paddingLeft: 10,
         paddingRight: 10,
-        backgroundColor: '#F9F9F9',
-        marginBottom: 20,
+        // backgroundColor: '#F9F9F9',
+        // marginBottom: 20,
       },
     cards: {
         elevation: 3,
@@ -772,7 +815,8 @@ const styles = StyleSheet.create({
         width: '100%',
         elevation: 3,
         borderRadius: 5,
-        marginTop: 15
+        marginTop: 15,
+      
     },
     longText: { backgroundColor: 'white', color: "#4D504F", fontSize: 16, marginEnd: 10, padding: 10 },
     reasonView: { paddingStart: 15, padding: 10, },
@@ -782,7 +826,7 @@ const styles = StyleSheet.create({
         // height: 70,
         width: 85,
         marginTop: 5,
-        marginBottom: 5,
+        marginBottom: 15,
         // borderWidth: .3,
         justifyContent: 'center',
         alignItems: 'center',

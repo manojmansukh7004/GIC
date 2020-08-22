@@ -30,7 +30,7 @@ class AppBar extends Component {
       // </View>
       <View style={styles.subContiner1}>
 
-        <View style={{ flexDirection: 'row', width: "85%" }}>
+        <View style={{ flexDirection: 'row', width: "85%",height:'100%' }}>
           <View style={{ justifyContent: 'center', alignItems: 'center', width: "10%", marginLeft: 5 }}>
             <TouchableOpacity onPress={() =>
             this.props.title == "Timesheet Entry"? this.props.navigation.navigate('TimeSheet'):
@@ -61,7 +61,7 @@ class AppBar extends Component {
             }
             {
               this.props.details == true ?
-                <TouchableOpacity style={{ justifyContent: "center", alignItems: 'center',padding:15,width: 40, height: 30,top:3,marginRight:10 }}
+                <TouchableOpacity style={{ justifyContent: "center", alignItems: 'center',padding:15,width: 40, height: 30,top:3,marginRight:15 }}
                   onPress={() => { this.props.handleEditRecord() }}>
                   <Image
                     source={require('../Assets/edit.png')}
@@ -128,8 +128,9 @@ const styles = StyleSheet.create({
     color: 'white'
   },
   subContiner1: {
+    // flex:1,
     flexDirection: 'row',
-    height: 50,
+    // height: "100%",
     // borderWidth: 0.2,
     // borderColor: '#C1C0B9',
     // borderRadius: 5,

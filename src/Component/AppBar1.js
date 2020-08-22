@@ -33,7 +33,7 @@ class AppBar extends Component {
     return (
       <View style={styles.subContiner1}>
 
-        <View style={{ flexDirection: 'row', width: "85%" }}>
+        <View style={{ flexDirection: 'row', width: "85%", height:'100%' }}>
           <View style={{ justifyContent: 'center', alignItems: 'center', width: "10%", marginLeft: 5 }}>
             <TouchableOpacity onPress={() => this.toggleDrawer()}>
               <Image
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
   },
   subContiner1: {
     flexDirection: 'row',
-    height: 50,
+    // height: '100%',
     // borderWidth: 0.2,
     // borderColor: '#C1C0B9',
     // borderRadius: 5,

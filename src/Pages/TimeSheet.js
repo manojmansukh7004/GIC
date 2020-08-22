@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ToastAndroid, TextInput, Image, StatusBar, StyleSheet, Picker, ScrollView, Text, FlatList, View, TouchableOpacity } from 'react-native';
+import { ToastAndroid, TextInput, Image, StatusBar, StyleSheet, Dimensions, ScrollView, Text, FlatList, View, TouchableOpacity } from 'react-native';
 import { Divider, } from 'react-native-paper';
 import Appbar1 from '../Component/AppBar1'
 import { FloatingAction } from "react-native-floating-action";
@@ -48,7 +48,7 @@ class TimeSheet extends Component {
     constructor(props) {
         super(props)
         this.state = {
-
+            orientation:'',
             loading: true,
             count: 0,
             content: true,
@@ -607,7 +607,24 @@ class TimeSheet extends Component {
             TotalTime = "", dvTotMon = "", dvTotTue = "", dvTotWed = "", dvTotThu = "", dvTotFri = "", dvTotSat = "", dvTotSun = ""
         });
     }
+
+    getOrientation = () => {
+        if (this.refs.rootView) {
+            if (Dimensions.get('window').width < Dimensions.get('window').height) {
+                this.setState({ orientation: 'portrait' });
+            }
+            else {
+                this.setState({ orientation: 'landscape' });
+            }
+        }
+    }
+
+
     componentDidMount() {
+        this.getOrientation();
+        Dimensions.addEventListener('change', () => {
+            this.getOrientation();
+        });
         this.empTimesheetList()
 
     }
@@ -625,9 +642,9 @@ class TimeSheet extends Component {
                     onDidFocus={() => this.empWeeklyTimesheetData()}
                 // onWillBlur={() =>this.pageChange()}
                 />
-                <View style={[styles.Container, { backgroundColor: this.props.primaryColor }]}>
+                <View ref="rootView" style={[styles.Container, { backgroundColor: this.props.primaryColor }]}>
 
-                    <View style={{ height: 50, justifyContent: 'center', alignItems: 'center', backgroundColor: this.props.primaryColor }}>
+                    <View style={{ height:this.state.orientation == 'landscape' ? '11%' : '7%', justifyContent: 'center', alignItems: 'center', backgroundColor: this.props.primaryColor }}>
                         <Appbar1 navigation={this.props.navigation}
                             title={"My Timesheet"}
                             calender={true}
@@ -636,13 +653,13 @@ class TimeSheet extends Component {
                         />
                     </View>
 
-                    <View style={{ height: "90%", backgroundColor: this.props.secColor }}>
+                    <View style={{ height: this.state.orientation == 'landscape'?'86%': '90%', backgroundColor: this.props.secColor }}>
                         {/* this.state.timesheetVisible== true ? "80%" */}
                         {
                             this.state.timesheetVisible == true ?
                                 <>
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: this.props.primaryColor }}>
-                                        <View style={{ bottom: 3, margin: 5, }}>
+                                        <View style={{ bottom: 3, margin: 5,}}>
                                             {
                                                 this.state.timesheetVisible == true ?
                                                     <Text style={styles.totalHrs}> {"Total Hours - " + this.state.TotalTime}</Text>
@@ -658,7 +675,7 @@ class TimeSheet extends Component {
 
                                     {
                                         // this.state.timeSheetButton == false ?
-                                        <View style={{ flexDirection: "row", top: 5 }}>
+                                        <View style={{ flexDirection: "row", top: 5,  marginBottom:5}}>
                                             {
                                                 this.state.timesheetData.length == 0 ?
                                                     <TouchableOpacity onPress={() => this.props.navigation.navigate('EditTimeSheet', { "header": "Timesheet Entry", "timesheetId": this.state.timesheetId, "TimeArr": this.props.time, "headerData": this.state.headerData, "timesheetData": [], "headerHrsData": [] })}
@@ -719,7 +736,7 @@ class TimeSheet extends Component {
                                                             <FlatList
                                                                 data={Object.keys(this.state.timesheetData)}
                                                                 renderItem={({ item }) => (
-                                                                    <View style={[styles.sheetData1, { backgroundColor: this.props.stripColor, flexDirection: 'row' }]}>
+                                                                    <View style={[styles.sheetData1, { backgroundColor: this.props.stripColor, flexDirection: 'row',padding: this.state.timesheetData[item].ApproverAction !== "Rejected" ?10:null }]}>
                                                                         {
                                                                             this.state.timesheetData[item].ApproverAction == "Rejected" ?
                                                                                 <View style={[styles.rejected, { backgroundColor: "red" }]} /> : null
@@ -969,10 +986,10 @@ class TimeSheet extends Component {
 
                                 >
                                     <View style={{ backgroundColor: 'white', width: 250, height: 300, bottom: 25, right: 25 }}>
-                                        <View style={{ height: 50, padding: 15, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
+                                        <View style={{ height: 50, padding: 15, marginBottom: 8, backgroundColor: this.props.primaryColor }}>
                                             <Text style={{ fontSize: title, color: this.props.fontColor }}>{'Select Week'}</Text>
                                         </View>
-                                        <View style={{ justifyContent: 'flex-start', alignItems: 'flex-start', top: 15 }}>
+                                        <View style={{ justifyContent: 'flex-start', alignItems: 'flex-start',height:275}}>
                                             <View style={{ borderRadius: 5, width: 250, }}>
                                                 {
                                                     this.state.timesheetList.length == 0 ?
@@ -1171,7 +1188,9 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
     sheetData1: {
-        padding: 10,
+        paddingRight: 10,
+        paddingTop: 10,
+        paddingBottom: 10,
         height: 80,
         width: 200,
         marginTop: 5,
@@ -1182,11 +1201,11 @@ const styles = StyleSheet.create({
         // alignItems: 'center'
     },
     rejected: {
-        // padding: 10,
+        marginRight: 10,
         height: 80,
         width: 2,
-        marginTop: 5,
-        marginBottom: 5,
+        // marginTop: 5,
+        // marginBottom: 5,
         bottom: 10
         // borderWidth: .3,
         // justifyContent: 'center',

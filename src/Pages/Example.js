@@ -3,7 +3,7 @@ import {
     AppRegistry,
     StyleSheet,
     Text,
-    View,
+    View,Dimensions
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Feather';
@@ -39,17 +39,38 @@ export default class Example extends Component {
         super(props);
         // var label = Text
         this.state = {
-            country: '1002'
+            orientation: ''
         };
+    }
+    getOrientation = () => {
+        console.log("method call");
+        
+        if (this.refs.rootView) {
+            if (Dimensions.get('window').width < Dimensions.get('window').height) {
+                this.setState({ orientation: 'portrait' });
+            }
+            else {
+                this.setState({ orientation: 'landscape' });
+            }
+        }
+    }
+
+    componentDidMount(){
+        this.getOrientation();
+        Dimensions.addEventListener('change', () => {
+            this.getOrientation();
+        });
     }
 
     render() {
+        console.log("orrr",this.state.orientation);
+        
         return (
 
-            <View style={{flex: 1,   }}>
-            <View style={{width: '100%', height: '10%', backgroundColor: 'steelblue'}} />
-           <View style={{width: '100%', height: '80%', backgroundColor: 'powderblue'}} />
-             <View style={{width: '100%', height: '10%', backgroundColor: 'skyblue'}} />
+            <View ref="rootView" style={{flex: 1,   }}>
+            <View style={{width: '100%', height: this.state.orientation == 'landscape'?'12%': '8%', backgroundColor: 'steelblue'}} />
+           <View style={{width: '100%', height: this.state.orientation == 'landscape'?'76%': '84%', backgroundColor: 'powderblue'}} />
+             <View style={{width: '100%', height:  this.state.orientation == 'landscape'?'12%':'890%', backgroundColor: 'skyblue'}} />
           </View>
         )
     }

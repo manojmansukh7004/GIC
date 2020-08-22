@@ -173,7 +173,7 @@ class Login extends Component {
                 value={this.state.password}
                 ref={(input) => { this.Password = input; }}
                 blurOnSubmit
-                onSubmitEditing={() => this.onPressLogin()}
+                // onSubmitEditing={() => this.onPressLogin()}
                 onChangeText={text => this.setState({ password: text })}
               />
               <View>

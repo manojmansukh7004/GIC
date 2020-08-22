@@ -333,7 +333,7 @@ class TimesheetEntry extends Component {
                             timeSheetEntry={true}
                         />
                     </View>
-                    <View style={{ height: '90%', backgroundColor: this.props.secColor }}>
+                    <View style={{ height: '90%', backgroundColor: "red" }}>
                         <KeyboardAwareScrollView contentContainerStyle={styles.container}>
                             <View style={styles.horizontalContainer}>
 

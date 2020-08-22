@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    ToastAndroid, Text, View, StyleSheet, Picker, TouchableOpacity, Image, FlatList, ScrollView, StatusBar, TextInput
+    ToastAndroid, Text, View, StyleSheet, Dimensions, TouchableOpacity, Image, FlatList, ScrollView, StatusBar, TextInput
 } from 'react-native';
 import { Paragraph, Card } from 'react-native-paper';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -24,6 +24,7 @@ class TimesheetEntry extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            orientation: '',
             timesheetId: '',
             client: '',
             workList: '',
@@ -58,6 +59,7 @@ class TimesheetEntry extends Component {
             addDescField: "",
             description: "",
             projectDesc: "",
+            type: '',
             time: [],
             headerData: [],
             timesheetData: [],
@@ -71,14 +73,31 @@ class TimesheetEntry extends Component {
         }
     }
 
+    getOrientation = () => {
+
+        if (this.refs.rootView) {
+            if (Dimensions.get('window').width < Dimensions.get('window').height) {
+                this.setState({ orientation: 'portrait' });
+            }
+            else {
+                this.setState({ orientation: 'landscape' });
+            }
+        }
+    }
+
     async componentDidMount() {
+        this.getOrientation();
+        Dimensions.addEventListener('change', () => {
+            this.getOrientation();
+        });
+
         this.setState({
 
             timesheetData: this.props.navigation.state.params.timesheetData,
             headerData: this.props.navigation.state.params.headerData,
             headerHrsData: this.props.navigation.state.params.headerHrsData,
             editVisible: this.props.navigation.state.params.Status,
-            Type: this.props.navigation.state.params.Type
+            type: this.props.navigation.state.params.Type
 
         }, () => {
             lblMon = "Mon, " + moment(new Date(this.state.headerData[0].Mon_Date)).format("DD"),
@@ -158,21 +177,23 @@ class TimesheetEntry extends Component {
         return (
             <>
 
-                <StatusBar translucent barStyle="light-content" backgroundColor='#297AF9' />
-                <View style={[styles.Container, { backgroundColor: '#F9F9F9' }]}>
-                    <View style={{ height: 50, backgroundColor: this.props.primaryColor, }}>
+                <StatusBar translucent barStyle="light-content" backgroundColor={this.props.primaryColor} />
+                <View ref="rootView" style={[styles.Container, { backgroundColor: this.props.secColor }]}>
+                    {/* <View style={{ height: 50, backgroundColor: this.props.primaryColor, }}> */}
+                    <View style={{ width: '100%', height: this.state.orientation == 'landscape' ? '11%' : '7%', backgroundColor: this.props.primaryColor }} >
                         <Appbar navigation={this.props.navigation}
                             title={"Project Details"}
                             handleDeleteRecord={this.handleDeleteRecord}
                             handleEditRecord={this.handleEditRecord}
                             details={this.state.editVisible}
-                            backNavigation={ this.props.navigation.state.params.backNavigation}
+                            backNavigation={this.props.navigation.state.params.backNavigation}
                         />
                     </View>
-                        <View style={{ flex:1 }}>
-                        <ScrollView showsVerticalScrollIndicator={false}
-                         style={styles.container}>
-                            <View style={{ height: '88%',backgroundColor:'#F9F9F9' }}>
+
+                    <View style={[styles.container,{ height: this.state.orientation == 'landscape'?'86%': '90%',backgroundColor: this.props.secColor}]}>
+                        <ScrollView
+                            style={{ marginBottom: 5 }}
+                            showsVerticalScrollIndicator={false}>
                             {
                                 this.state.timesheetData.length !== 0 ?
                                     <>
@@ -230,7 +251,7 @@ class TimesheetEntry extends Component {
                                         <Card style={[styles.descCard, { borderWidth: 1, borderColor: this.state.validation == true && this.state.projectDesc == "" ? 'red' : "transparent" }]}>
                                             <View style={styles.reasonView}>
                                                 <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>DESCRIPTION</Text>
-                                                <ScrollView>
+                                                <ScrollView showsVerticalScrollIndicator={false}>
                                                     <TextInput
                                                         mode="flat"
                                                         underlineColor="white"
@@ -250,7 +271,9 @@ class TimesheetEntry extends Component {
                                             </View>
                                         </Card>
                                         <Card style={styles.descCard}>
-                                            <ScrollView horizontal={true}>
+                                            <ScrollView horizontal={true}
+                                                showsHorizontalScrollIndicator={false}
+                                            >
                                                 <View style={styles.timeView}>
                                                     <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
                                                         <Text style={{ color: this.props.primaryColor }}>{this.state.lblMon}</Text>
@@ -332,40 +355,44 @@ class TimesheetEntry extends Component {
                                                 </View>
                                             </ScrollView>
                                         </Card>
-                                        <View style={styles.horizontalContainer}>
-                                            <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.workList == 0 ? 'red' : "transparent" }]}>
-                                                <View style={styles.cardMenuSpasing}>
-                                                    <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>APPROVER</Text>
-                                                    <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.timesheetData.Approver}</Text>
+                                        {
+                                            this.state.type !== "Pending" && this.state.type !== "Completed" ?
+                                                <>
+                                                    <View style={styles.horizontalContainer}>
+                                                        <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.workList == 0 ? 'red' : "transparent" }]}>
+                                                            <View style={styles.cardMenuSpasing}>
+                                                                <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>APPROVER</Text>
+                                                                <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.timesheetData.Approver}</Text>
 
-                                                </View>
-                                            </Card>
+                                                            </View>
+                                                        </Card>
 
-                                            <Card style={styles.cards}>
-                                                <View style={styles.cardMenuSpasing}>
-                                                    <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>QUALITY OF WORK</Text>
-                                                    <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.timesheetData.ApprQOWRating}</Text>
-                                                </View>
-                                            </Card>
-                                        </View>
-                                        <View style={styles.horizontalContainer}>
-                                            <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.activity == 0 ? 'red' : "transparent" }]}>
-                                                <View style={styles.cardMenuSpasing}>
-                                                    <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>ON TIME PERFORMANCE</Text>
-                                                    <Text style={[styles.twoCardLabel, { color: "#4D504F", }]}>{this.state.timesheetData.ApprOTPRating}</Text>
+                                                        <Card style={styles.cards}>
+                                                            <View style={styles.cardMenuSpasing}>
+                                                                <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>QUALITY OF WORK</Text>
+                                                                <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.timesheetData.ApprQOWRating}</Text>
+                                                            </View>
+                                                        </Card>
+                                                    </View>
+                                                    <View style={[styles.horizontalContainer,{marginBottom:15}]}>
+                                                        <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.activity == 0 ? 'red' : "transparent" }]}>
+                                                            <View style={styles.cardMenuSpasing}>
+                                                                <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>ON TIME PERFORMANCE</Text>
+                                                                <Text style={[styles.twoCardLabel, { color: "#4D504F", }]}>{this.state.timesheetData.ApprOTPRating}</Text>
 
-                                                </View>
-                                            </Card>
+                                                            </View>
+                                                        </Card>
 
-                                            <Card style={styles.cards}>
-                                                <View style={styles.cardMenuSpasing}>
-                                                    <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>STATUS</Text>
-                                                    <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.timesheetData.Status}</Text>
+                                                        <Card style={styles.cards}>
+                                                            <View style={styles.cardMenuSpasing}>
+                                                                <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>STATUS</Text>
+                                                                <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.timesheetData.Status}</Text>
 
-                                                </View>
-                                            </Card>
-                                        </View>
-
+                                                            </View>
+                                                        </Card>
+                                                    </View>
+                                                </> : null
+                                        }
                                         <Dialog
                                             visible={this.state.addDescVisible}
                                             style={{ backgroundColor: 'white', height: 250, width: 350 }}
@@ -382,15 +409,11 @@ class TimesheetEntry extends Component {
                                                             multiline={true}
                                                             editable={false}
                                                             value={this.state.addDesc}
-                                                            // placeholder="Enter Description"
                                                             textAlignVertical="top"
                                                             underlineColor="white"
                                                             keyboardType="default"
                                                             autoFocus={false}
                                                             style={styles.longText}
-                                                        // dense
-                                                        // onChangeText={value => this.setState({ addDesc: value, description: value })}
-                                                        // onChangeText={value => this.handleAddDescription({ value})}
                                                         />
                                                     </View>
                                                 </View>
@@ -403,7 +426,6 @@ class TimesheetEntry extends Component {
                                             style={
                                                 {
                                                     width: 400,
-                                                    // height:200
                                                 }
                                             }
                                         >
@@ -433,7 +455,6 @@ class TimesheetEntry extends Component {
                                                     style={{ borderWidth: 1, margin: 5, borderColor: 'red' }}
                                                     onPress={() =>
                                                         this.setState({ visible: false, deleteRecord: true }, () => { this.DeleteRecord() })
-                                                        // this.props.navigation.navigate('SplashScreen')
                                                     }
                                                 />
                                             </View>
@@ -443,10 +464,8 @@ class TimesheetEntry extends Component {
 
                                     : null
                             }
-                            </View>
-                    </ScrollView>
-
-                        </View>
+                        </ScrollView>
+                    </View>
                 </View>
 
 
@@ -478,11 +497,12 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     container: {
-        // flex: 1,
+        // height: '90%',
+        // backgroundColor:'red',
         paddingLeft: 10,
         paddingRight: 10,
-        backgroundColor: '#F9F9F9',
-        marginBottom:30,
+        // backgroundColor: '#F9F9F9',
+        // marginBottom: 30,
     },
     cards: {
         elevation: 3,

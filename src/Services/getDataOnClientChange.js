@@ -1,4 +1,4 @@
-async function getDataOnClientChange(EmpID, TimesheetId, ClientCode, baseUrl) {
+async function getDataOnClientChange(EmpID, TimesheetId, ClientCode, ProjectGroup, baseUrl) {
 
     const payload = {
         "loginDetails":
@@ -11,7 +11,8 @@ async function getDataOnClientChange(EmpID, TimesheetId, ClientCode, baseUrl) {
           "EmployeeNo": EmpID,
           "ClientCode": ClientCode,
           "Flag": "1",
-          "TimesheetId": TimesheetId
+          "TimesheetId": TimesheetId,
+          "ProjectGroup":ProjectGroup
         }
 }
 
