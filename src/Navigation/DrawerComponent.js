@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { Text, View, TouchableOpacity, StyleSheet, Image, BackHandler, Alert, StatusBar, FlatList } from "react-native";
+import { ScrollView, Text, View, TouchableOpacity, StyleSheet, Image, BackHandler, Alert, StatusBar, FlatList } from "react-native";
 import { Divider } from 'material-bread';
-import { Dialog, Button,Avatar } from 'material-bread';
+import { Dialog, Button, Avatar } from 'material-bread';
 import ColorPalette from 'react-native-color-palette'
 
 // import DeviceInfo from 'react-native-device-info';
@@ -98,7 +98,7 @@ class DrawerComponent extends Component {
     render() {
         const { navigation } = this.props;
         return (
-            <View style={{ flex: 1, }}>
+            <View style={{ }}>
                 <StatusBar translucent barStyle="light-content" backgroundColor={this.state.primaryColor} />
 
                 <View style={[styles.sideMenuContainer, { backgroundColor: this.props.secColor }]}>
@@ -110,9 +110,8 @@ class DrawerComponent extends Component {
                     <View style={{ jujustifyContent: 'flex-end', alignItems: 'flex-end', marginRight: 3 }}>
                         {/* <Text>{VersionCode} </Text> */}
                     </View>
-                    <View
-
-                    />
+                   
+                    <ScrollView>
                     <View style={{
                         flexDirection: 'row',
                         width: '100%',
@@ -126,25 +125,19 @@ class DrawerComponent extends Component {
 
                     <TouchableOpacity
                         style={styles.title}
-                        onPress={() => this.setState({ key: 1 }, () => {
-                            navigation.navigate("TimeSheet")
-                        })}
+                        onPress={() => this.setState({ key: 1 }, () => {navigation.navigate("TimeSheet")})}
                     >
                         <View style={{ marginRight: 10, marginLeft: 20 }}>
-                            <Image style={{ height: 25, width: 25 }}
-                                source={require("../Assets/darkCalendar.png")} />
+                            <Image style={{ height: 25, width: 25 }} source={require("../Assets/darkCalendar.png")} />
                         </View>
                         <Text style={[styles.text, { color: this.state.key === 1 ? 'blue' : 'black' }]}>My TimeSheet</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.strip}
-                        onPress={() => this.setState({ key: 2 }, () => {
-                            navigation.navigate("TsApproval")
-                        })}
+                        onPress={() => this.setState({ key: 2 }, () => {navigation.navigate("TsApproval")})}
                     >
                         <View style={{ marginRight: 10, marginLeft: 20 }}>
-                            <Image style={{ height: 25, width: 25 }}
-                                source={require("../Assets/approval.png")} />
+                            <Image style={{ height: 25, width: 25 }} source={require("../Assets/approval.png")} />
                         </View>
                         <Text style={[styles.text, { color: this.state.key === 2 ? 'blue' : 'black' }]}>TimeSheet Approval</Text>
                     </TouchableOpacity>
@@ -154,6 +147,16 @@ class DrawerComponent extends Component {
                     <View style={styles.title}>
                         <Text style={styles.Title}>Settings</Text>
                     </View>
+
+                    <TouchableOpacity style={styles.strip}
+                        onPress={() => this.setState({ key: 3 }, () => {navigation.navigate("Help")})}
+                    >
+                        <View style={{ marginRight: 10, marginLeft: 20 }}>
+                            <Image style={{ height: 25, width: 25 }} source={require("../Assets/question.png")} />
+                        </View>
+                        <Text style={[styles.text, { color: this.state.key === 3 ? 'blue' : 'black' }]}>{"Help"}</Text>
+                    </TouchableOpacity>
+
                     {/* <TouchableOpacity
                         style={styles.title}
                         onPress={() => this.setState({ visible: 1 }, () => {
@@ -185,14 +188,14 @@ class DrawerComponent extends Component {
                                     renderItem={({ item, index }) => (
                                         console.log(this.state.colors[item]),
                                         <>
-                                        <Text>mj</Text>
-                                        <Text>mj</Text>
-                                        <Text>mj</Text>
+                                            <Text>mj</Text>
+                                            <Text>mj</Text>
+                                            <Text>mj</Text>
                                         </>
                                     )}
-                                    />
-                                    </View>
-                                        {/* <ColorPalette
+                                />
+                            </View>
+                            {/* <ColorPalette
                                     onChange={color => this.setState({selectedColor : color},()=>{console.log(this.state.selectedColor);
                                     })}
                                     paletteStyles={{flexWrap: "wrap"}}
@@ -210,22 +213,23 @@ class DrawerComponent extends Component {
                             {/* </View> */}
                         </View>
                     </Dialog>
+                    </ScrollView>
                 </View>
 
-                </View>
-                );
-            }
-        }
+            </View>
+        );
+    }
+}
 const mapStateToProps = state => {
     return {
-                    userId: state.userId,
-                baseUrl: state.baseUrl,
-                primaryColor: state.primaryColor,
-                secColor: state.secColor,
-                fontColor: state.fontColor
-            }
-        }
-        
+        userId: state.userId,
+        baseUrl: state.baseUrl,
+        primaryColor: state.primaryColor,
+        secColor: state.secColor,
+        fontColor: state.fontColor
+    }
+}
+
 // const mapDispatchToProps = dispatch => {
 //     return {
 //         setCountry: (country) => dispatch(setCountry(country)),
@@ -255,46 +259,46 @@ const mapStateToProps = state => {
 // }
 export default connect(mapStateToProps)(DrawerComponent)
 const styles = StyleSheet.create({
-                    Title: {
-                    fontSize: 14,
-                marginLeft: 15,
-                color: 'grey'
-                // fontWeight: 'bold',
-            },
+    Title: {
+        fontSize: 14,
+        marginLeft: 15,
+        color: 'grey'
+        // fontWeight: 'bold',
+    },
     title: {
-                    flexDirection: 'row',
-                width: '100%',
-                alignItems: 'flex-start',
-                paddingTop: 10,
-                paddingBottom: 10,
-            },
+        flexDirection: 'row',
+        width: '100%',
+        alignItems: 'flex-start',
+        paddingTop: 10,
+        paddingBottom: 10,
+    },
     text: {
-                    fontSize: 16,
-                margin: 5,
-                marginLeft: 15,
-                // fontWeight: 'bold',
-        
-            },
+        fontSize: 16,
+        margin: 5,
+        marginLeft: 15,
+        // fontWeight: 'bold',
+
+    },
     icon: {
-                    width: 24,
-                height: 24,
-                // margin: 5
-            },
+        width: 24,
+        height: 24,
+        // margin: 5
+    },
     sideMenuContainer: {
-                    width: '100%',
-                height: '100%',
-                // backgroundColor: '#fff',
-                // alignItems: 'flex-start',
-                marginTop: 20,
-            },
+        width: '100%',
+        height: '100%',
+        // backgroundColor: '#fff',
+        // alignItems: 'flex-start',
+        marginTop: 20,
+    },
     sideMenuProfileIcon: {
-                    justifyContent: 'center'
-            },
+        justifyContent: 'center'
+    },
     strip: {
-                    flexDirection: 'row',
-                width: '100%',
-                alignItems: 'flex-start',
-                paddingTop: 10,
-        
-            }
+        flexDirection: 'row',
+        width: '100%',
+        alignItems: 'flex-start',
+        paddingTop: 10,
+
+    }
 });

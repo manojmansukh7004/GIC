@@ -7,13 +7,14 @@ import { createSwitchNavigator, createAppContainer } from "react-navigation";
 import DrawerComponent from "./DrawerComponent";
 import TimeSheet from '../Pages/TimeSheet';
 import TsApproval from '../Pages/TsApproval';
-
+import Help from '../Pages/Help'
 import SplashScreen11 from '../Pages/SplashScreen'
 
 
 const DrawerNavigator = createDrawerNavigator({
     TimeSheet: { screen: TimeSheet },
     TsApproval: { screen: TsApproval },
+    Help: { screen: Help },
 
 
 },
