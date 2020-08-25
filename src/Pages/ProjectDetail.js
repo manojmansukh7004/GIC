@@ -5,7 +5,7 @@ import {
 import { Paragraph, Card } from 'react-native-paper';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { connect } from 'react-redux'
-import { DeleteTimesheetRecord } from '../Services/DeleteTimesheetRecord';
+import { DeleteTimesheetRecord } from '../Services/MyTimesheet/DeleteTimesheetRecord';
 import { Dialog, Button } from 'material-bread';
 import moment from 'moment';
 import Appbar from '../Component/AppBar'
@@ -497,8 +497,7 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     container: {
-        // height: '90%',
-        // backgroundColor:'red',
+    
         paddingLeft: 10,
         paddingRight: 10,
         // backgroundColor: '#F9F9F9',
@@ -547,15 +546,11 @@ const styles = StyleSheet.create({
     timeView: { padding: 10, flexDirection: 'row' },
     sheetData: {
         padding: 10,
-        // height: 70,
         width: 80,
         marginTop: 5,
         marginBottom: 5,
-        // borderWidth: .3,
         justifyContent: 'center',
         alignItems: 'center',
-        // right: 4,
-        // backgroundColor:'red'
     },
     hrsData: {
         padding: 10,
@@ -565,12 +560,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 10,
-        backgroundColor: '#FFFF'
+        backgroundColor:  "#E9ECEF"
     },
     textPopup: {
         padding: 3,
         fontSize: cardDate,
-        // margin: 5,
         marginLeft: 15,
     },
 })

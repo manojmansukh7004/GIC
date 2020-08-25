@@ -7,11 +7,11 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { connect } from 'react-redux'
 import moment from 'moment';
 import { Dialog } from 'material-bread';
-import { saveTimesheetEntry } from '../Services/saveTimesheetEntry';
-import { getTsEntryDropdownData } from '../Services/getTsEntryDropdownData';
-import { getDataOnClientChange } from '../Services/getDataOnClientChange';
-import { getDataOnProjectChange } from '../Services/getDataOnProjectChange';
-import { GetDataOnPhaseChange } from '../Services/GetDataOnPhaseChange';
+import { saveTimesheetEntry } from '../Services/MyTimesheet/saveTimesheetEntry';
+import { getTsEntryDropdownData } from '../Services/MyTimesheet/getTsEntryDropdownData';
+import { getDataOnClientChange } from '../Services/MyTimesheet/getDataOnClientChange';
+import { getDataOnProjectChange } from '../Services/MyTimesheet/getDataOnProjectChange';
+import { GetDataOnPhaseChange } from '../Services/MyTimesheet/GetDataOnPhaseChange';
 import Appbar from '../Component/AppBar'
 const showToast = (Msg) => {
     ToastAndroid.show(Msg, ToastAndroid.LONG);

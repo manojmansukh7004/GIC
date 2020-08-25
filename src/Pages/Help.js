@@ -61,7 +61,7 @@ class Help extends Component {
                 <View ref="rootView" style={[styles.Container, { backgroundColor: this.props.primaryColor }]}>
                     <View style={{ height: this.state.orientation == 'landscape' ? '11%' : '7%', justifyContent: 'center', alignItems: 'center', backgroundColor: this.props.primaryColor }}>
                         <Appbar1 navigation={this.props.navigation}
-                            title={"Help"}
+                            title={"User Guide"}
                             // filter={true}
                             sideDrawerVisible={this.sideDrawerVisible}
                         // handleCalenderStatus={this.handleCalenderStatus}
@@ -75,34 +75,24 @@ class Help extends Component {
                             <View style={{ paddingleft: 10, paddingRight: 10, backgroundColor: 'transparent' }}>
                             <Text style={{fontSize: 16,fontWeight: 'bold',marginTop:5}}>My Timesheet</Text>
                                 <View style={{paddingLeft:10}}>
-                                    <Paragraph>1. press on plus button to select the week and date.</Paragraph>
-                                    <Paragraph>2. press on calendar icon to create timesheet for particular week.</Paragraph>
-                                    <Paragraph>3. select week pop-up, it help to open the timesheet for particular week days .</Paragraph>
-                                    <Paragraph>4. Add row Button which is help to create timesheet record. </Paragraph>
-                                    <Paragraph>5. Save Button which is help to save the record. An save record can be edited.</Paragraph>
-                                    <Paragraph>6. Submit Button which is help to submit the record to Approver. An submited record can not be edited.</Paragraph>
-                                    <Paragraph>7. If you want to see project details, then press on project name.</Paragraph>
-                                    <Paragraph>8. In Detail dashboard you can perform Edit and Delete operation</Paragraph>
+                                    <Paragraph>1. Click on plus button to select the week and date.</Paragraph>
+                                    <Paragraph>2. Click on Calendar icon to create new timesheet for a particular week.</Paragraph>
+                                    <Paragraph>3. Select week from the pop up, to open the timesheet for that particular week.</Paragraph>
+                                    <Paragraph>4. Click on Add Row button to add timesheet records. </Paragraph>
+                                    <Paragraph>5. Click on Save button on the bottom to save the timesheet details. Time for an activity can be edited from week view page also.</Paragraph>
+                                    <Paragraph>6. Click on Submit button once you fill the timesheet for the whole week. Please note, timesheet once submitted cannot be edited.</Paragraph>
+                                    <Paragraph>7. To view the timesheet entry detail, click on project name.</Paragraph>
+                                    <Paragraph>8. Close the popup window by clicking outside the window.</Paragraph>
                                 </View>
                                 <Text style={{fontSize: 16,fontWeight: 'bold',marginTop:5}}>Timesheet Approval</Text>
                                 <View style={{paddingLeft:10}}>
-                                    <Paragraph>1. Search Button which is help to open a specific timesheet record of user.</Paragraph>
-                                    <Paragraph>2. clear Button clear the filter criteria fields.</Paragraph>
-                                    <Paragraph>3. Green Button which is used for approve timesheet record.</Paragraph>
-                                    <Paragraph>4. Red Button which is used for reject timesheet record. </Paragraph>
-                                    <Paragraph>5. If you want to approve/reject specific timesheet record, 
-                                        then hit on that single record.</Paragraph>
-                                    <Paragraph>6. If you want to approve/reject multiple record at a time, then first long press on single 
-                                        record, after starting of selection mode we can select multiple records for approve/reject.
-                                    </Paragraph>
+                                    <Paragraph>1. Click on filter button and apply filters to open the timesheet records filled by the subordinate .</Paragraph>
+                                    <Paragraph>2. Use Clear button to clear the filter fields.</Paragraph>
+                                    <Paragraph>3. Click on Green tick mark button to approve and Red cross button to reject the entire row.</Paragraph>
+                                    <Paragraph>4. Click on the time filled by the subordinate, a screen will pop up with approve and reject buttons. Specific timesheet record can be approved or rejected through these buttons. </Paragraph>
+                                    <Paragraph>5. To approve or reject the multiple rows at a time, long press on a single row. Entire row will be selected and highlighted in green color. Select other rows by clicking on it and use buttons on top to approve or reject.</Paragraph>
                                 </View>
-                                <Text style={{fontSize: 16,fontWeight: 'bold',marginTop:5}}>Common</Text>
-                                <View style={{paddingLeft:10}}>
-                                    <Paragraph>1. Each and Every pop-up, slide window, etc. are closed by pressing outside the window (Blanck space).</Paragraph>
-                                </View>
-
                             </View>
-
                         </ScrollView>
                     </View>
                 </View>

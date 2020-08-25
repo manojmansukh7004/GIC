@@ -33,7 +33,7 @@ class AppBar extends Component {
     return (
       <View style={styles.subContiner1}>
 
-        <View style={{ flexDirection: 'row', width: "85%", height:'100%' }}>
+        <View style={{ flexDirection: 'row', width: "75%", height:'100%',backgroundColor:'transparent' }}>
           <View style={{ justifyContent: 'center', alignItems: 'center', width: "10%", marginLeft: 5 }}>
             <TouchableOpacity onPress={() => this.toggleDrawer()}>
               <Image
@@ -48,7 +48,7 @@ class AppBar extends Component {
             </Title>
           </View>
         </View>
-        <View style={{ width: "15%", flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+        <View style={{backgroundColor:'transparent', width: "25%", flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
           <View style={{ margin: 5, }}>
             {
               this.props.calender == true ?

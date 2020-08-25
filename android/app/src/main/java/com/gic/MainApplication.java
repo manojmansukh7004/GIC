@@ -10,7 +10,7 @@ import com.horcrux.svg.SvgPackage;
 import com.horcrux.svg.SvgPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 //import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
-import com.learnium.RNDeviceInfo.RNDeviceInfo;
+//import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;

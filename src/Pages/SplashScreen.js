@@ -7,14 +7,24 @@ import {
 } from 'react-native';
 import { storeData, getData } from '../Config/AsyncStorace'
 import { isSignedIn } from "./Authentication";
-// import DeviceInfo from 'react-native-device-info';
+import DeviceInfo from 'react-native-device-info';
 import { ActivityIndicator, Colors, Card, Button } from 'react-native-paper';
 import { connect } from 'react-redux'
 import { setUser, setBaseUrl } from '../Redux/Action'
 const displayWidth = Dimensions.get('window').width;
 const contantPadding = 30;
 // import { FetchMobileVersion } from "../Services/Version/FetchMobileVersion"
-
+import {
+  BallIndicator,
+  BarIndicator,
+  DotIndicator,
+  MaterialIndicator,
+  PacmanIndicator,
+  PulseIndicator,
+  SkypeIndicator,
+  UIActivityIndicator,
+  WaveIndicator,
+} from 'react-native-indicators';
 
 class SplashScreen extends Component {
   state = {
@@ -32,6 +42,18 @@ class SplashScreen extends Component {
     RedirectPage: '',
     VersionCode: ''
   };
+
+  getOrientation = () => {
+
+    if (this.refs.rootView) {
+        if (Dimensions.get('window').width < Dimensions.get('window').height) {
+            this.setState({ orientation: 'portrait' });
+        }
+        else {
+            this.setState({ orientation: 'landscape' });
+        }
+    }
+}
 
   FetchFiltetData = async () => {
 
@@ -51,7 +73,7 @@ class SplashScreen extends Component {
     this.props.setBaseUrl(baseUrl)
 
     this.props.navigation.navigate("TimeSheet")
-    // this.setState({ loading: false });  
+    this.setState({ loading: false });  
 
   }
 
@@ -60,12 +82,16 @@ class SplashScreen extends Component {
   }
 
   async componentDidMount() {
+    this.getOrientation();
+    Dimensions.addEventListener('change', () => {
+        this.getOrientation();
+    });
     let oldVersionCode =1
     //  DeviceInfo.getBuildNumber();
     console.log("oldVersionCode", oldVersionCode);
+    const version = DeviceInfo.getVersion();
 
-
-
+    console.log("version", version);
     await storeData("baseUrl", "http://gictimesheettest.orgtix.com/webApi");
     setTimeout(async () => {
       const payload = {
@@ -137,15 +163,15 @@ class SplashScreen extends Component {
       );
     }
     return (
-      <View style={styles.container}>
-                        <StatusBar translucent barStyle="light-content" backgroundColor='#297AF9' />
-        {/* <Image style={{ height: 180, width: 180 }} source={require('../Assets/logo11.png')} /> */}
-        <Image style={styles.img} source={require('../Assets/logo.jpg')} />
-        {/* <Image style={{}} source={require('../Assets/loader.gif')} /> */}
+      <View ref="rootView" style={[styles.Container]}>
+      <StatusBar translucent barStyle="light-content" backgroundColor='#297AF9' />
+       <View style={{marginTop: this.state.orientation=='landscape' ? 80: 150, }}>
+       <Image style={{ height: 100, width: 280 ,}} source={require('../Assets/logo.jpg')} />
+      {
+        this.state.loading == true ? <UIActivityIndicator color= "#297AF9" size= {50}/>:null
+      }
 
-        {
-          this.state.loading == true ? <ActivityIndicator size={40} animating={true} color={Colors.blue800} /> : null
-        }
+       </View>
 
       </View>
     );
@@ -167,6 +193,15 @@ export default connect(
 
 
 const styles = StyleSheet.create({
+  Container: {
+    flex: 1,
+    display: 'flex',
+    top: 22.5,
+    width: '100%',
+    height: '100%',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+},
   img: {
     width: displayWidth - 3.4 * contantPadding,
     height: (displayWidth - 3.5 * contantPadding) / 3,
@@ -177,7 +212,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     backgroundColor: 'white',
-    marginTop: 150
+    // marginTop: 150
   },
   card: {
     height: 320,

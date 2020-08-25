@@ -8,11 +8,11 @@ import { connect } from 'react-redux'
 import { Dialog, SheetBottom } from 'material-bread';
 import { NavigationEvents } from 'react-navigation';
 import moment from 'moment';
-import { CreateNewTimesheet } from '../Services/CreateNewTimesheet'
-import { GetEmpTimesheetList } from '../Services/GetEmpTimesheetList'
-import { GetEmpWeeklyTimesheetData } from '../Services/GetEmpWeeklyTimesheetData'
-import { saveTimesheetEntry } from '../Services/saveTimesheetEntry'
-import { CheckPreviousEmpTSStatus } from '../Services/CheckPreviousTSStatus'
+import { CreateNewTimesheet } from '../Services/MyTimesheet/CreateNewTimesheet'
+import { GetEmpTimesheetList } from '../Services/MyTimesheet/GetEmpTimesheetList'
+import { GetEmpWeeklyTimesheetData } from '../Services/MyTimesheet/GetEmpWeeklyTimesheetData'
+import { saveTimesheetEntry } from '../Services/MyTimesheet/saveTimesheetEntry'
+import { CheckPreviousEmpTSStatus } from '../Services/MyTimesheet/CheckPreviousTSStatus'
 import { setTsId } from '../Redux/Action'
 const showToast = (Msg) => {
     ToastAndroid.show(Msg, ToastAndroid.LONG);

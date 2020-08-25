@@ -142,11 +142,7 @@ class DrawerComponent extends Component {
                         <Text style={[styles.text, { color: this.state.key === 2 ? 'blue' : 'black' }]}>TimeSheet Approval</Text>
                     </TouchableOpacity>
 
-                    <Divider style={{ borderWidth: .3, borderColor: 'grey', backgroundColor: 'grey' }} />
-
-                    <View style={styles.title}>
-                        <Text style={styles.Title}>Settings</Text>
-                    </View>
+                    
 
                     <TouchableOpacity style={styles.strip}
                         onPress={() => this.setState({ key: 3 }, () => {navigation.navigate("Help")})}
@@ -154,8 +150,10 @@ class DrawerComponent extends Component {
                         <View style={{ marginRight: 10, marginLeft: 20 }}>
                             <Image style={{ height: 25, width: 25 }} source={require("../Assets/question.png")} />
                         </View>
-                        <Text style={[styles.text, { color: this.state.key === 3 ? 'blue' : 'black' }]}>{"Help"}</Text>
+                        <Text style={[styles.text, { color: this.state.key === 3 ? 'blue' : 'black' }]}>{"User Guide"}</Text>
                     </TouchableOpacity>
+
+                    <Divider style={{ borderWidth: .3, borderColor: 'grey', backgroundColor: 'grey' }} />
 
                     {/* <TouchableOpacity
                         style={styles.title}
@@ -299,6 +297,7 @@ const styles = StyleSheet.create({
         width: '100%',
         alignItems: 'flex-start',
         paddingTop: 10,
+        paddingBottom: 10,
 
     }
 });
