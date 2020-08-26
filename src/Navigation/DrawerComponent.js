@@ -34,7 +34,7 @@ class DrawerComponent extends Component {
 
         //  BackHandler.exitApp()
 
-
+        // this.props.navigation.navigate("TimeSheet",{"Loading": false})
         Alert.alert("Hold on!", "Are you sure you want to Exit ?", [
             {
                 text: "NO",
@@ -91,6 +91,7 @@ class DrawerComponent extends Component {
     }
 
     async componentDidMount() {
+        BackHandler.addEventListener("hardwareBackPress", this.backAction);
 
 
     }
@@ -125,7 +126,7 @@ class DrawerComponent extends Component {
 
                     <TouchableOpacity
                         style={styles.title}
-                        onPress={() => this.setState({ key: 1 }, () => {navigation.navigate("TimeSheet")})}
+                        onPress={() => this.setState({ key: 1 }, () => {navigation.navigate("TimeSheet",{"Loading": true})})}
                     >
                         <View style={{ marginRight: 10, marginLeft: 20 }}>
                             <Image style={{ height: 25, width: 25 }} source={require("../Assets/darkCalendar.png")} />
@@ -134,7 +135,7 @@ class DrawerComponent extends Component {
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.strip}
-                        onPress={() => this.setState({ key: 2 }, () => {navigation.navigate("TsApproval")})}
+                        onPress={() => this.setState({ key: 2 }, () => {navigation.navigate("TsApproval",{"Loading": true})})}
                     >
                         <View style={{ marginRight: 10, marginLeft: 20 }}>
                             <Image style={{ height: 25, width: 25 }} source={require("../Assets/approval.png")} />

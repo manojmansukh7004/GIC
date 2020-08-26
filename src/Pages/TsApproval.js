@@ -255,7 +255,7 @@ class TimeSheet extends Component {
         this.setState({
             dataTable: false,
             client: [], project: [], type: '', resourceName: '', resource: [], timesheet: '', timesheetData: [],
-            resourceList: [], timesheetList: [], resourceList: [], type1: '', resource1: '', timesheet1: '',
+            resourceList: [], timesheetList: [], resourceList: [], type1: '', resource1: '', timesheet1: '',visible:true
         })
     }
 
@@ -458,6 +458,7 @@ class TimeSheet extends Component {
         }
     }
 
+  
 
     async componentDidMount() {
         this.getOrientation();
@@ -484,10 +485,10 @@ class TimeSheet extends Component {
             <>
                 <StatusBar translucent barStyle="light-content" backgroundColor={this.props.primaryColor} />
                 <NavigationEvents
-                // onDidFocus={() => this.handleShowReport()}
-                // onWillBlur={() =>this.pageChange()}
+                onDidFocus={() => this.props.navigation.state.params.Loading ==true ? this.handleClear():null}
+                // onWillBlur={() =>this.handleClear()}
                 />
-                <View ref="rootView" style={[styles.Container, { backgroundColor: this.props.primaryColor }]}>
+                <View ref="rootView" style={[styles.Container, {  }]}>
                     <View style={{ height: this.state.orientation == 'landscape' ? '11%' : '7%', justifyContent: 'center', alignItems: 'center', backgroundColor: this.props.primaryColor }}>
                         <Appbar1 navigation={this.props.navigation}
                             title={"Subordinate's Timesheet"}
@@ -527,7 +528,7 @@ class TimeSheet extends Component {
                                     { 
                                     this.state.loading == true? 
                                     <View style={{ margin:10, justifyContent: 'center', alignItems: 'center' }}>
-                                        <UIActivityIndicator color={this.props.primaryColor} size={50} />
+                                        <UIActivityIndicator color={this.props.primaryColor} size={30} />
                                     </View>:null
                                     }
                                     {
@@ -914,12 +915,12 @@ class TimeSheet extends Component {
                                         </TouchableOpacity>
                                     </Card>
 
-                                    <View style={{ flexDirection: 'row', margin: 20, justifyContent: 'space-evenly' }}>
-                                        <Button mode="contained" style={{ height: 40, width: 150, margin: 15, backgroundColor: this.props.primaryColor }}
+                                    <View style={{ flexDirection: 'row', margin: 20, justifyContent: 'center',alignItems: 'center',width:'90%', backgroundColor: 'transparent'}}>
+                                        <Button mode="contained" style={{ height: 40, width: "45%", margin: 10, backgroundColor: this.props.primaryColor }}
                                             onPress={this.handleShowReport}>
                                             Search
                                         </Button>
-                                        <Button mode="contained" style={{ height: 40, width: 150, margin: 15, backgroundColor: this.props.primaryColor }}
+                                        <Button mode="contained" style={{ height: 40, width: "45%", margin: 10, backgroundColor: this.props.primaryColor }}
                                             onPress={this.handleClear}>
                                             Clear
                                         </Button>

@@ -3,7 +3,7 @@ import {
     ToastAndroid, Text, View, StyleSheet, Dimensions, TouchableOpacity, Image, FlatList, ScrollView, StatusBar, TextInput
 } from 'react-native';
 import { Paragraph, Card } from 'react-native-paper';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import Modal from 'react-native-modal';
 import { connect } from 'react-redux'
 import { DeleteTimesheetRecord } from '../Services/MyTimesheet/DeleteTimesheetRecord';
 import { Dialog, Button } from 'material-bread';
@@ -178,9 +178,9 @@ class TimesheetEntry extends Component {
             <>
 
                 <StatusBar translucent barStyle="light-content" backgroundColor={this.props.primaryColor} />
-                <View ref="rootView" style={[styles.Container, { backgroundColor: this.props.secColor }]}>
+                <View ref="rootView" style={[styles.Container, {  }]}>
                     {/* <View style={{ height: 50, backgroundColor: this.props.primaryColor, }}> */}
-                    <View style={{ width: '100%', height: this.state.orientation == 'landscape' ? '11%' : '7%', backgroundColor: this.props.primaryColor }} >
+                    <View style={{ justifyContent: 'center', alignItems: 'center', width: '100%', height: this.state.orientation == 'landscape' ? '11%' : '7%', backgroundColor: this.props.primaryColor }} >
                         <Appbar navigation={this.props.navigation}
                             title={"Project Details"}
                             handleDeleteRecord={this.handleDeleteRecord}
@@ -190,7 +190,7 @@ class TimesheetEntry extends Component {
                         />
                     </View>
 
-                    <View style={[styles.container,{ height: this.state.orientation == 'landscape'?'86%': '90%',backgroundColor: this.props.secColor}]}>
+                    <View style={[styles.container, { height: this.state.orientation == 'landscape' ? '86%' : '90%', backgroundColor: this.props.secColor }]}>
                         <ScrollView
                             style={{ marginBottom: 5 }}
                             showsVerticalScrollIndicator={false}>
@@ -200,11 +200,21 @@ class TimesheetEntry extends Component {
                                         <View style={styles.horizontalContainer}>
                                             <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.client == 0 ? 'red' : "transparent" }]}>
                                                 <View style={styles.cardMenuSpasing}>
+                                                    <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>PROJECT GROUP</Text>
+                                                    <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.timesheetData.ProjectGroupText == null? '--Select--': this.state.timesheetData.ProjectGroupText}</Text>
+                                                </View>
+                                            </Card>
+
+                                            <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.client == 0 ? 'red' : "transparent" }]}>
+                                                <View style={styles.cardMenuSpasing}>
                                                     <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>CLIENT</Text>
                                                     <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.timesheetData.ClientName}</Text>
 
                                                 </View>
                                             </Card>
+
+                                        </View>
+                                        <View style={styles.horizontalContainer}>
 
                                             <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.project == 0 ? 'red' : "transparent" }]}>
                                                 <View style={styles.cardMenuSpasing}>
@@ -213,8 +223,6 @@ class TimesheetEntry extends Component {
 
                                                 </View>
                                             </Card>
-                                        </View>
-                                        <View style={styles.horizontalContainer}>
                                             <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.workList == 0 ? 'red' : "transparent" }]}>
                                                 <View style={styles.cardMenuSpasing}>
                                                     <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>TYPE OF WORK</Text>
@@ -223,6 +231,9 @@ class TimesheetEntry extends Component {
                                                 </View>
                                             </Card>
 
+
+                                        </View>
+                                        <View style={styles.horizontalContainer}>
                                             <Card style={styles.cards}>
                                                 <View style={styles.cardMenuSpasing}>
                                                     <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>PHASE</Text>
@@ -230,8 +241,6 @@ class TimesheetEntry extends Component {
 
                                                 </View>
                                             </Card>
-                                        </View>
-                                        <View style={styles.horizontalContainer}>
                                             <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.activity == 0 ? 'red' : "transparent" }]}>
                                                 <View style={styles.cardMenuSpasing}>
                                                     <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>ACTIVITY</Text>
@@ -374,7 +383,7 @@ class TimesheetEntry extends Component {
                                                             </View>
                                                         </Card>
                                                     </View>
-                                                    <View style={[styles.horizontalContainer,{marginBottom:15}]}>
+                                                    <View style={[styles.horizontalContainer, { marginBottom: 15 }]}>
                                                         <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.activity == 0 ? 'red' : "transparent" }]}>
                                                             <View style={styles.cardMenuSpasing}>
                                                                 <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>ON TIME PERFORMANCE</Text>
@@ -393,15 +402,47 @@ class TimesheetEntry extends Component {
                                                     </View>
                                                 </> : null
                                         }
-                                        <Dialog
-                                            visible={this.state.addDescVisible}
+                                        <Modal isVisible={this.state.addDescVisible}>
+                                            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                                <View style={{ backgroundColor: 'white', borderRadius: 5, width: 350, height: 250 }}>
+                                                    <View style={{ borderTopStartRadius: 5, borderTopEndRadius: 5, height: 50, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
+                                                        <Text style={{ fontSize: title, color: this.props.fontColor }}>{'Additional Description'}</Text>
+                                                        <TouchableOpacity onPress={() =>
+                                                            this.setState({ addDescVisible: false, },
+                                                                () => { })}>
+                                                            <Image style={{ height: 30, width: 30, tintColor: 'white' }} source={require('../Assets/redCross.png')} />
+                                                        </TouchableOpacity>
+                                                    </View>
+                                                    <View style={{ justifyContent: 'center', alignItems: 'center', }}>
+                                                        <View style={{ borderRadius: 5, borderWidth: .5, width: 300, height: 170, margin: 15 }}>
+                                                            <TextInput
+                                                                multiline={true}
+                                                                editable={false}
+                                                                value={ this.state.addDesc}
+                                                                // placeholder="Enter Description"
+                                                                textAlignVertical="top"
+                                                                underlineColor="white"
+                                                                keyboardType="default"
+                                                                autoFocus={false}
+                                                                style={styles.longText}
+                                                            // dense
+                                                            // onChangeText={value => this.setState({ addDesc: value, description: value })}
+                                                            // onChangeText={value => this.handleAddDescription({ value})}
+                                                            />
+                                                        </View>
+                                                    </View>
+                                                </View>
+                                            </View>
+                                        </Modal>
+                                        {/* <Dialog
+                                            visible={this.state.addDescVisiblre}
                                             style={{ backgroundColor: 'white', height: 250, width: 350 }}
                                             onTouchOutside={() => this.setState({ addDescVisible: false })}
 
                                         >
                                             <View style={{ backgroundColor: 'white', height: 300, width: 400, bottom: 25, right: 25 }}>
                                                 <View style={{ height: 50, padding: 15, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
-                                                    <Text style={{ fontSize: title, color: this.props.fontColor }}>{'Additional Description'}</Text>
+                                                    <Text style={{ fontSize: title, color: this.props.fontColor }}>{'Additional Descriptions'}</Text>
                                                 </View>
                                                 <View style={{ justifyContent: 'center', alignItems: 'center', right: 25 }}>
                                                     <View style={{ borderRadius: 5, borderWidth: .5, width: 300, height: 170, margin: 15 }}>
@@ -418,7 +459,7 @@ class TimesheetEntry extends Component {
                                                     </View>
                                                 </View>
                                             </View>
-                                        </Dialog>
+                                        </Dialog> */}
 
                                         <Dialog
                                             visible={this.state.visible}
@@ -497,7 +538,7 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     container: {
-    
+
         paddingLeft: 10,
         paddingRight: 10,
         // backgroundColor: '#F9F9F9',
@@ -560,7 +601,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 10,
-        backgroundColor:  "#E9ECEF"
+        backgroundColor: "#E9ECEF"
     },
     textPopup: {
         padding: 3,

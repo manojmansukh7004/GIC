@@ -6,6 +6,7 @@ import { Divider, Card } from 'react-native-paper';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { connect } from 'react-redux'
 import moment from 'moment';
+import Modal from 'react-native-modal';
 import { Dialog } from 'material-bread';
 import { saveTimesheetEntry } from '../Services/MyTimesheet/saveTimesheetEntry';
 import { getTsEntryDropdownData } from '../Services/MyTimesheet/getTsEntryDropdownData';
@@ -286,10 +287,10 @@ class TimesheetEntry extends Component {
             timesheetId: this.props.tsId,
             time: this.props.time,
             headerData: this.props.navigation.state.params.headerData,
-          
+
             // edit: this.props.navigation.state.params.Edit
         }, () => {
-           
+
             lblMon1 = "Mon, " + moment(new Date(this.state.headerData[0].Mon_Date)).format("DD"),
                 lblTue1 = "Tue, " + moment(new Date(this.state.headerData[0].Tue_Date)).format("DD"),
                 lblWed1 = "Wed, " + moment(new Date(this.state.headerData[0].Wed_Date)).format("DD"),
@@ -316,7 +317,7 @@ class TimesheetEntry extends Component {
         });
     }
 
-    
+
 
     render() {
         // console.log("clientclientclient", this.state.timesheetID);
@@ -558,8 +559,40 @@ class TimesheetEntry extends Component {
                                 </ScrollView>
                             </Card>
 
-                            <Dialog
-                                visible={this.state.addDescVisible}
+                            <Modal isVisible={this.state.addDescVisible}>
+                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                    <View style={{ backgroundColor: 'white', borderRadius: 5, width: 350, height: 250 }}>
+                                        <View style={{ borderTopStartRadius: 5, borderTopEndRadius: 5, height: 50, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
+                                            <Text style={{ fontSize: title, color: this.props.fontColor }}>{'Additional Description'}</Text>
+                                            <TouchableOpacity onPress={() =>
+                                                this.setState({ addDescVisible: false, },
+                                                    () => { this.handleAddDescription() })}>
+                                                <Image style={{ height: 30, width: 30, tintColor: 'white' }} source={require('../Assets/redCross.png')} />
+                                            </TouchableOpacity>
+                                        </View>
+                                        <View style={{ justifyContent: 'center', alignItems: 'center', }}>
+                                            <View style={{ borderRadius: 5, borderWidth: .5, width: 300, height: 170, margin: 15 }}>
+                                                <TextInput
+                                                    multiline={true}
+                                                    value={this.state.addDesc}
+                                                    placeholder="Enter Description"
+                                                    textAlignVertical="top"
+                                                    underlineColor="white"
+                                                    keyboardType="default"
+                                                    autoFocus={false}
+                                                    // maxLength={500}
+                                                    dense
+                                                    onChangeText={value => this.setState({ addDesc: value, description: value })}
+                                                // onChangeText={value => this.handleAddDescription({ value})}
+                                                />
+                                            </View>
+                                        </View>
+                                    </View>
+                                </View>
+                            </Modal>
+
+                            {/* <Dialog
+                                visible={this.state.addDescVisiblee}
                                 style={{ backgroundColor: 'white', height: 250, width: 350 }}
                                 onTouchOutside={() => this.setState({ addDescVisible: false }, () => { this.handleDescription() })}
 
@@ -586,7 +619,7 @@ class TimesheetEntry extends Component {
                                         </View>
                                     </View>
                                 </View>
-                            </Dialog>
+                            </Dialog> */}
 
                             <Dialog
                                 visible={this.state.timeVisible}

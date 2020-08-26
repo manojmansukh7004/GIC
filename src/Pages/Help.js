@@ -82,7 +82,7 @@ class Help extends Component {
                                     <Paragraph>5. Click on Save button on the bottom to save the timesheet details. Time for an activity can be edited from week view page also.</Paragraph>
                                     <Paragraph>6. Click on Submit button once you fill the timesheet for the whole week. Please note, timesheet once submitted cannot be edited.</Paragraph>
                                     <Paragraph>7. To view the timesheet entry detail, click on project name.</Paragraph>
-                                    <Paragraph>8. Close the popup window by clicking outside the window.</Paragraph>
+                                    {/* <Paragraph>8. Close the popup window by clicking outside the window.</Paragraph> */}
                                 </View>
                                 <Text style={{fontSize: 16,fontWeight: 'bold',marginTop:5}}>Timesheet Approval</Text>
                                 <View style={{paddingLeft:10}}>

@@ -3,7 +3,7 @@ import {
     ToastAndroid, Text, View, StyleSheet, Dimensions, TouchableOpacity, Image, FlatList, ScrollView, StatusBar, TextInput
 } from 'react-native';
 import { Divider, Card } from 'react-native-paper';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import Modal from 'react-native-modal';
 import { connect } from 'react-redux'
 import moment from 'moment';
 import { Dialog } from 'material-bread';
@@ -23,13 +23,14 @@ const subTitle = 14
 var lblMon1 = "", lblTue1 = "", lblWed1 = "", lblThu1 = "", lblFri1 = "", lblSat1 = "", lblSun1 = ""
 var dvTotMon1 = "", dvTotTue1 = "", dvTotWed1 = "", dvTotThu1 = "", dvTotFri1 = "", dvTotSat1 = "", dvTotSun1 = ""
 var timesheetID = '', clientCode = '', projectCode = '', typeofWorkId = '', phaseId = '', activityId = '', workOrderId = '', taskDesc = '', status = '', duration = '', dailyTaskComments = '', date = '', autoId = '', status = ''
+var format = (n) => `0${n / 60 ^ 0}`.slice(-2) + ':' + ('0' + n % 60).slice(-2)
 
 class TimesheetEntry extends Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            orientation:'',
+            orientation: '',
             title: '',
             timesheetId: '',
             timesheetData: [],
@@ -42,9 +43,9 @@ class TimesheetEntry extends Component {
             activityName: '',
             clientName: '',
             projectName: '',
-            projectGroupName:'',
+            projectGroupName: '',
             typeOfWork: "",
-            projectGroup:'',
+            projectGroup: '',
             phaseName: '',
             workOrderName: '',
             field: '',
@@ -82,12 +83,15 @@ class TimesheetEntry extends Component {
             addDescField: "",
             description: "",
             projectDesc: "",
+            pickerTime: [],
+            MaxHrsPerDay: [],
+            MinHrsPerDay:[],
             data: [],
             time: [],
             headerData: [],
             clientList: [],
             typeOfWorkList: [],
-            projectGrpList:[],
+            projectGrpList: [],
             projetList: [],
             phaseList: [],
             activityList: [],
@@ -259,7 +263,7 @@ class TimesheetEntry extends Component {
                 // validationRemove();
                 if (data.SuccessList != undefined) {
                     showToast("Timesheet data Saved sucessfully.");
-                    this.props.navigation.navigate("TimeSheet")
+                    this.props.navigation.navigate("TimeSheet", { "Loading": false })
                     // this.empWeeklyTimesheetData(timesheetId);
                 }
                 else {
@@ -282,7 +286,7 @@ class TimesheetEntry extends Component {
     }
     handleDataOnProjectChange = async () => {
         var projectChange = await getDataOnProjectChange(this.props.user, this.state.timesheetId, this.state.project, this.props.baseUrl)
-        
+
         this.setState({
             phaseList: projectChange.PhaseList[0],
             activityList: projectChange.ActivityList[0],
@@ -292,11 +296,11 @@ class TimesheetEntry extends Component {
 
     handleDataOnPhaseChange = async () => {
         console.log("phase change", this.state.phase);
-        
+
         if (this.state.phase !== null) {
             var phaseChange = await GetDataOnPhaseChange(this.props.user, this.state.timesheetId, this.state.project, this.state.phase == null ? "" : this.state.phase, this.props.baseUrl)
-           console.log("phasss",phaseChange);
-           
+            console.log("phasss", phaseChange);
+
             this.setState({
                 activityList: phaseChange.ActivityList[0],
                 workOrderList: phaseChange.WorkOrderList[0],
@@ -322,8 +326,8 @@ class TimesheetEntry extends Component {
             this.getOrientation();
         });
         var dropdownData = await getTsEntryDropdownData(this.props.user, this.props.baseUrl)
-        console.log(dropdownData.ProjectGrpList[0]);
-        
+        // console.log(dropdownData.ProjectGrpList[0]);
+
         this.setState({
             clientList: dropdownData.ClientList[0],
             typeOfWorkList: dropdownData.TypeOfWorkList[0],
@@ -350,24 +354,33 @@ class TimesheetEntry extends Component {
                 dvTotThu1 = moment(new Date(this.state.headerData[0].Thu_Date)).format("MMM YYYY"),
                 dvTotFri1 = moment(new Date(this.state.headerData[0].Fri_Date)).format("MMM YYYY"),
                 dvTotSat1 = moment(new Date(this.state.headerData[0].Sat_Date)).format("MMM YYYY"),
-                dvTotSun1 = moment(new Date(this.state.headerData[0].Sun_Date)).format("MMM YYYY"),
-                this.setState({
-                    lblMon1: lblMon1, lblTue1: lblTue1,
-                    lblWed1: lblWed1, lblThu1: lblThu1,
-                    lblFri1: lblFri1, lblSat1: lblSat1, lblSun1: lblSun1,
-                    dvTotMon1: dvTotMon1, dvTotTue1: dvTotTue1,
-                    dvTotWed1: dvTotWed1, dvTotThu1: dvTotThu1,
-                    dvTotFri1: dvTotFri1, dvTotSat1: dvTotSat1,
-                    dvTotSun1: dvTotSun1,
+                dvTotSun1 = moment(new Date(this.state.headerData[0].Sun_Date)).format("MMM YYYY")
+            
+                var timeArr = []
+            Object.getOwnPropertyNames(this.props.time).map((key, index) => (
+                this.props.time[key] <= format(this.state.headerData[0].MaxHrsPerDay * 60).toString() ?
+                    timeArr.push(this.props.time[key]) : null
+            ))
+            this.setState({
+                MaxHrsPerDay: this.state.headerData[0].MaxHrsPerDay,
+                MinHrsPerDay: this.state.headerData[0].MinHrsPerDay,
+               pickerTime: timeArr,
+                lblMon1: lblMon1, lblTue1: lblTue1,
+                lblWed1: lblWed1, lblThu1: lblThu1,
+                lblFri1: lblFri1, lblSat1: lblSat1, lblSun1: lblSun1,
+                dvTotMon1: dvTotMon1, dvTotTue1: dvTotTue1,
+                dvTotWed1: dvTotWed1, dvTotThu1: dvTotThu1,
+                dvTotFri1: dvTotFri1, dvTotSat1: dvTotSat1,
+                dvTotSun1: dvTotSun1,
 
 
-                }, () => {
-                    if (this.state.edit == true) {
-                        console.log("eeeeeeeeeee",this.state.projectGrpList);
-                        
-                        this.editTimesheet()
-                    }
-                });
+            }, () => {
+                if (this.state.edit == true) {
+                    // console.log("eeeeeeeeeee", this.state.projectGrpList);
+
+                    this.editTimesheet()
+                }
+            });
         });
     }
 
@@ -410,14 +423,14 @@ class TimesheetEntry extends Component {
         });
     }
 
-    flushData = () =>{
-        this.setState({project:[], phase:[], activity:[]})
+    flushData = () => {
+        this.setState({ project: [], phase: [], activity: [] })
     }
     handleSelectedData = (item, index) => {
         if (this.state.field == 0) {
             this.setState({
                 projectGroupName: item.Text, projectGroup: item.Value, fieldVisible: false, data: []
-            }, () => {   this.state.client !== "" ?  this.handleDataOnClientChange():null})
+            }, () => { this.state.client !== "" ? this.handleDataOnClientChange() : null })
         }
         else if (this.state.field == 1) {
             this.setState({
@@ -451,21 +464,21 @@ class TimesheetEntry extends Component {
 
 
     render() {
-        console.log("projectGroup",this.state.projectGroup);
-        
+        // console.log("projectGroup", this.state.projectGroup);
+
         return (
             <>
 
                 <StatusBar translucent barStyle="light-content" backgroundColor='#297AF9' />
-                <View ref="rootView" style={[styles.Container, { backgroundColor: this.props.primaryColor }]}>
-                    <View style={{ height:  this.state.orientation == 'landscape' ? '11%' : '7%', backgroundColor: this.props.primaryColor, }}>
+                <View ref="rootView" style={[styles.Container, {}]}>
+                    <View style={{ justifyContent: 'center', alignItems: 'center', height: this.state.orientation == 'landscape' ? '11%' : '7%', backgroundColor: this.props.primaryColor }}>
                         <Appbar navigation={this.props.navigation}
                             title={this.state.header}
                             handleSave={this.handleSave}
                             timeSheetEntry={true}
                         />
                     </View>
-                    <View style={[styles.container,{ height: this.state.orientation == 'landscape'?'86%': '90%',backgroundColor: this.props.secColor}]}>
+                    <View style={[styles.container, { height: this.state.orientation == 'landscape' ? '86%' : '90%', backgroundColor: this.props.secColor }]}>
                         <ScrollView
                             style={{ marginBottom: 15 }}
                             showsVerticalScrollIndicator={false}>
@@ -495,7 +508,7 @@ class TimesheetEntry extends Component {
                                     </TouchableOpacity>
                                 </Card>
 
-                                <Card style={[styles.cards, {  }]}>
+                                <Card style={[styles.cards, {}]}>
                                     <TouchableOpacity onPress={() => this.setState({ title: "Type Of Work", fieldVisible: true, field: 3, data: this.state.typeOfWorkList })}
                                         style={styles.cardMenuSpasing}>
                                         <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>TYPE OF WORK</Text>
@@ -545,7 +558,7 @@ class TimesheetEntry extends Component {
                             </Card>
                             <Card style={styles.descCard}>
                                 <ScrollView horizontal={true}
-                                showsHorizontalScrollIndicator={false}>
+                                    showsHorizontalScrollIndicator={false}>
                                     <View style={styles.timeView}>
                                         <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
                                             <Text style={{ color: this.props.primaryColor }}>{this.state.lblMon1}</Text>
@@ -628,13 +641,58 @@ class TimesheetEntry extends Component {
                                 </ScrollView>
                             </Card>
 
-                            <Dialog
-                                visible={this.state.fieldVisible}
+                            <Modal isVisible={this.state.fieldVisible}>
+                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                    <View style={{ backgroundColor: 'white', borderRadius: 5, width: 350, height: 250 }}>
+                                        <View style={{ borderTopStartRadius: 5, borderTopEndRadius: 5, height: 50, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
+                                            <Text style={{ fontSize: title, color: this.props.fontColor }}>{this.state.title}</Text>
+                                            <TouchableOpacity onPress={() =>
+                                                this.setState({ fieldVisible: false, },
+                                                    () => { })}>
+                                                <Image style={{ height: 30, width: 30, tintColor: 'white' }} source={require('../Assets/redCross.png')} />
+                                            </TouchableOpacity>
+                                        </View>
+                                        <View style={{ justifyContent: 'flex-start', alignItems: 'flex-start', top: 5 }}>
+                                            <View style={{ borderRadius: 5, height: 200 }}>
+                                                {
+                                                    this.state.data.length == 0 ?
+                                                        <View style={{ width: '100%', }}>
+                                                            <Text style={styles.textPopup}>
+                                                                {"No Data Available"}
+                                                            </Text>
+                                                            <Divider />
+                                                        </View>
+                                                        :
+                                                        <FlatList
+                                                            data={Object.keys(this.state.data)}
+                                                            renderItem={({ item, index }) => (
+
+                                                                <TouchableOpacity onPress={() => {
+                                                                    this.handleSelectedData(this.state.data[item], index)
+                                                                }}
+                                                                    style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 15 }}>
+                                                                    <View style={{ width: '100%', }}>
+                                                                        <Text style={styles.textPopup}>
+                                                                            {this.state.data[item].Text}
+                                                                        </Text>
+                                                                        <Divider />
+                                                                    </View>
+                                                                </TouchableOpacity>)}
+                                                        />
+                                                }
+                                            </View>
+                                        </View>
+                                    </View>
+                                </View>
+                            </Modal>
+
+                            {/* <Dialog
+                                visible={this.state.fieldVisible1}
                                 style={{ backgroundColor: 'white', width: 350 }}
                                 onTouchOutside={() => this.setState({ fieldVisible: false }, () => { })}
 
                             >
-                                <View style={{ backgroundColor: 'white', height: 300, bottom: 25, right: 25, width: 350  }}>
+                                <View style={{ backgroundColor: 'white', height: 300, bottom: 25, right: 25, width: 350 }}>
                                     <View style={{ height: 50, padding: 15, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
                                         <Text style={{ fontSize: title, color: this.props.fontColor }}>{this.state.title}</Text>
                                     </View>
@@ -669,10 +727,42 @@ class TimesheetEntry extends Component {
                                         </View>
                                     </View>
                                 </View>
-                            </Dialog>
+                            </Dialog> */}
 
-                            <Dialog
-                                visible={this.state.addDescVisible}
+                            <Modal isVisible={this.state.addDescVisible}>
+                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                    <View style={{ backgroundColor: 'white', borderRadius: 5, width: 350, height: 250 }}>
+                                        <View style={{ borderTopStartRadius: 5, borderTopEndRadius: 5, height: 50, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
+                                            <Text style={{ fontSize: title, color: this.props.fontColor }}>{'Additional Description'}</Text>
+                                            <TouchableOpacity onPress={() =>
+                                                this.setState({ addDescVisible: false, },
+                                                    () => { this.handleDescription() })}>
+                                                <Image style={{ height: 30, width: 30, tintColor: 'white' }} source={require('../Assets/redCross.png')} />
+                                            </TouchableOpacity>
+                                        </View>
+                                        <View style={{ justifyContent: 'center', alignItems: 'center', }}>
+                                            <View style={{ borderRadius: 5, borderWidth: .5, width: 300, height: 170, margin: 15 }}>
+                                                <TextInput
+                                                    multiline={true}
+                                                    value={this.state.addDesc}
+                                                    placeholder="Enter Description"
+                                                    textAlignVertical="top"
+                                                    underlineColor="white"
+                                                    keyboardType="default"
+                                                    autoFocus={false}
+                                                    // maxLength={500}
+                                                    dense
+                                                    onChangeText={value => this.setState({ addDesc: value, description: value })}
+                                                // onChangeText={value => this.handleAddDescription({ value})}
+                                                />
+                                            </View>
+                                        </View>
+                                    </View>
+                                </View>
+                            </Modal>
+
+                            {/* <Dialog
+                                visible={this.state.addDescVisible1}
                                 style={{ backgroundColor: 'white', height: 250, width: 350 }}
                                 onTouchOutside={() => this.setState({ addDescVisible: false }, () => { this.handleDescription() })}
 
@@ -699,12 +789,12 @@ class TimesheetEntry extends Component {
                                         </View>
                                     </View>
                                 </View>
-                            </Dialog>
+                            </Dialog> */}
 
                             <Dialog
                                 visible={this.state.timeVisible}
                                 onTouchOutside={() =>
-                                    this.setState({ timeVisible: false }, () => { this.updateTime() })}
+                                    this.setState({ timeVisible: false }, () => { })}
                                 style={
                                     {
                                         width: 100,
@@ -715,31 +805,26 @@ class TimesheetEntry extends Component {
                                 <View style={{ justifyContent: 'center', alignItems: 'center', right: 20 }}>
 
                                     <FlatList
-                                        data={Object.keys(this.state.time)}
+                                        data={Object.keys(this.state.pickerTime)}
                                         renderItem={({ item, index }) => (
 
                                             <TouchableOpacity onPress={() => {
-                                                this.setState({ timeVisible: false }, () => { this.updateTime(this.state.time[item]) })
+                                                this.setState({ timeVisible: false }, () => { this.updateTime(this.state.pickerTime[item]) })
                                             }}
                                                 style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 15 }}>
                                                 <View>
                                                     <Text style={styles.textPopup}>
-                                                        {this.state.time[item]}
+                                                        {this.state.pickerTime[item]}
                                                     </Text>
                                                     <Divider />
                                                 </View>
                                             </TouchableOpacity>)}
                                     />
-
                                 </View>
                             </Dialog>
-                            </ScrollView>
+                        </ScrollView>
                     </View>
-                    
-
                 </View>
-
-
             </>
         )
     }
@@ -776,7 +861,7 @@ const styles = StyleSheet.create({
         paddingRight: 10,
         // backgroundColor: '#F9F9F9',
         // marginBottom: 20,
-      },
+    },
     cards: {
         elevation: 3,
         borderRadius: 5,
@@ -816,22 +901,18 @@ const styles = StyleSheet.create({
         elevation: 3,
         borderRadius: 5,
         marginTop: 15,
-      
+
     },
     longText: { backgroundColor: 'white', color: "#4D504F", fontSize: 16, marginEnd: 10, padding: 10 },
     reasonView: { paddingStart: 15, padding: 10, },
-    timeView: { padding: 10, flexDirection: 'row' ,justifyContent: 'center', alignItems: 'center'},
+    timeView: { padding: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
     sheetData: {
         padding: 10,
-        // height: 70,
         width: 85,
         marginTop: 5,
         marginBottom: 15,
-        // borderWidth: .3,
         justifyContent: 'center',
         alignItems: 'center',
-        // right: 4,
-        // backgroundColor:'red'
     },
     hrsData: {
         padding: 10,

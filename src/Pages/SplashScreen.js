@@ -72,7 +72,7 @@ class SplashScreen extends Component {
     this.props.setUser(userId)
     this.props.setBaseUrl(baseUrl)
 
-    this.props.navigation.navigate("TimeSheet")
+    this.props.navigation.navigate("TimeSheet",{"Loading": false})
     this.setState({ loading: false });  
 
   }

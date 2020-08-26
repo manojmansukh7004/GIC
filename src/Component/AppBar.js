@@ -30,12 +30,12 @@ class AppBar extends Component {
       // </View>
       <View style={styles.subContiner1}>
 
-        <View style={{ flexDirection: 'row', width: "85%",height:'100%' }}>
+        <View style={{ flexDirection: 'row', width: "75%",height:'100%',}}>
           <View style={{ justifyContent: 'center', alignItems: 'center', width: "10%", marginLeft: 5 }}>
             <TouchableOpacity onPress={() =>
-            this.props.title == "Timesheet Entry"? this.props.navigation.navigate('TimeSheet'):
+            this.props.title == "Timesheet Entry"? this.props.navigation.navigate('TimeSheet',{"Loading": false}):
             this.props.title == "Edit Timesheet Entry"? this.props.navigation.navigate('ProjectDetail'):
-            this.props.title == "Project Details"? this.state.backNavigation=="TsApproval"? this.props.navigation.navigate('TsApproval'): this.props.navigation.navigate('TimeSheet'): 
+            this.props.title == "Project Details"? this.state.backNavigation=="TsApproval"? this.props.navigation.navigate('TsApproval',{"Loading": false}): this.props.navigation.navigate('TimeSheet',{"Loading": false}): 
             null
           }>
               <Image
@@ -50,13 +50,13 @@ class AppBar extends Component {
             </Title>
           </View>
         </View>
-        <View style={{ width: "15%",flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center'  }}>
+        <View style={{ width: "25%",flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center',  }}>
           <View style={{ margin: 5, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
             {
               this.props.timeSheetEntry == true ?
-                <TouchableOpacity style={{ justifyContent: "center", alignItems: 'center'}}
+                <TouchableOpacity style={{ justifyContent: "center", alignItems: 'center', borderWidth: .8, borderRadius:3, borderColor: '#FFFF'}}
                   onPress={() => { this.props.handleSave() }}>
-                  <Text style={{ color: this.props.fontColor }}>{"SAVE"}</Text>
+                  <Text style={{ color: this.props.fontColor, padding:5, marginLeft:5, marginRight:5 }}>{"SAVE"}</Text>
                 </TouchableOpacity> : null
             }
             {
