@@ -38,7 +38,7 @@ class AppBar extends Component {
             <TouchableOpacity onPress={() => this.toggleDrawer()}>
               <Image
                 source={require('../Assets/drawer.png')}
-                style={{ width: 33, height: 33, tintColor: 'white' }}
+                style={{ width: 33, height: 35,top:2, tintColor: 'white' }}
               />
             </TouchableOpacity>
           </View>

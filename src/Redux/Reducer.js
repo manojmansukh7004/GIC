@@ -35,7 +35,8 @@ const initialState ={
     stripColor: '#F8FBF9',
     stripHeaderColor: '#747474',
     time: time,
-    tsId: ''
+    tsId: '',
+    textColor:'"#4D504F"'
 }
 
 export const reducer = (state = initialState, action) => {

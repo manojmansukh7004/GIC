@@ -180,7 +180,7 @@ class TimesheetEntry extends Component {
                 <StatusBar translucent barStyle="light-content" backgroundColor={this.props.primaryColor} />
                 <View ref="rootView" style={[styles.Container, {  }]}>
                     {/* <View style={{ height: 50, backgroundColor: this.props.primaryColor, }}> */}
-                    <View style={{ justifyContent: 'center', alignItems: 'center', width: '100%', height: this.state.orientation == 'landscape' ? '11%' : '7%', backgroundColor: this.props.primaryColor }} >
+                    <View style={{ justifyContent: 'center', alignItems: 'center', width: '100%', height: 50, backgroundColor: this.props.primaryColor }} >
                         <Appbar navigation={this.props.navigation}
                             title={"Project Details"}
                             handleDeleteRecord={this.handleDeleteRecord}
