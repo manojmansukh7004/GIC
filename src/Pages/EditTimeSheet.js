@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    ToastAndroid, Text, View, StyleSheet, Dimensions, TouchableOpacity, Image, FlatList, ScrollView, StatusBar, TextInput
+    SafeAreaView, KeyboardAvoidingView, ToastAndroid, Text, View, StyleSheet, Dimensions, TouchableOpacity, Image, FlatList, ScrollView, StatusBar, TextInput
 } from 'react-native';
 import { Divider, Card } from 'react-native-paper';
 import Modal from 'react-native-modal';
@@ -471,14 +471,14 @@ class TimesheetEntry extends Component {
 
                 <StatusBar translucent barStyle="light-content" backgroundColor='#297AF9' />
                 <View ref="rootView" style={[styles.Container, {}]}>
-                    <View style={{ justifyContent: 'center', alignItems: 'center', height: this.state.orientation == 'landscape' ? '11%' : '7%', backgroundColor: this.props.primaryColor }}>
+                    <View style={{ justifyContent: 'center', alignItems: 'center', height: 50, backgroundColor: this.props.primaryColor }}>
                         <Appbar navigation={this.props.navigation}
                             title={this.state.header}
                             handleSave={this.handleSave}
                             timeSheetEntry={true}
                         />
                     </View>
-                    <View style={[styles.container, { height: this.state.orientation == 'landscape' ? '86%' : '90%', backgroundColor: this.props.secColor }]}>
+                    <KeyboardAvoidingView style={[styles.container, { height: this.state.orientation == 'landscape' ? '86%' : '90%', backgroundColor: this.props.secColor }]}>
                         <ScrollView
                             style={{ marginBottom: 15 }}
                             showsVerticalScrollIndicator={false}>
@@ -512,7 +512,11 @@ class TimesheetEntry extends Component {
                                     <TouchableOpacity onPress={() => this.setState({ title: "Type Of Work", fieldVisible: true, field: 3, data: this.state.typeOfWorkList })}
                                         style={styles.cardMenuSpasing}>
                                         <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>TYPE OF WORK</Text>
-                                        <Text numberOfLines={1} style={[styles.twoCardLabel1, { color: "#4D504F" }]}>{this.state.typeOfWork == '' ? "--select--" : this.state.typeOfWork}</Text>
+                                        {
+                                            console.log("this.state.typeOfWork",this.state.typeOfWork)
+                                            
+                                        }
+                                        <Text numberOfLines={1} style={[styles.twoCardLabel1, { color: "#4D504F" }]}>{this.state.typeOfWork == '' || this.state.typeOfWork == null? "--select--" : this.state.typeOfWork}</Text>
                                     </TouchableOpacity>
                                 </Card>
 
@@ -823,7 +827,7 @@ class TimesheetEntry extends Component {
                                 </View>
                             </Dialog>
                         </ScrollView>
-                    </View>
+                    </KeyboardAvoidingView>
                 </View>
             </>
         )
@@ -850,7 +854,7 @@ const styles = StyleSheet.create({
     Container: {
 
         flex: 1,
-        display: 'flex',
+        // display: 'flex',
         top: 23.5,
         width: '100%',
         height: '100%',
@@ -865,8 +869,8 @@ const styles = StyleSheet.create({
     cards: {
         elevation: 3,
         borderRadius: 5,
-        marginTop: 15,
-        width: "48%",
+        marginTop: 10,
+        width: "49%",
         height: 60
     },
     cardContainer: { backgroundColor: 'white', height: 20, fontSize: 16 },
@@ -900,7 +904,7 @@ const styles = StyleSheet.create({
         width: '100%',
         elevation: 3,
         borderRadius: 5,
-        marginTop: 15,
+        marginTop: 10,
 
     },
     longText: { backgroundColor: 'white', color: "#4D504F", fontSize: 16, marginEnd: 10, padding: 10 },

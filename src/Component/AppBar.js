@@ -65,7 +65,7 @@ class AppBar extends Component {
                   onPress={() => { this.props.handleEditRecord() }}>
                   <Image
                     source={require('../Assets/edit.png')}
-                    style={{ width: 22, height: 22, top:7, tintColor: 'white', padding:10, position:'absolute' }}
+                    style={{ width: 22, height: 22, top:5, tintColor: 'white', padding:10, position:'absolute' }}
                   />
                 </TouchableOpacity> : null
             }
@@ -128,9 +128,9 @@ const styles = StyleSheet.create({
     color: 'white'
   },
   subContiner1: {
-    // flex:1,
+    flex:1,
     flexDirection: 'row',
-    // height: "100%",
+    height: "100%",
     // borderWidth: 0.2,
     // borderColor: '#C1C0B9',
     // borderRadius: 5,

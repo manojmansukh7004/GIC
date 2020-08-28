@@ -547,8 +547,8 @@ const styles = StyleSheet.create({
     cards: {
         elevation: 3,
         borderRadius: 5,
-        marginTop: 15,
-        width: "48%"
+        marginTop: 10,
+        width: "49%"
     },
     cardContainer: { backgroundColor: 'white', height: 20, fontSize: 16 },
     singleCardLabel: {
@@ -580,7 +580,7 @@ const styles = StyleSheet.create({
         width: '100%',
         elevation: 3,
         borderRadius: 5,
-        marginTop: 15
+        marginTop: 10
     },
     longText: { backgroundColor: 'white', fontSize: 16, marginEnd: 10, padding: 10, color: "#4D504F" },
     reasonView: { paddingStart: 3, padding: 10, height: 150 },

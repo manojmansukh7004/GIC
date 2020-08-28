@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, TouchableOpacity, Image, StatusBar } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Image, Text } from 'react-native';
 import { Title, } from 'react-native-paper';
 import ProfileAvtar from '../Pages/ProfileAvtar'
 import { Dialog, Avatar, Button } from 'material-bread';
@@ -32,24 +32,23 @@ class AppBar extends Component {
 
     return (
       <View style={styles.subContiner1}>
-
-        <View style={{ flexDirection: 'row', width: "75%", height:'100%',backgroundColor:'transparent' }}>
-          <View style={{ justifyContent: 'center', alignItems: 'center', width: "10%", marginLeft: 5 }}>
-            <TouchableOpacity onPress={() => this.toggleDrawer()}>
-              <Image
-                source={require('../Assets/drawer.png')}
-                style={{ width: 33, height: 35,top:2, tintColor: 'white' }}
-              />
-            </TouchableOpacity>
-          </View>
-          <View style={{ width: '90%', justifyContent: 'center', alignItems: 'center', }}>
+        <View style={{ backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center', width: '15%' }}>
+          <TouchableOpacity onPress={() => this.toggleDrawer()}>
+            <Image
+              source={require('../Assets/drawer.png')}
+              style={{ width: 33, height: 35, top: 2, tintColor: 'white' }}
+            />
+          </TouchableOpacity>
+        </View>
+        <View style={{ backgroundColor: 'transparent', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '85%' }}>
+          <View style={{ backgroundColor: 'transparent', justifyContent: 'center', alignItems: "flex-start", height: '100%' }}>
             <Title style={styles.Title}>
               {this.props.title}
             </Title>
           </View>
-        </View>
-        <View style={{backgroundColor:'transparent', width: "25%", flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-          <View style={{ margin: 5, }}>
+          <View style={{ backgroundColor: 'transparent', flexDirection: 'row', justifyContent: 'center', alignItems: "flex-end",  }}>
+         
+           
             {
               this.props.calender == true ?
                 <TouchableOpacity style={{ height: 50, width: 50, justifyContent: "center", alignItems: 'center' }}
@@ -68,9 +67,9 @@ class AppBar extends Component {
                   <Image style={styles.img1} source={require('../Assets/filter.png')} />
                 </TouchableOpacity> : null
             }
-          </View>
-          <View style={{ margin: 3, marginRight: 15 }}>
-            <ProfileAvtar {...this.props} />
+            <View style={{ height: 50, width: 50, justifyContent: "center", alignItems: 'center' }}>
+              <ProfileAvtar {...this.props} />
+            </View>
           </View>
         </View>
       </View>
@@ -108,6 +107,9 @@ const styles = StyleSheet.create({
   },
   subContiner1: {
     flexDirection: 'row',
+    height: '100%',
+    justifyContent: 'center',
+    alignContent: 'center',
     // height: '100%',
     // borderWidth: 0.2,
     // borderColor: '#C1C0B9',
