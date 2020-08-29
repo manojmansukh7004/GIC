@@ -725,7 +725,7 @@ class TimeSheet extends Component {
                 Status == "Submitted" || Status == "Approved" ?
                     <TouchableOpacity
                         style={[styles.backRightBtn, styles.backRightBtnRight]}
-                        onPress={() => this.deleteRow(rowMap, data.item.key)}
+                        // onPress={() => this.deleteRow(rowMap, data.item.key)}
                     >
                         <Text style={[styles.backTextWhite, { marginTop: 3, marginBottom: 3, color: 'blue' }]}>Approver</Text>
                         <Text numberOfLines={3} style={styles.backTextWhite}>{data.item.Approver}</Text>

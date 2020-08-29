@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
-import { ToastAndroid, TouchableHighlight, TextInput, Image, StatusBar, StyleSheet, Dimensions, ScrollView, Text, FlatList, View, TouchableOpacity } from 'react-native';
+import { ToastAndroid, TextInput, Image, StatusBar, StyleSheet, Dimensions, ScrollView, Text, FlatList, View, TouchableOpacity } from 'react-native';
 import { Divider, Card, Button } from 'react-native-paper';
 import Appbar1 from '../Component/AppBar1'
 import { connect } from 'react-redux'
-import { Dialog, SheetBottom, Checkbox, SheetSide, } from 'material-bread';
+import { Dialog, List, Checkbox, SheetSide, } from 'material-bread';
 import { NavigationEvents } from 'react-navigation';
 import Modal from 'react-native-modal';
-import { SwipeListView } from 'react-native-swipe-list-view';
-import Icon1 from 'react-native-vector-icons/Ionicons';
-
 import {
     BallIndicator,
     BarIndicator,
@@ -34,8 +31,6 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 var lblMon = "", lblTue = "", lblWed = "", lblThu = "", lblFri = "", lblSat = "", lblSun = ""
 var TotalTime = "", dvTotMon = "", dvTotTue = "", dvTotWed = "", dvTotThu = "", dvTotFri = "", dvTotSat = "", dvTotSun = ""
 var timesheetID = '', clientCode = '', projectCode = '', typeofWorkId = '', phaseId = '', activityId = '', workOrderId = '', taskDesc = '', status = '', duration = '', dailyTaskComments = '', date = '', autoId = '', status = '', currRecordStatus = ''
-var Status = '', selectedRow = ''
-
 const showToast = (Msg) => {
     ToastAndroid.show(Msg, ToastAndroid.LONG);
 };
@@ -54,8 +49,6 @@ class TimeSheet extends Component {
         super(props)
         this.state = {
             orientation: '',
-            projectName: "",
-            clientName: "",
             data: [],
             client: [],
             project: [],
@@ -121,10 +114,6 @@ class TimeSheet extends Component {
             selectedData: [],
             SelectedEntryId: [],
             loading: false,
-            daysData: [],
-            details: [],
-            Status: ''
-
         }
     }
 
@@ -190,6 +179,7 @@ class TimeSheet extends Component {
                 selectedVal: temp, OTP: item.Value, rating2: temp,
             })
         }
+        console.log("rarrr", this.state.QOW, this.state.OTP)
 
     }
 
@@ -265,7 +255,7 @@ class TimeSheet extends Component {
         this.setState({
             dataTable: false,
             client: [], project: [], type: '', resourceName: '', resource: [], timesheet: '', timesheetData: [],
-            resourceList: [], timesheetList: [], resourceList: [], type1: '', resource1: '', timesheet1: '', visible: true
+            resourceList: [], timesheetList: [], resourceList: [], type1: '', resource1: '', timesheet1: '',visible:true
         })
     }
 
@@ -294,13 +284,13 @@ class TimeSheet extends Component {
     }
     setTimesheetData = () => {
 
-        lblMon = moment(new Date(this.state.headerData[0].Mon_Date)).format("ddd D, YYYY"),
-            lblTue = moment(new Date(this.state.headerData[0].Tue_Date)).format("ddd D, YYYY"),
-            lblWed = moment(new Date(this.state.headerData[0].Wed_Date)).format("ddd D, YYYY"),
-            lblThu = moment(new Date(this.state.headerData[0].Thu_Date)).format("ddd D, YYYY"),
-            lblFri = moment(new Date(this.state.headerData[0].Fri_Date)).format("ddd D, YYYY"),
-            lblSat = moment(new Date(this.state.headerData[0].Sat_Date)).format("ddd D, YYYY"),
-            lblSun = moment(new Date(this.state.headerData[0].Sun_Date)).format("ddd D, YYYY"),
+        lblMon = "Mon, " + moment(new Date(this.state.headerData[0].Mon_Date)).format("DD"),
+            lblTue = "Tue, " + moment(new Date(this.state.headerData[0].Tue_Date)).format("DD"),
+            lblWed = "Wed, " + moment(new Date(this.state.headerData[0].Wed_Date)).format("DD"),
+            lblThu = "Thu, " + moment(new Date(this.state.headerData[0].Thu_Date)).format("DD"),
+            lblFri = "Fri, " + moment(new Date(this.state.headerData[0].Fri_Date)).format("DD"),
+            lblSat = "Sat, " + moment(new Date(this.state.headerData[0].Sat_Date)).format("DD"),
+            lblSun = "Sun, " + moment(new Date(this.state.headerData[0].Sun_Date)).format("DD"),
             dvTotMon = this.state.headerHrsData[0].Mon_TotalTime == null ? "0:00" : (this.state.headerHrsData[0].Mon_TotalTime),
             dvTotTue = this.state.headerHrsData[0].Tue_TotalTime == null ? "0:00" : (this.state.headerHrsData[0].Tue_TotalTime),
             dvTotWed = this.state.headerHrsData[0].Wed_TotalTime == null ? "0:00" : (this.state.headerHrsData[0].Wed_TotalTime),
@@ -334,6 +324,7 @@ class TimeSheet extends Component {
                 this.SaveUpdateApproverActionData(this.state.autoId)
             }
             else if (this.state.multiselector == true) {
+                console.log("55555555555", this.state.selectedData.length);
                 this.handleMultipleTsEntryId()
             }
             else {
@@ -387,6 +378,7 @@ class TimeSheet extends Component {
     }
 
     SaveUpdateApproverActionData = async (EntryId) => {
+        console.log("tsEntryId", EntryId, this.state.OTP, this.state.QOW, this.state.rating3);
         var status = ''
         var rating1 = this.state.rating1.length !== 0 ? this.state.rating1[0].Value : ''
         var rating2 = this.state.rating2.length !== 0 ? this.state.rating2[0].Value : ''
@@ -409,7 +401,7 @@ class TimeSheet extends Component {
                 if (data.SuccessList != undefined) {
                     this.searchRecord()
                     showToast("Action completed sucessfully.");
-                    this.setState({ rating1: [], rating2: [], rating3: '', loading: false })
+                    this.setState({ rating1: [], rating2: [], rating3: '',loading: false })
                 }
                 else {
                     showToast("Error has an occer.");
@@ -449,9 +441,11 @@ class TimeSheet extends Component {
         if (this.state.selectedData.includes(item)) {
             var selectedNode = this.state.selectedData.filter(element => element !== item)
             this.setState({ selectedData: selectedNode }, () => {
+                console.log("iffff", this.state.selectedData.length);
 
                 if (this.state.selectedData.length == 0) {
                     this.setState({ selectionMode: false, multiselector: false }, () => {
+                        console.log("00000", this.state.selectedData.length)
                     })
                 }
             })
@@ -459,229 +453,13 @@ class TimeSheet extends Component {
         else {
             var selectedNode = this.state.selectedData.concat(item)
             this.setState({ selectedData: selectedNode }, () => {
+                console.log("elseeee", this.state.selectedData.length)
             })
         }
     }
 
+  
 
-
-    handledata = (item, index) => {
-        var arr = [], details = []
-        arr.push({ date: this.state.lblMon, addDescField: 1, Status: item.Status, time: item.Mon, entryId: item.Mon_AutoId, comment: item.Mon_TaskComments, day: "Mon" })
-        arr.push({ date: this.state.lblTue, addDescField: 2, Status: item.Status, time: item.Tue, entryId: item.Tue_AutoId, comment: item.Tue_TaskComments, day: "Tue" })
-        arr.push({ date: this.state.lblWed, addDescField: 3, Status: item.Status, time: item.Wed, entryId: item.Wed_AutoId, comment: item.Wed_TaskComments, day: "Wed" })
-        arr.push({ date: this.state.lblThu, addDescField: 4, Status: item.Status, time: item.Thu, entryId: item.Thu_AutoId, comment: item.Thu_TaskComments, day: "Thu" })
-        arr.push({ date: this.state.lblFri, addDescField: 5, Status: item.Status, time: item.Fri, entryId: item.Fri_AutoId, comment: item.Fri_TaskComments, day: "Fri" })
-        arr.push({ date: this.state.lblSat, addDescField: 6, Status: item.Status, time: item.Sat, entryId: item.Sat_AutoId, comment: item.Sat_TaskComments, day: "Sat" })
-        arr.push({ date: this.state.lblSun, addDescField: 7, Status: item.Status, time: item.Sun, entryId: item.Sun_AutoId, comment: item.Sun_TaskComments, day: "Sun" })
-
-        details.push({ ProjectName: item.ProjectName, ClientName: item.ClientName, Status: item.Status, ApprOTPRating: item.ApprOTPRating, ApprQOWRating: item.ApprQOWRating, })
-
-        this.setState({ daysData: arr, details: details, projectName: item.ProjectName, clientName: item.ClientName, dayIndex: index }, () => {
-            console.log("mjjjjjj", this.state.details);
-
-            this.setState({ daysVisible: true, })
-        })
-
-    }
-
-    renderItem = (data) => (
-
-        Status = data.item.Status,
-        // this.setState({Status: data.item.Status},()=>{
-        console.log("Status", Status),
-        <>
-            <TouchableHighlight
-                onPress={() => { this.handledata(data.item, data.index) }}
-                style={[styles.sheetData1, { flexDirection: 'row', backgroundColor: this.props.stripColor, flexDirection: 'row', padding: data.item.ApproverAction !== "Rejected" ? 10 : null }]}
-                underlayColor={'#AAA'}
-            >
-                <>
-                    {
-                        data.item.ApproverAction == "Rejected" ?
-                            <View style={[styles.rejected, { backgroundColor: "red" }]} /> : null
-                    }
-                    <View style={{ flexDirection: "row", width: data.item.Status !== 'Saved' && data.item.Status !== 'Submitted' ? '70%' : '100%', backgroundColor: 'transparent' }} >
-                        <View style={{ width: '90%' }}>
-                            <Text numberOfLines={1} style={{ fontSize: 18, fontWeight: '900', }}>{data.item.ProjectName}</Text>
-                            <Text numberOfLines={1} style={{ color: "#4D504F" }}>{"(" + data.item.ClientName + ")"}</Text>
-                            <Text numberOfLines={2} style={{ color: "#4D504F" }}>{data.item.TaskDesc}</Text>
-                        </View>
-                        <View style={{ width: '10%' }}>
-                            <Icon1
-                                name={'chevron-down-outline'}
-                                style={styles.icon}
-                                size={20}
-                            />
-                        </View>
-                    </View>
-                    {
-                        data.item.Status !== 'Saved' && data.item.Status !== 'Submitted' ?
-                            <>
-
-                                <View style={{ justifyContent: 'flex-start', alignItems: 'center', width: '15%', backgroundColor: 'transparent' }}>
-                                    <Text style={{ fontSize: 14, color: 'blue', justifyContent: 'center', alignItems: 'center', }}>{"OTP"}</Text>
-                                    <Text style={{ fontSize: 16, color: "black", padding: 5 }}>{data.item.ApprOTPRating}</Text>
-                                </View>
-                                <View style={{ justifyContent: 'flex-start', alignItems: 'center', width: '15%', backgroundColor: 'transparent' }}>
-                                    <Text style={{ fontSize: 14, color: 'blue', justifyContent: 'center', alignItems: 'center', }}>{"QOW"}</Text>
-                                    <Text style={{ fontSize: 16, color: "black", padding: 5 }}>{data.item.ApprQOWRating}</Text>
-                                </View>
-                            </>
-                            :
-                            null
-                        // <View style={{ justifyContent: 'flex-start', alignItems: 'center', width: '20%', backgroundColor: 'transparent' }}>
-                        //     <Text numberOfLines={1} style={{ color: data.item.Status == 'Saved' ? 'red' : "green" }}>{data.item.Status}</Text>
-                        // </View>
-                    }
-                </>
-            </TouchableHighlight>
-        </>
-        // })
-    );
-
-
-    renderItem1 = (data) => (
-
-        <>
-            <TouchableHighlight
-                onPress={() => { this.handledata(data.item, data.index) }}
-                // style={[styles.sheetData1, { flexDirection: 'row', backgroundColor: this.props.stripColor, flexDirection: 'row', padding: data.item.ApproverAction !== "Rejected" ? 10 : null }]}
-                underlayColor={'#AAA'}
-            >
-                <>
-                    <Card elevation={2} style={styles.container} >
-                        <View style={styles.flexRow}>
-                            <View style={2 % 2 === 0 ? styles.strip1 : styles.strip2} />
-                            <View style={styles.view}>
-                                <View style={styles.flexRow1}>
-                                    <View style={{ width: "60%" }}>
-                                        <Text style={{ fontSize: 16 }}>{data.item.date}</Text>
-                                    </View>
-                                    <View style={{ width: "40%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
-                                        <TouchableOpacity onPress={() => { this.setState({ timeVisible: data.item.Status == "Saved" ? true : false, dayField: 'Tue', dayField: this.state.daysData.dayField, }) }}
-                                            style={[styles.hrsData, { backgroundColor: data.item.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
-                                            <Text style={{ fontSize: 16 }}>{this.state.daysData.time == "" ? "0:00" : data.item.time}</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity style={{ flexDirection: 'row', }} onPress={() =>
-                                            this.setState({ addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false, addDesc: data.item.comment, addDescField: this.state.daysData.dayField, },
-                                                () => { })}>
-                                            <Image style={{ height: 40, width: 40 }} source={require("../Assets/message.png")} />
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
-                            </View>
-                        </View>
-                    </Card>
-                </>
-            </TouchableHighlight>
-        </>
-    );
-    renderHiddenItem = (data, rowMap) => (
-        //      <Card elevation={2} style={styles.container} onPress={this.onPress}>
-
-        <View style={[styles.rowBack, { height: 99, width: this.state.orientation == 'landscape' ? '100%' : 'auto', }]}>
-            <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('ProjectDetail', { "timesheetData": data.item, "headerData": this.state.headerData, "headerHrsData": this.state.headerHrsData, "Status": data.item.Status == "Saved" ? true : false })}
-            >
-                <Text style={[styles.backTextWhite, { color: this.props.textColor }]}>Details</Text>
-            </TouchableOpacity>
-
-            {
-                data.item.Status == "Approved" ?
-                    <>
-                        <TouchableOpacity
-                            style={[styles.backRightBtn1, styles.backRightBtnLeft, { backgroundColor: 'transparent' }]}
-                        >
-                            {/* <Text style={[styles.backTextWhite, { marginTop: 3, marginBottom: 3, color: 'blue' }]}>Approver</Text> */}
-                            <Text numberOfLines={3} style={[styles.backTextWhite, { color: 'green', fontSize: 16 }]}>{data.item.Status}</Text>
-
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={[styles.backRightBtn, styles.backRightBtnRight, { justifyContent: 'center', alignItems: 'center' }]}
-                            onPress={() => this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: data.item.ApproverRemarks })}
-                        >
-                            <Image style={{ height: 50, width: 50, left: 5 }} source={require("../Assets/msgbg.png")} />
-                        </TouchableOpacity>
-                    </>
-                    :
-                    <>
-                        <TouchableOpacity
-                            style={[styles.backRightBtn1, styles.backRightBtnLeft]}
-                            onPress={() => this.setState({ ratingVisible: true, action: 'Approved', apprActionData: data.item })}
-                        >
-                            <Image
-                                source={require('../Assets/greenTick.png')}
-                                style={{ width: 52, height: 52, }}
-                            />
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={[styles.backRightBtn1, styles.backRightBtnRight1]}
-                            onPress={() => this.setState({ ratingVisible: true, action: 'Rejected', apprActionData: data.item })}
-                        >
-                            <Image
-                                source={require('../Assets/cross.png')}
-                                style={{ width: 40, height: 40, }}
-                            />
-                        </TouchableOpacity>
-                    </>
-            }
-
-        </View>
-    );
-
-    renderHiddenItem1 = (data, rowMap) => (
-        console.log("ddddddddddddddddd",data),
-        
-
-        <View style={[styles.rowBack, { borderRadius: 10, height: 60, margin: 5, width: this.state.orientation == 'landscape' ? '100%' : 'auto', }]}>
-            <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('ProjectDetail', { "timesheetData": data.item, "headerData": this.state.headerData, "headerHrsData": this.state.headerHrsData, "Status": data.item.Status == "Saved" ? true : false })}
-            >
-                <Text style={[styles.backTextWhite, { color: this.props.textColor }]}>Details</Text>
-            </TouchableOpacity>
-
-            {
-                Status == "Approved" ?
-                    <>
-                        {/* <TouchableOpacity
-                            style={[styles.backRightBtn1, styles.backRightBtnLeft, { backgroundColor: 'transparent' }]}
-                        >
-                            <Text style={[styles.backTextWhite, { marginTop: 3, marginBottom: 3, color: 'blue' }]}>Approver</Text>
-                            <Text numberOfLines={3} style={[styles.backTextWhite, { color: 'green', fontSize: 16 }]}>{data.item.Status}</Text>
-
-                        </TouchableOpacity> */}
-                        <TouchableOpacity
-                            style={[styles.backRightBtn11, styles.backRightBtnRight, { justifyContent: 'center', alignItems: 'center' }]}
-                        >
-                            <Text numberOfLines={3} style={[styles.backTextWhite, { color: 'green', fontSize: 16 }]}>{data.item.Status}</Text>
-                        </TouchableOpacity>
-                    </>
-                    :
-                    <>
-                        <TouchableOpacity
-                            style={[styles.backRightBtn1, styles.backRightBtnLeft]}
-                            onPress={() => this.setState({  singleRecord: true, ratingVisible: data.item.time !== "" || data.item.time !== null ?true: false, action: 'Approved', autoId: data.item.entryId, })}
-                        >
-                            <Image
-                                source={require('../Assets/greenTick.png')}
-                                style={{ width: 52, height: 52, }}
-                            />
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={[styles.backRightBtn1, styles.backRightBtnRight1]}
-                            onPress={() => this.setState({ singleRecord: true, ratingVisible: data.item.time !== "" || data.item.time !== null ?true: false, action: 'Rejected', autoId: data.item.entryId })}
-                        >
-                            <Image
-                                source={require('../Assets/cross.png')}
-                                style={{ width: 40, height: 40, }}
-                            />
-                        </TouchableOpacity>
-                    </>
-            }
-
-        </View>
-    );
     async componentDidMount() {
         this.getOrientation();
         Dimensions.addEventListener('change', () => {
@@ -707,10 +485,10 @@ class TimeSheet extends Component {
             <>
                 <StatusBar translucent barStyle="light-content" backgroundColor={this.props.primaryColor} />
                 <NavigationEvents
-                    onDidFocus={() => this.props.navigation.state.params.Loading == true ? this.handleClear() : null}
+                onDidFocus={() => this.props.navigation.state.params.Loading ==true ? this.handleClear():null}
                 // onWillBlur={() =>this.handleClear()}
                 />
-                <View ref="rootView" style={[styles.Container, {}]}>
+                <View ref="rootView" style={[styles.Container, {  }]}>
                     <View style={{ height: this.state.orientation == 'landscape' ? '11%' : '7%', justifyContent: 'center', alignItems: 'center', backgroundColor: this.props.primaryColor }}>
                         <Appbar1 navigation={this.props.navigation}
                             title={"Subordinate's Timesheet"}
@@ -720,10 +498,18 @@ class TimeSheet extends Component {
                         />
                     </View>
 
-                    <View style={[styles.container1, { height: this.state.orientation == 'landscape' ? '86%' : '90%', backgroundColor: this.props.secColor }]}>
+                    <View style={[styles.container, { height: this.state.orientation == 'landscape' ? '86%' : '90%', backgroundColor: this.props.secColor }]}>
                         <ScrollView
                             style={{ marginBottom: 5 }}
                             showsVerticalScrollIndicator={false}>
+
+
+                            {/* <TouchableOpacity style={{ margin: 20 }} onPress={() => this.setState({ ratingVisible: true, })}>
+                                    <View>
+                                        <Text>Click</Text>
+                                    </View>
+                                </TouchableOpacity> */}
+
 
                             {this.state.dataTable == true ?
                                 <>
@@ -739,231 +525,259 @@ class TimeSheet extends Component {
                                         </View>
 
                                     </View>
-                                    {
-                                        this.state.loading == true ?
-                                            <View style={{ margin: 10, justifyContent: 'center', alignItems: 'center' }}>
-                                                <UIActivityIndicator color={this.props.primaryColor} size={30} />
-                                            </View> : null
+                                    { 
+                                    this.state.loading == true? 
+                                    <View style={{ margin:10, justifyContent: 'center', alignItems: 'center' }}>
+                                        <UIActivityIndicator color={this.props.primaryColor} size={30} />
+                                    </View>:null
                                     }
-
                                     {
                                         this.state.timesheetData.length !== 0 ?
-                                            // <View style={{ flexDirection: 'row', marginLeft: 5, }}>
-                                            <ScrollView style={{ marginBottom: 10 }}
-                                                // horizontal={true}
-                                                // scrollEnabled={this.state.content}
-                                                showsVerticalScrollIndicator={false}
-                                            >
-                                                <View style={{ height: '100%', marginLeft: 5, marginRight: 5 }}>
-                                                    <SwipeListView
-                                                        data={this.state.timesheetData}
-                                                        renderItem={this.renderItem}
-                                                        renderHiddenItem={this.renderHiddenItem}
-                                                        leftOpenValue={75}
-                                                        rightOpenValue={-140}
-                                                        previewRowKey={'0'}
-                                                        previewOpenValue={-40}
-                                                        previewOpenDelay={3000}
-                                                        onRowDidOpen={this.onRowDidOpen}
-                                                    />
-
-                                                    <View style={{ flex: 1 }}>
-                                                        <SheetBottom
-                                                            visible={this.state.daysVisible}
-                                                            style={{ backgroundColor: this.props.secColor }}
-                                                            onBackdropPress={() => this.setState({ daysVisible: false })}
-                                                            onSwipeDown={() => this.setState({ daysVisible: false })}>
-
-                                                            <View style={{ backgroundColor: this.props.secColor }}>
-                                                                {/* <Card  style={{}} > */}
-                                                                <View style={[styles.flexRow1, { backgroundColor: 'transparent', borderRadius: 10, marginBottom: 10, marginStart: 8, marginEnd: 8, }]}>
-
-                                                                    <View style={{ width: "60%", height: '100%', margin: 2, marginBottom: 8 }}>
-                                                                        <Text numberOfLines={1} style={{ fontSize: 18, fontWeight: '900', }}>{this.state.projectName}</Text>
-                                                                        <Text numberOfLines={1} style={{ color: "#4D504F" }}>{"(" + this.state.clientName + ")"}</Text>
-                                                                        {/* <Text numberOfLines={1} style={{ color: "#4D504F" }}>{this.state.daysData.TaskDesc}</Text> */}
-                                                                    </View>
-                                                                    {/* <View style={{ width: "40%", height: '100%', margin: 2, justifyContent: 'flex-start', alignItems: 'center' }}>
-                                                                        <Text style={{ fontSize: 18, color: this.state.details.Status == "Saved" ? 'red' : 'green' }}>{this.state.details.Status}</Text>
-                                                                    </View> */}
-                                                                </View>
-                                                                <SwipeListView
-                                                                    data={this.state.daysData}
-                                                                    renderItem={this.renderItem1}
-                                                                    renderHiddenItem={this.renderHiddenItem1}
-                                                                    leftOpenValue={75}
-                                                                    rightOpenValue={-130}
-                                                                    previewRowKey={'0'}
-                                                                    previewOpenValue={-40}
-                                                                    previewOpenDelay={3000}
-                                                                    onRowDidOpen={this.onRowDidOpen}
-                                                                />
-                                                                {/* </Card> */}
-                                                                {/* <Card elevation={2} style={styles.container} >
-                                                                    <View style={styles.flexRow}>
-                                                                        <View style={this.props.index % 2 === 0 ? styles.strip1 : styles.strip2} />
-                                                                        <View style={styles.view}>
-                                                                            <View style={[styles.flexRow1]}>
-                                                                                <View style={{ width: "60%" }}>
-                                                                                    <Text style={{ fontSize: 16 }}>{this.state.lblMon}</Text>
-                                                                                </View>
-                                                                                <View style={{ width: "40%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
-                                                                                    <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.daysData.Status == "Saved" ? true : false, dayField: 'Mon', dayField: 1, }) }}
-                                                                                        style={[styles.hrsData, { backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
-                                                                                        <Text style={{ fontSize: 16 }}>{this.state.daysData.Mon == "" ? "0:00" : this.state.daysData.Mon}</Text>
-                                                                                    </TouchableOpacity>
-                                                                                    <TouchableOpacity style={{ flexDirection: 'row', }} onPress={() =>
-                                                                                        this.setState({ addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false, addDesc: this.state.daysData.Mon_TaskComments, addDescField: 1, },
-                                                                                            () => { })}>
-                                                                                        <Image style={{ height: 40, width: 40 }} source={require("../Assets/message.png")} />
-                                                                                    </TouchableOpacity>
-                                                                                </View>
-                                                                            </View>
-                                                                        </View>
-                                                                    </View>
-                                                                </Card>
-                                                                <Card elevation={2} style={styles.container} >
-                                                                    <View style={styles.flexRow}>
-                                                                        <View style={2 % 2 === 0 ? styles.strip1 : styles.strip2} />
-                                                                        <View style={styles.view}>
-                                                                            <View style={styles.flexRow1}>
-                                                                                <View style={{ width: "60%" }}>
-                                                                                    <Text style={{ fontSize: 16 }}>{this.state.lblTue}</Text>
-                                                                                </View>
-                                                                                <View style={{ width: "40%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
-                                                                                    <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.daysData.Status == "Saved" ? true : false, dayField: 'Tue', dayField: 2, }) }}
-                                                                                        style={[styles.hrsData, { backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
-                                                                                        <Text style={{ fontSize: 16 }}>{this.state.daysData.Tue == "" ? "0:00" : this.state.daysData.Tue}</Text>
-                                                                                    </TouchableOpacity>
-                                                                                    <TouchableOpacity style={{ flexDirection: 'row', }} onPress={() =>
-                                                                                        this.setState({ addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false, addDesc: this.state.daysData.Tue_TaskComments, addDescField: 2, },
-                                                                                            () => { })}>
-                                                                                        <Image style={{ height: 40, width: 40 }} source={require("../Assets/message.png")} />
-                                                                                    </TouchableOpacity>
-                                                                                </View>
-                                                                            </View>
-                                                                        </View>
-                                                                    </View>
-                                                                </Card>
-                                                                <Card elevation={2} style={styles.container} >
-                                                                    <View style={styles.flexRow}>
-                                                                        <View style={this.props.index % 2 === 0 ? styles.strip1 : styles.strip2} />
-                                                                        <View style={styles.view}>
-                                                                            <View style={styles.flexRow1}>
-                                                                                <View style={{ width: "60%" }}>
-                                                                                    <Text style={{ fontSize: 16 }}>{this.state.lblWed}</Text>
-                                                                                </View>
-                                                                                <View style={{ width: "40%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
-                                                                                    <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.daysData.Status == "Saved" ? true : false, dayField: 'Wed', dayField: 3, }) }}
-                                                                                        style={[styles.hrsData, { backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
-                                                                                        <Text style={{ fontSize: 16 }}>{this.state.daysData.Wed == "" ? "0:00" : this.state.daysData.Wed}</Text>
-                                                                                    </TouchableOpacity>
-                                                                                    <TouchableOpacity style={{ flexDirection: 'row', }} onPress={() =>
-                                                                                        this.setState({ addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false, addDesc: this.state.daysData.Wed_TaskComments, addDescField: 3, },
-                                                                                            () => { })}>
-                                                                                        <Image style={{ height: 40, width: 40 }} source={require("../Assets/message.png")} />
-                                                                                    </TouchableOpacity>
-                                                                                </View>
-                                                                            </View>
-                                                                        </View>
-                                                                    </View>
-                                                                </Card>
-                                                                <Card elevation={2} style={styles.container} >
-                                                                    <View style={styles.flexRow}>
-                                                                        <View style={2 % 2 === 0 ? styles.strip1 : styles.strip2} />
-                                                                        <View style={styles.view}>
-                                                                            <View style={styles.flexRow1}>
-                                                                                <View style={{ width: "60%" }}>
-                                                                                    <Text style={{ fontSize: 16 }}>{this.state.lblThu}</Text>
-                                                                                </View>
-                                                                                <View style={{ width: "40%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
-                                                                                    <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.daysData.Status == "Saved" ? true : false, dayField: 'Thu', dayField: 4, }) }}
-                                                                                        style={[styles.hrsData, { backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
-                                                                                        <Text style={{ fontSize: 16 }}>{this.state.daysData.Thu == "" ? "0:00" : this.state.daysData.Thu}</Text>
-                                                                                    </TouchableOpacity>
-                                                                                    <TouchableOpacity style={{ flexDirection: 'row', }} onPress={() =>
-                                                                                        this.setState({ addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false, addDesc: this.state.daysData.Thu_TaskComments, addDescField: 4, },
-                                                                                            () => { })}>
-                                                                                        <Image style={{ height: 40, width: 40 }} source={require("../Assets/message.png")} />
-                                                                                    </TouchableOpacity>
-                                                                                </View>
-                                                                            </View>
-                                                                        </View>
-                                                                    </View>
-                                                                </Card>
-                                                                <Card elevation={2} style={styles.container} >
-                                                                    <View style={styles.flexRow}>
-                                                                        <View style={this.props.index % 2 === 0 ? styles.strip1 : styles.strip2} />
-                                                                        <View style={styles.view}>
-                                                                            <View style={styles.flexRow1}>
-                                                                                <View style={{ width: "60%" }}>
-                                                                                    <Text style={{ fontSize: 16 }}>{this.state.lblFri}</Text>
-                                                                                </View>
-                                                                                <View style={{ width: "40%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
-                                                                                    <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.daysData.Status == "Saved" ? true : false, dayField: 'Fri', dayField: 5, }) }}
-                                                                                        style={[styles.hrsData, { backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
-                                                                                        <Text style={{ fontSize: 16 }}>{this.state.daysData.Fri == "" ? "0:00" : this.state.daysData.Fri}</Text>
-                                                                                    </TouchableOpacity>
-                                                                                    <TouchableOpacity style={{ flexDirection: 'row', }} onPress={() =>
-                                                                                        this.setState({ addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false, addDesc: this.state.daysData.Fri_TaskComments, addDescField: 5, },
-                                                                                            () => { })}>
-                                                                                        <Image style={{ height: 40, width: 40 }} source={require("../Assets/message.png")} />
-                                                                                    </TouchableOpacity>
-                                                                                </View>
-                                                                            </View>
-                                                                        </View>
-                                                                    </View>
-                                                                </Card>
-                                                                <Card elevation={2} style={styles.container} >
-                                                                    <View style={styles.flexRow}>
-                                                                        <View style={2 % 2 === 0 ? styles.strip1 : styles.strip2} />
-                                                                        <View style={styles.view}>
-                                                                            <View style={styles.flexRow1}>
-                                                                                <View style={{ width: "60%" }}>
-                                                                                    <Text style={{ fontSize: 16 }}>{this.state.lblSat}</Text>
-                                                                                </View>
-                                                                                <View style={{ width: "40%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
-                                                                                    <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.daysData.Status == "Saved" ? true : false, dayField: 'Sat', dayField: 6, }) }}
-                                                                                        style={[styles.hrsData, { backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
-                                                                                        <Text style={{ fontSize: 16 }}>{this.state.daysData.Sat == "" ? "0:00" : this.state.daysData.Sat}</Text>
-                                                                                    </TouchableOpacity>
-                                                                                    <TouchableOpacity style={{ flexDirection: 'row', }} onPress={() =>
-                                                                                        this.setState({ addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false, addDesc: this.state.daysData.Sat_TaskComments, addDescField: 6, },
-                                                                                            () => { })}>
-                                                                                        <Image style={{ height: 40, width: 40 }} source={require("../Assets/message.png")} />
-                                                                                    </TouchableOpacity>
-                                                                                </View>
-                                                                            </View>
-                                                                        </View>
-                                                                    </View>
-                                                                </Card>
-                                                                <Card elevation={2} style={styles.container} >
-                                                                    <View style={styles.flexRow}>
-                                                                        <View style={this.props.index % 2 === 0 ? styles.strip1 : styles.strip2} />
-                                                                        <View style={styles.view}>
-                                                                            <View style={styles.flexRow1}>
-                                                                                <View style={{ width: "60%" }}>
-                                                                                    <Text style={{ fontSize: 16 }}>{this.state.lblSun}</Text>
-                                                                                </View>
-                                                                                <View style={{ width: "40%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
-                                                                                    <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.daysData.Status == "Saved" ? true : false, dayField: 'Mon', dayField: 7, }) }}
-                                                                                        style={[styles.hrsData, { backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
-                                                                                        <Text style={{ fontSize: 16 }}>{this.state.daysData.Sun == "" ? "0:00" : this.state.daysData.Sun}</Text>
-                                                                                    </TouchableOpacity>
-                                                                                    <TouchableOpacity style={{ flexDirection: 'row', }} onPress={() =>
-                                                                                        this.setState({ addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false, addDesc: this.state.daysData.Sun_TaskComments, addDescField: 7, },
-                                                                                            () => { })}>
-                                                                                        <Image style={{ height: 40, width: 40 }} source={require("../Assets/message.png")} />
-                                                                                    </TouchableOpacity>
-                                                                                </View>
-                                                                            </View>
-                                                                        </View>
-                                                                    </View>
-                                                                </Card> */}
-
+                                            <View style={{ flexDirection: 'row', marginLeft: 5, }}>
+                                                <View style={{ flexDirection: 'column', }}>
+                                                    <View style={{ height: 75, backgroundColor: 'transparent' }}>
+                                                        <View style={[styles.sheetHeader, { justifyContent: 'center', alignItems: 'center', backgroundColor: this.props.stripHeaderColor }]}>
+                                                            <View style={{ flexDirection: 'row' }}>
+                                                                <Text style={{ fontSize: 18, fontWeight: '900', color: this.props.fontColor }}>{"Project"}</Text>
+                                                                <Text style={{ fontSize: 16, color: this.props.fontColor }}>{"  (Client)"}</Text>
                                                             </View>
-                                                        </SheetBottom>
+                                                            <View>
+                                                                <Text style={{ fontSize: 16, color: this.props.fontColor }}>{"Description"}</Text>
+                                                            </View>
+                                                        </View>
                                                     </View>
+                                                    {
+                                                        this.state.timesheetData.length !== 0 ?
+                                                            <View style={{ flexDirection: 'row', }}>
+                                                                <FlatList
+                                                                    data={Object.keys(this.state.timesheetData)}
+                                                                    renderItem={({ item }) => (
+                                                                        <View style={[styles.sheetData1, { backgroundColor: this.state.selectedData.includes(this.state.timesheetData[item]) ? "#D4FDDA" : this.props.stripColor, flexDirection: 'row' }]}>
+                                                                            {
+                                                                                this.state.timesheetData[item].ApproverAction == "Rejected" ?
+                                                                                    <View style={[styles.rejected, { backgroundColor: "red" }]} /> : null
+                                                                            }
+                                                                            <TouchableOpacity
+                                                                                onPress={() => this.state.selectionMode ? this.handleLongClick(this.state.timesheetData[item]) : this.props.navigation.navigate('ProjectDetail', { "timesheetData": this.state.timesheetData[item], "headerData": this.state.headerData, "headerHrsData": this.state.headerHrsData, "Status": this.state.timesheetData[item].Status == "Saved" ? true : false, "backNavigation": "TsApproval", "Type": this.state.type })}
+                                                                                onLongPress={() => { this.state.type == "Pending" ? this.handleLongClick(this.state.timesheetData[item]) : null }}
+                                                                            >
+                                                                                <Text numberOfLines={1} style={{ fontSize: 18, fontWeight: '900', }}>{this.state.timesheetData[item].ProjectName}</Text>
+                                                                                <Text numberOfLines={1} style={{ color: "#4D504F" }}>{"(" + this.state.timesheetData[item].ClientName + ")"}</Text>
+                                                                                <Text numberOfLines={1} style={{ color: "#4D504F" }}>{this.state.timesheetData[item].TaskDesc}</Text>
+                                                                            </TouchableOpacity>
+                                                                        </View>
+                                                                    )}
+                                                                />
+                                                            </View> : null
+                                                    }
+                                                </View>
+
+                                                <ScrollView style={{ marginBottom: 40 }}
+                                                    horizontal={true}
+                                                    scrollEnabled={this.state.content}
+                                                    showsVerticalScrollIndicator={false}
+                                                >
+                                                    <View style={{ flexDirection: 'column', marginRight: 5, }}>
+                                                        <View style={{ flexDirection: 'row', height: 75, top: 5, backgroundColor: this.props.stripHeaderColor }}>
+                                                            {
+                                                                this.state.type == "Pending" ? null :
+                                                                    <>
+                                                                        <View style={[styles.OTP, { backgroundColor: this.props.stripHeaderColor }]}>
+                                                                            <Text style={{ color: this.props.fontColor }}>{"ON TIME"}</Text>
+                                                                            <Text style={{ color: this.props.fontColor }}>{"PERFORMANCE"}</Text>
+                                                                        </View>
+                                                                        <View style={[styles.approver, { backgroundColor: this.props.stripHeaderColor }]}>
+                                                                            <Text style={{ color: this.props.fontColor }}>{"QUALITY  OF"}</Text>
+                                                                            <Text style={{ color: this.props.fontColor }}>{"WORK"}</Text>
+                                                                        </View>
+                                                                    </>
+                                                            }
+
+                                                            {
+                                                                this.state.type == "Completed" ? null :
+                                                                    <View style={[{ paddingLeft: 12, paddingRight: 10, width: 75, backgroundColor: this.props.stripHeaderColor }]}>
+                                                                        {
+                                                                            this.state.type == "Pending" && this.state.selectionMode == true ?
+                                                                                <>
+                                                                                    <TouchableOpacity onPress={() =>
+                                                                                        this.setState({ ratingVisible: true, action: 'Approved', },
+                                                                                            () => { })}>
+                                                                                        <Image style={{ width: 40, height: 40, }} source={require('../Assets/greenTick.png')} />
+                                                                                    </TouchableOpacity>
+                                                                                    <TouchableOpacity onPress={() =>
+                                                                                        this.setState({ ratingVisible: true, action: 'Rejected', },
+                                                                                            () => { })}>
+                                                                                        <Image style={{ width: 30, height: 30, left: 5 }} source={require('../Assets/cross.png')} />
+                                                                                    </TouchableOpacity>
+                                                                                </>
+                                                                                : null
+                                                                        }
+                                                                    </View>
+                                                            }
+
+                                                            <View style={[styles.sheetData, { backgroundColor: this.props.stripHeaderColor }]}>
+                                                                <Text style={{ color: this.props.fontColor }}>{this.state.lblMon}</Text>
+                                                                <Text style={{ color: this.props.fontColor }}>{this.state.dvTotMon}</Text>
+                                                            </View>
+                                                            <View style={[styles.sheetData, { backgroundColor: this.props.stripHeaderColor }]}>
+                                                                <Text style={{ color: this.props.fontColor }}>{this.state.lblTue}</Text>
+                                                                <Text style={{ color: this.props.fontColor }}>{this.state.dvTotTue}</Text>
+                                                            </View>
+
+                                                            <View style={[styles.sheetData, { backgroundColor: this.props.stripHeaderColor, }]}>
+                                                                <Text style={{ color: this.props.fontColor }}>{this.state.lblWed}</Text>
+                                                                <Text style={{ color: this.props.fontColor }}>{this.state.dvTotWed}</Text>
+                                                            </View>
+                                                            <View style={[styles.sheetData, { backgroundColor: this.props.stripHeaderColor, }]}>
+                                                                <Text style={{ color: this.props.fontColor }}>{this.state.lblThu}</Text>
+                                                                <Text style={{ color: this.props.fontColor }}>{this.state.dvTotThu}</Text>
+                                                            </View>
+                                                            <View style={[styles.sheetData, { backgroundColor: this.props.stripHeaderColor }]}>
+                                                                <Text style={{ color: this.props.fontColor }}>{this.state.lblFri}</Text>
+                                                                <Text style={{ color: this.props.fontColor }}>{this.state.dvTotFri}</Text>
+                                                            </View>
+                                                            <View style={[styles.sheetData, { backgroundColor: this.props.stripHeaderColor }]}>
+                                                                <Text style={{ color: this.props.fontColor }}>{this.state.lblSat}</Text>
+                                                                <Text style={{ color: this.props.fontColor }}>{this.state.dvTotSat}</Text>
+                                                            </View>
+                                                            <View style={[styles.sheetData, { backgroundColor: this.props.stripHeaderColor }]}>
+                                                                <Text style={{ color: this.props.fontColor }}>{this.state.lblSun}</Text>
+                                                                <Text style={{ color: this.props.fontColor }}>{this.state.dvTotSun}</Text>
+                                                            </View>
+
+                                                        </View>
+                                                        {/* <View style={{ flexDirection: 'row',  marginRight: 5 }}> */}
+                                                        <FlatList
+                                                            data={Object.keys(this.state.timesheetData)}
+                                                            renderItem={({ item, index }) => (
+                                                                <View style={{ flexDirection: 'row', }}>
+                                                                    {
+                                                                        this.state.type == "Pending" ? null :
+                                                                            <>
+                                                                                <View style={[styles.OTP, { backgroundColor: this.props.stripColor, flexDirection: 'row' }]}>
+                                                                                    <Text>{this.state.timesheetData[item].ApprOTPRating}</Text>
+                                                                                </View>
+                                                                                <View style={[styles.approver, { backgroundColor: this.props.stripColor, flexDirection: 'row' }]}>
+                                                                                    <Text>{this.state.timesheetData[item].ApprQOWRating}</Text>
+                                                                                    <TouchableOpacity style={{ height: 40, width: 40, left: 20, }}
+                                                                                        onPress={() => this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.timesheetData[item].ApproverRemarks })}
+                                                                                    >
+                                                                                        <Image style={{ height: 40, width: 40, position: 'relative' }} source={require("../Assets/msgbg.png")} />
+                                                                                    </TouchableOpacity>
+                                                                                </View>
+                                                                            </>
+                                                                    }
+
+
+                                                                    {
+                                                                        this.state.type == "Completed" ? null :
+                                                                            <View style={[styles.sheetData, { backgroundColor: this.state.selectedData.includes(this.state.timesheetData[item]) ? "#D4FDDA" : this.props.stripColor }]}>
+                                                                                {
+                                                                                    this.state.type == "Pending" && this.state.selectionMode == false ?
+                                                                                        <>
+                                                                                            <TouchableOpacity onPress={() =>
+                                                                                                this.setState({ ratingVisible: true, action: 'Approved', apprActionData: this.state.timesheetData[item], },
+                                                                                                    () => { })}>
+                                                                                                <Image style={styles.img1} source={require('../Assets/greenTick.png')} />
+                                                                                            </TouchableOpacity>
+                                                                                            <TouchableOpacity onPress={() =>
+                                                                                                this.setState({ ratingVisible: true, action: 'Rejected', apprActionData: this.state.timesheetData[item], },
+                                                                                                    () => { })}>
+                                                                                                <Image style={styles.img} source={require('../Assets/cross.png')} />
+                                                                                            </TouchableOpacity>
+                                                                                        </> : null
+                                                                                }
+                                                                            </View>
+                                                                    }
+
+                                                                    <View style={[styles.sheetData, { backgroundColor: this.state.selectedData.includes(this.state.timesheetData[item]) ? "#D4FDDA" : this.props.stripColor }]}>
+                                                                        <TouchableOpacity onPress={() => { this.state.selectionMode ? this.handleLongClick(this.state.timesheetData[item]) : this.setState({ actionVisible: this.state.type == "Pending" && this.state.timesheetData[item].Mon !== "" ? true : false, autoId: this.state.timesheetData[item].Mon_AutoId }) }}
+                                                                            style={[styles.hrsData, { backgroundColor: this.state.timesheetData[item].Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
+                                                                            <Text>{this.state.timesheetData[item].Mon == "" ? '--:--' : this.state.timesheetData[item].Mon}</Text>
+                                                                        </TouchableOpacity>
+                                                                        <TouchableOpacity
+                                                                            onPress={() => this.setState({ addDescVisible: true, descEdit: this.state.timesheetData[item].Status == "Saved" ? true : false, addDesc: this.state.timesheetData[item].Mon_TaskComments, addDescField: 1, addDescIndex: index })}
+                                                                        >
+                                                                            <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
+                                                                        </TouchableOpacity>
+                                                                    </View>
+                                                                    <View style={[styles.sheetData, { backgroundColor: this.state.selectedData.includes(this.state.timesheetData[item]) ? "#D4FDDA" : this.props.stripColor }]}>
+                                                                        <TouchableOpacity onPress={() => { this.state.selectionMode ? this.handleLongClick(this.state.timesheetData[item]) : this.setState({ actionVisible: this.state.type == "Pending" && this.state.timesheetData[item].Tue !== "" ? true : false, autoId: this.state.timesheetData[item].Tue_AutoId }) }}
+                                                                            style={[styles.hrsData, { backgroundColor: this.state.timesheetData[item].Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
+                                                                            <Text>{this.state.timesheetData[item].Tue == "" ? '--:--' : this.state.timesheetData[item].Tue}</Text>
+                                                                        </TouchableOpacity>
+                                                                        <TouchableOpacity
+                                                                            onPress={() => this.setState({ addDescVisible: true, descEdit: this.state.timesheetData[item].Status == "Saved" ? true : false, addDesc: this.state.timesheetData[item].Tue_TaskComments, addDescField: 2, addDescIndex: index })}
+                                                                        >
+                                                                            <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
+                                                                        </TouchableOpacity>
+                                                                    </View>
+                                                                    <View style={[styles.sheetData, { backgroundColor: this.state.selectedData.includes(this.state.timesheetData[item]) ? "#D4FDDA" : this.props.stripColor }]}>
+                                                                        <TouchableOpacity onPress={() => { this.state.selectionMode ? this.handleLongClick(this.state.timesheetData[item]) : this.setState({ actionVisible: this.state.type == "Pending" && this.state.timesheetData[item].Wed !== "" ? true : false, autoId: this.state.timesheetData[item].Wed_AutoId }) }}
+                                                                            style={[styles.hrsData, { backgroundColor: this.state.timesheetData[item].Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
+                                                                            <Text>{this.state.timesheetData[item].Wed == "" ? '--:--' : this.state.timesheetData[item].Wed}</Text>
+                                                                        </TouchableOpacity>
+                                                                        <TouchableOpacity
+                                                                            onPress={() => this.setState({ addDescVisible: true, descEdit: false, addDesc: this.state.timesheetData[item].Wed_TaskComments, addDescField: 3, addDescIndex: index })}
+                                                                        >
+                                                                            <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
+                                                                        </TouchableOpacity>
+                                                                    </View>
+                                                                    <View style={[styles.sheetData, { backgroundColor: this.state.selectedData.includes(this.state.timesheetData[item]) ? "#D4FDDA" : this.props.stripColor }]}>
+                                                                        <TouchableOpacity onPress={() => { this.state.selectionMode ? this.handleLongClick(this.state.timesheetData[item]) : this.setState({ actionVisible: this.state.type == "Pending" && this.state.timesheetData[item].Thu !== "" ? true : false, autoId: this.state.timesheetData[item].Thu_AutoId }) }}
+                                                                            style={[styles.hrsData, { backgroundColor: this.state.timesheetData[item].Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
+                                                                            <Text>{this.state.timesheetData[item].Thu == "" ? '--:--' : this.state.timesheetData[item].Thu}</Text>
+                                                                        </TouchableOpacity>
+                                                                        <TouchableOpacity
+                                                                            onPress={() => this.setState({ addDescVisible: true, descEdit: this.state.timesheetData[item].Status == "Saved" ? true : false, addDesc: this.state.timesheetData[item].Thu_TaskComments, addDescField: 4, addDescIndex: index })}
+                                                                        >
+                                                                            <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
+                                                                        </TouchableOpacity>
+                                                                    </View>
+                                                                    <View style={[styles.sheetData, { backgroundColor: this.state.selectedData.includes(this.state.timesheetData[item]) ? "#D4FDDA" : this.props.stripColor }]}>
+                                                                        <TouchableOpacity onPress={() => { this.state.selectionMode ? this.handleLongClick(this.state.timesheetData[item]) : this.setState({ actionVisible: this.state.type == "Pending" && this.state.timesheetData[item].Fri !== "" ? true : false, autoId: this.state.timesheetData[item].Fri_AutoId }) }}
+                                                                            style={[styles.hrsData, { backgroundColor: this.state.timesheetData[item].Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
+                                                                            <Text>{this.state.timesheetData[item].Fri == "" ? '--:--' : this.state.timesheetData[item].Fri}</Text>
+                                                                        </TouchableOpacity>
+                                                                        <TouchableOpacity
+                                                                            onPress={() => this.setState({ addDescVisible: true, descEdit: this.state.timesheetData[item].Status == "Saved" ? true : false, addDesc: this.state.timesheetData[item].Fri_TaskComments, addDescField: 5, addDescIndex: index })}
+                                                                        >
+                                                                            <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
+                                                                        </TouchableOpacity>
+                                                                    </View>
+                                                                    <View style={[styles.sheetData, { backgroundColor: this.state.selectedData.includes(this.state.timesheetData[item]) ? "#D4FDDA" : this.props.stripColor }]}>
+                                                                        <TouchableOpacity onPress={() => { this.state.selectionMode ? this.handleLongClick(this.state.timesheetData[item]) : this.setState({ actionVisible: this.state.type == "Pending" && this.state.timesheetData[item].Sat !== "" ? true : false, autoId: this.state.timesheetData[item].Sat_AutoId }) }}
+                                                                            style={[styles.hrsData, { backgroundColor: this.state.timesheetData[item].Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
+                                                                            <Text>{this.state.timesheetData[item].Sat == "" ? '--:--' : this.state.timesheetData[item].Sat}</Text>
+                                                                        </TouchableOpacity>
+                                                                        <TouchableOpacity
+                                                                            onPress={() => this.setState({ addDescVisible: true, descEdit: this.state.timesheetData[item].Status == "Saved" ? true : false, addDesc: this.state.timesheetData[item].Sat_TaskComments, addDescField: 6, addDescIndex: index })}
+                                                                        >
+                                                                            <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
+                                                                        </TouchableOpacity>
+                                                                    </View>
+                                                                    <View style={[styles.sheetData, {
+                                                                        backgroundColor: this.state.selectedData.includes(this.state.timesheetData[item]) ? "#D4FDDA" :
+                                                                            this.props.stripColor
+                                                                    }]}>
+                                                                        <TouchableOpacity onPress={() => { this.state.selectionMode ? this.handleLongClick(this.state.timesheetData[item]) : this.setState({ actionVisible: this.state.type == "Pending" && this.state.timesheetData[item].Sun !== "" ? true : false, autoId: this.state.timesheetData[item].Sun_AutoId }) }}
+                                                                            style={[styles.hrsData, { backgroundColor: this.state.timesheetData[item].Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
+                                                                            <Text>{this.state.timesheetData[item].Sun == "" ? '--:--' : this.state.timesheetData[item].Sun}</Text>
+                                                                        </TouchableOpacity>
+                                                                        <TouchableOpacity
+                                                                            onPress={() => this.setState({ addDescVisible: true, descEdit: this.state.timesheetData[item].Status == "Saved" ? true : false, addDesc: this.state.timesheetData[item].Sun_TaskComments, addDescField: 7, addDescIndex: index })}
+                                                                        >
+                                                                            <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
+                                                                        </TouchableOpacity>
+                                                                    </View>
+
+                                                                </View>
+                                                            )}
+                                                        />
+
+                                                        {/* </View> */}
+                                                    </View>
+
                                                     <Modal isVisible={this.state.addDescVisible}>
                                                         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                                                             <View style={{ backgroundColor: 'white', borderRadius: 5, width: 350, height: 250 }}>
@@ -987,15 +801,50 @@ class TimeSheet extends Component {
                                                                             keyboardType="default"
                                                                             autoFocus={false}
                                                                             style={styles.longText}
+                                                                        // dense
+                                                                        // onChangeText={value => this.setState({ addDesc: value, description: value })}
+                                                                        // onChangeText={value => this.handleAddDescription({ value})}
                                                                         />
                                                                     </View>
                                                                 </View>
                                                             </View>
                                                         </View>
                                                     </Modal>
-                                                </View>
-                                            </ScrollView>
-                                            : null
+
+
+                                                    {/* <Dialog
+                                                        visible={this.state.addDescVisible2}
+                                                        style={{ backgroundColor: 'white', height: 250, width: 350 }}
+                                                        onTouchOutside={() => this.setState({ addDescVisible: false })}
+
+                                                    >
+                                                        <View style={{ backgroundColor: 'white', height: 300, width: 400, bottom: 25, right: 25 }}>
+                                                            <View style={{ height: 50, padding: 15, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
+                                                                <Text style={{ fontSize: title, color: this.props.fontColor }}>{this.state.rating == true ? "Rating" : 'Additional Description'}</Text>
+                                                            </View>
+                                                            <View style={{ justifyContent: 'center', alignItems: 'center', right: 25 }}>
+                                                                <View style={{ borderRadius: 5, borderWidth: .5, width: 300, height: 170, margin: 15 }}>
+                                                                    <TextInput
+                                                                        multiline={true}
+                                                                        editable={false}
+                                                                        value={this.state.rating == true ? this.state.ratingText : this.state.addDesc}
+                                                                        // placeholder="Enter Description"
+                                                                        textAlignVertical="top"
+                                                                        underlineColor="white"
+                                                                        keyboardType="default"
+                                                                        autoFocus={false}
+                                                                        style={styles.longText}
+                                                                    // dense
+                                                                    // onChangeText={value => this.setState({ addDesc: value, description: value })}
+                                                                    // onChangeText={value => this.handleAddDescription({ value})}
+                                                                    />
+                                                                </View>
+                                                            </View>
+                                                        </View>
+                                                    </Dialog> */}
+
+                                                </ScrollView>
+                                            </View> : null
                                     }
                                 </>
                                 : null
@@ -1066,7 +915,7 @@ class TimeSheet extends Component {
                                         </TouchableOpacity>
                                     </Card>
 
-                                    <View style={{ flexDirection: 'row', margin: 20, justifyContent: 'center', alignItems: 'center', width: '90%', backgroundColor: 'transparent' }}>
+                                    <View style={{ flexDirection: 'row', margin: 20, justifyContent: 'center',alignItems: 'center',width:'90%', backgroundColor: 'transparent'}}>
                                         <Button mode="contained" style={{ height: 40, width: "45%", margin: 10, backgroundColor: this.props.primaryColor }}
                                             onPress={this.handleShowReport}>
                                             Search
@@ -1156,6 +1005,84 @@ class TimeSheet extends Component {
                                 </View>
                             </Modal>
 
+                            {/* <Dialog
+                                visible={this.state.ratingVisible1}
+                                style={{
+                                    justifyContent: 'flex-start', width: 350,
+                                    height: this.state.action == "Approved" && this.state.orientation == 'portrait' ? 440 : this.state.action == "Approved" && this.state.orientation == 'landscape' ? 300 : 300,
+                                }}
+                                onTouchOutside={() => this.setState({ ratingVisible: false, validation: false })}
+
+                            >
+                                <View style={{ width: 350, right: 25, bottom: 25 }}>
+                                    <View style={{ height: 50, padding: 15, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
+                                        <Text style={{ fontSize: title, color: this.props.fontColor }}>{'Rating'}</Text>
+                                    </View>
+                                    <ScrollView style={{ marginBottom: 60 }}>
+                                        <View style={{ marginTop: 5, padding: 10, flexDirection: 'column' }}>
+                                            {
+                                                this.state.action == "Approved" ?
+                                                    <>
+                                                        <View style={{ elevation: 3, borderWidth: .5, borderColor: this.state.validation == true && this.state.rating1.length == 0 ? 'red' : "transparent", borderRadius: 5, height: 60, marginBottom: 5, margin: 5 }}>
+                                                            <TouchableOpacity onPress={() => this.setState({
+                                                                title: "On time performance", multiPickerVisible1: true,
+                                                                field: 1, data: this.state.ratingList1, selectedVal: this.state.rating1
+                                                            })}
+                                                                style={[styles.cardMenuSpasing, {}]}>
+                                                                <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>ON TIME PERFORMANCE</Text>
+                                                                <Text numberOfLines={1} style={[styles.twoCardLabel1, { color: "#4D504F", }]}>{this.state.rating1.length == 0 ? "--select--" : this.state.rating1[0].Text}</Text>
+                                                            </TouchableOpacity>
+                                                        </View>
+                                                        <View style={{ elevation: 3, borderWidth: .5, borderColor: this.state.validation == true && this.state.rating1.length == 0 ? 'red' : "transparent", borderRadius: 5, height: 60, marginBottom: 5, margin: 5 }}>
+                                                            <TouchableOpacity onPress={() => this.setState({
+                                                                title: "Quality of work", multiPickerVisible1: true,
+                                                                field: 2, data: this.state.ratingList2, selectedVal: this.state.rating2,
+                                                            })}
+                                                                style={[styles.cardMenuSpasing, {}]}>
+                                                                <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>QUALITY OF WORK</Text>
+                                                                <Text numberOfLines={1} style={[styles.twoCardLabel1, { color: "#4D504F", }]}>{this.state.rating2.length == 0 ? "--select--" : this.state.rating2.length == 0 ? "--select--" : this.state.rating2[0].Text}</Text>
+                                                            </TouchableOpacity>
+                                                        </View>
+                                                    </> : null
+                                            }
+                                            <View style={{ elevation: 3, borderWidth: .5, borderColor: this.state.action == "Rejected" && this.state.validation == true && this.state.rating3 !== null ? 'red' : "transparent", borderRadius: 5, height: 150, marginBottom: 5, margin: 5 }}>
+                                                <TouchableOpacity style={[styles.cardMenuSpasing, {}]}>
+                                                    <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>REMARK</Text>
+                                                    <TextInput
+                                                        multiline={true}
+                                                        // numberOfLines={3}
+                                                        value={this.state.rating3}
+                                                        placeholder="Enter Remark"
+                                                        textAlignVertical="top"
+                                                        underlineColor="white"
+                                                        keyboardType="default"
+                                                        autoFocus={false}
+                                                        style={{ paddingStart: 8, height: 130 }}
+                                                        dense
+                                                        onChangeText={value => this.setState({ rating3: value, })}
+                                                    />
+                                                </TouchableOpacity>
+                                            </View>
+                                            <View style={{ justifyContent: 'flex-end', alignItems: 'flex-end', marginTop: 10, marginBottom: 10, margin: 5 }}>
+                                                {
+                                                    this.state.action !== 'Approved' ?
+                                                        <Button mode="contained" style={{ height: 40, width: 150, backgroundColor: this.props.primaryColor }}
+                                                            onPress={this.rejectAllRecord}>
+                                                            reject
+                                                     </Button>
+                                                        :
+                                                        <Button mode="contained" style={{ height: 40, width: 150, backgroundColor: this.props.primaryColor }}
+                                                            onPress={this.approveAllRecord}>
+                                                            approve
+                                                     </Button>
+                                                }
+
+                                            </View>
+                                        </View>
+                                    </ScrollView>
+                                </View>
+
+                            </Dialog> */}
 
                             <Dialog
                                 visible={this.state.actionVisible}
@@ -1187,7 +1114,9 @@ class TimeSheet extends Component {
                                                 <Image style={{ height: 30, width: 30, tintColor: 'white' }} source={require('../Assets/redCross.png')} />
                                             </TouchableOpacity>
                                         </View>
-
+                                        {/* <View style={{ height: 50, padding: 15, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
+                                            <Text style={{ fontSize: title, color: this.props.fontColor }}>{this.state.title}</Text>
+                                        </View> */}
                                         <View style={{ backgroundColor: 'transparent', flex: 1, margin: 5 }}>
                                             {
                                                 this.state.data.length == 0 ?
@@ -1227,6 +1156,55 @@ class TimeSheet extends Component {
                                     </View>
                                 </View>
                             </Modal>
+                            {/* <Dialog
+                                visible={this.state.multiPickerVisible11}
+                                style={{ backgroundColor: 'white', width: 300, height: 350 }}
+                                onTouchOutside={() => this.setState({ multiPickerVisible1: false, selectedVal: [] }, () => { })}
+
+                            >
+                                <View style={{ backgroundColor: 'transparent', height: 350, bottom: 25, right: 24, width: 300 }}>
+                                    <View style={{ height: 50, padding: 15, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
+                                        <Text style={{ fontSize: title, color: this.props.fontColor }}>{this.state.title}</Text>
+                                    </View>
+
+                                    <View style={{ backgroundColor: 'transparent', flex: 1, margin: 5 }}>
+                                        {
+                                            this.state.data.length == 0 ?
+                                                <View style={{ width: '100%', }}>
+                                                    <Text style={styles.textPopup}>
+                                                        {"No Data Available"}
+                                                    </Text>
+                                                    <Divider />
+                                                </View>
+                                                :
+                                                <FlatList
+                                                    data={Object.keys(this.state.data)}
+                                                    renderItem={({ item, index }) => (
+                                                        <TouchableOpacity style={{ flexDirection: 'row', width: '100%', margin: 5 }}
+                                                            onPress={() => { this.handleRating(this.state.data[item]) }
+                                                            }>
+
+                                                            <View style={{ width: '90%', backgroundColor: 'transparent', borderBottomWidth: .2 }}>
+                                                                <Text style={{ padding: 5, fontSize: 16, color: "#4D504F" }}>
+                                                                    {this.state.data[item].Text}</Text>
+                                                            </View>
+                                                            <View style={{ width: '10%', backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }}>
+                                                                {
+                                                                    this.state.selectedVal.length == 0 ? null : this.state.selectedVal.includes(this.state.data[item]) ?
+                                                                        <Image
+                                                                            source={require('../Assets/tick.png')}
+                                                                            style={{ width: 20, height: 23, marginRight: 15, padding: 5, tintColor: "#4D504F" }}
+                                                                        /> : null
+                                                                }
+                                                            </View>
+                                                            <Divider />
+                                                        </TouchableOpacity>
+                                                    )}
+                                                />
+                                        }
+                                    </View>
+                                </View>
+                            </Dialog> */}
 
                             <Modal isVisible={this.state.multiPickerVisible}>
                                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -1308,6 +1286,85 @@ class TimeSheet extends Component {
                                 </View>
                             </Modal>
 
+
+                            {/* <Dialog
+                                visible={this.state.multiPickerVisiblee}
+                                style={{ backgroundColor: 'white', width: 350, height: 400 }}
+                                onTouchOutside={() => this.setState({ multiPickerVisible: false, selectedVal: [] }, () => { })}
+
+                            >
+                                <View style={{ backgroundColor: 'transparent', height: 400, bottom: 25, right: 24, width: 350 }}>
+                                    <View style={{ height: 50, padding: 15, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
+                                        <Text style={{ fontSize: title, color: this.props.fontColor }}>{this.state.title}</Text>
+                                    </View>
+
+                                    {
+                                        this.state.field == 1 || this.state.field == 2 ?
+                                            <>
+                                                <TextInput style={{ height: 40, margin: 5, borderWidth: .3, borderRadius: 3, padding: 5 }}
+                                                    underlineColorAndroid="transparent"
+                                                    placeholder="Search here.."
+                                                    autoCapitalize="none"
+                                                    onChangeText={text => this.searchFilterFunction(text)}
+                                                />
+                                                <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginLeft: 5, marginRight: 5, backgroundColor: 'white', }}>
+                                                    <TouchableOpacity style={styles.header3}
+                                                        onPress={() => this.handleSelectAll()}>
+                                                        <Text style={styles.text3}>Select All</Text>
+                                                    </TouchableOpacity>
+
+                                                    <TouchableOpacity style={styles.header3}
+                                                        onPress={() => this.handleDeSelectAll()}>
+                                                        <Text style={styles.text3}>Deselect All</Text>
+                                                    </TouchableOpacity>
+                                                </View>
+                                                <Divider style={{ height: 1 }} />
+                                            </>
+                                            : null
+                                    }
+
+                                    <View style={{ backgroundColor: 'transparent', flex: 1, margin: 5 }}>
+                                        {
+                                            this.state.data.length == 0 ?
+                                                <View style={{ width: '100%', }}>
+                                                    <Text style={styles.textPopup}>
+                                                        {"No Data Available"}
+                                                    </Text>
+                                                    <Divider />
+                                                </View>
+                                                :
+                                                <FlatList
+                                                    data={Object.keys(this.state.data)}
+                                                    renderItem={({ item, index }) => (
+                                                        <TouchableOpacity style={{ flexDirection: 'row', width: '100%', margin: 5 }}
+                                                            onPress={() => { this.handleSelectedData(this.state.data[item], index) }
+                                                            }>
+
+                                                            <View style={{ width: '90%', backgroundColor: 'transparent', borderBottomWidth: .2 }}>
+                                                                <Text style={{ padding: 5, fontSize: 16, color: "#4D504F" }}>
+                                                                    {this.state.field !== 5 ? this.state.data[item].Text
+                                                                        :
+                                                                        moment(new Date(this.state.data[item].Text.slice(0, 10).split('-').reverse().join('/'))).format("DD MMM")
+                                                                        + ' - ' + moment(new Date(this.state.data[item].Text.slice(14, 24).split('-').reverse().join('/'))).format("DD MMM YYYY")}</Text>
+                                                            </View>
+                                                            <View style={{ width: '10%', backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }}>
+                                                                {
+                                                                    this.state.selectedVal.length == 0 ? null : this.state.selectedVal.includes(this.state.data[item]) ?
+                                                                        <Image
+                                                                            source={require('../Assets/tick.png')}
+                                                                            style={{ width: 20, height: 23, marginRight: 15, padding: 5, tintColor: "#4D504F" }}
+                                                                        /> : null
+                                                                }
+                                                            </View>
+                                                            <Divider />
+                                                        </TouchableOpacity>
+                                                    )}
+                                                />
+                                        }
+                                    </View>
+
+                                </View>
+                            </Dialog> */}
 
                         </ScrollView>
                     </View>
@@ -1486,7 +1543,17 @@ const styles = StyleSheet.create({
         // justifyContent: 'center',
         // alignItems: 'center'
     },
-
+    sheetData1: {
+        padding: 10,
+        height: 80,
+        width: 200,
+        marginTop: 5,
+        marginBottom: 5,
+        // bottom: 10
+        // borderWidth: .3,
+        // justifyContent: 'center',
+        // alignItems: 'center'
+    },
     text3: {
         textAlign: 'center',
         fontWeight: '100',
@@ -1535,10 +1602,10 @@ const styles = StyleSheet.create({
         padding: 10,
         borderWidth: .3,
         borderRadius: 3,
-        width: 70,
+        width: 60,
         justifyContent: 'center',
         alignItems: 'center',
-        // marginTop: 10,
+        marginTop: 10,
         backgroundColor: '#FFFF'
 
     },
@@ -1556,109 +1623,5 @@ const styles = StyleSheet.create({
     picker: {
         height: 200,
         width: 50
-    },
-    sheetData1: {
-        elevation: 3,
-        paddingRight: 10,
-        paddingTop: 10,
-        paddingBottom: 10,
-        height: 100,
-        marginTop: 5,
-        marginBottom: 5,
-        borderRadius: 5,
-        marginStart: 3,
-        marginEnd: 3,
-    },
-    rowBack: {
-        elevation: 3,
-        alignItems: 'center',
-        backgroundColor: '#DDD',
-        // height: 99,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        paddingLeft: 15,
-        marginTop: 5,
-        marginBottom: 5,
-        borderRadius: 5,
-    },
-    backRightBtn: {
-        alignItems: 'flex-start',
-        bottom: 0,
-        justifyContent: 'flex-start',
-        position: 'absolute',
-        top: 0,
-        width: 80,
-        padding: 5
-    },
-    backRightBtn1: {
-        alignItems: 'flex-start',
-        bottom: 0,
-        justifyContent: 'flex-start',
-        position: 'absolute',
-        top: 0,
-        width: 80,
-        padding: 5,
-        backgroundColor: 'red'
-    },
-    backRightBtn11: {
-        alignItems: 'flex-start',
-        bottom: 0,
-        justifyContent: 'flex-start',
-        position: 'absolute',
-        top: 0,
-        width: 130,
-        padding: 5,
-        backgroundColor: 'red'
-    },
-    backRightBtnLeft: {
-        justifyContent: "center",
-        alignItems: 'center',
-        backgroundColor: 'transparent',
-        right: 60,
-    },
-    backRightBtnRight1: {
-        justifyContent: "center",
-        alignItems: 'center',
-        backgroundColor: 'transparent',
-        right: 0,
-        padding: 5
-    },
-    backRightBtnRight: {
-        backgroundColor: 'transparent',
-        right: 0,
-        padding: 5
-    },
-    container: {
-        height: 60,
-        flexDirection: 'row',
-        // width: '100%',
-        borderRadius: 10,
-        // marginStart: 8,
-        // marginEnd: 8,
-        margin: 5
-    },
-    flexRow1: {
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flexDirection: 'row'
-    },
-    flexRow: {
-        flexDirection: 'row'
-    },
-    strip1: {
-        width: 5,
-        backgroundColor: '#297AF9',
-        borderBottomLeftRadius: 25,
-        borderTopLeftRadius: 25
-    },
-    strip2: {
-        width: 5,
-        backgroundColor: '#297AF9',
-        borderBottomLeftRadius: 25,
-        borderTopLeftRadius: 25
-    },
-    view: {
-        flex: 1,
-        padding: 8,
-    },
+    }
 });

@@ -1,221 +1,150 @@
-// import React, { Component } from 'react';
-// import { Container, Header, Left, Body, Right, Button, Icon, Title } from 'native-base';
-// export default class HeaderMultipleIconExample extends Component {
-//   render() {
-//     return (
-//       <Container>
-//         <Header>
-//           <Left>
-//             <Button transparent>
-//               <Icon name='arrow-back' 
-//               onPress={() =>
-//                 this.props.title == "Timesheet Entry"? this.props.navigation.navigate('TimeSheet',{"Loading": false}):
-//                 this.props.title == "Edit Timesheet Entry"? this.props.navigation.navigate('TimeSheet'):
-//                 this.props.title == "Project Details"? this.state.backNavigation=="TsApproval"? this.props.navigation.navigate('TsApproval',{"Loading": false}): this.props.navigation.navigate('TimeSheet',{"Loading": false}): 
-//                 null
-//               }
-//               />
-//             </Button>
-//           </Left>
-//           <Body>
-//             <Title>{this.props.title}</Title>
-//           </Body>
-//           <Right>
-//           {
-//               this.props.timeSheetEntry == true ?
-//             <Button transparent>
-//               <Icon name='save' 
-//               onPress={() => { this.props.handleSave() }}
-//               />
-//             </Button>: null
-//             }
-//             {
-//               this.props.details == true ?
-//             <Button transparent>
-//               <Icon name='heart'
-//                onPress={() => { this.props.handleEditRecord() }}
-//               />
-//             </Button> : null
-//             }
-//             {
-//               this.props.details == true ?
-//             <Button transparent>
-//               <Icon name='more'
-//                onPress={() => { this.props.handleDeleteRecord() }}
-//               />
-//             </Button>: null
-//             }
-//           </Right>
-//         </Header>
-//       </Container>
-//     );
-//   }
-// }
+import React, {Component} from 'react';
+import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import Swipeable from 'react-native-swipeable';
 
+export default class SwipeableExample extends Component {
 
-// /* eslint-disable react/no-unescaped-entities */
-// import React, { Component, } from 'react';
-// import {
-//   Text, View, StyleSheet, Image
-// } from 'react-native';
-// import { Card } from 'react-native-paper';
+  state = {
+    currentlyOpenSwipeable: null
+  };
 
-// const styles = StyleSheet.create({
-//   container: {
-//     borderRadius: 10,
-//     marginStart: 8,
-//     marginEnd: 8,
-//     marginTop: 10
-//   },
-//   flexRow: {
-//     flexDirection: 'row'
-//   },
-//   strip1: {
-//     width: 5,
-//     backgroundColor: '#A8A0FD',
-//     borderBottomLeftRadius: 25,
-//     borderTopLeftRadius: 25
-//   },
-//   strip2: {
-//     width: 5,
-//     backgroundColor: '#FFBE86',
-//     borderBottomLeftRadius: 25,
-//     borderTopLeftRadius: 25
-//   },
-//   view: {
-//     flex: 1,
-//     padding: 8,
-//   },
-//   flexStart: { justifyContent: 'flex-start', alignItems: 'flex-start' },
-//   flexEnd: { justifyContent: 'flex-end', alignItems: 'flex-end' },
-//   primaryFont: { fontSize: 16 },
-//   secondaryFont: { fontSize: 12 },
-//   periodContainerWidth: { width: '52%' },
-//   leaveTypeWidth: { width: '50%' },
-//   periodContainer: {
-//     backgroundColor: '#ECECEC', padding: 5, borderRadius: 14, alignSelf: 'center'
-//   },
-//   label: {
-//     color: 'gray',
-//     fontSize: 14
-//   },
-//   rowSpacing: {
-//     marginTop: 5
-//   },
-//   imageStatus: {
-//     height: 12,
-//     width: 12,
-//   },
-//   centerVertical: {
-//     alignItems: 'center'
-//   },
+  handleScroll = () => {
+    const {currentlyOpenSwipeable} = this.state;
 
-// });
+    if (currentlyOpenSwipeable) {
+      currentlyOpenSwipeable.recenter();
+    }
+  };
 
-// export default class LeaveHistoryItem extends Component {
-//   state={
-//     isExpanded: false,
-//   };
+  render() {
+    const {currentlyOpenSwipeable} = this.state;
+    const itemProps = {
+      onOpen: (event, gestureState, swipeable) => {
+        if (currentlyOpenSwipeable && currentlyOpenSwipeable !== swipeable) {
+          currentlyOpenSwipeable.recenter();
+        }
 
-//   onPress=() => {
-//     this.setState((prevState) => ({
-//       isExpanded: !prevState.isExpanded,
-//     }));
-//   }
+        this.setState({currentlyOpenSwipeable: swipeable});
+      },
+      onClose: () => this.setState({currentlyOpenSwipeable: null})
+    };
 
-//   getType=(type) => {
-//     if (type) {
-//       const split = type.split(': ');
-//       const typeValue = split[0];
-//       const typeText = split[1];
-//       if (typeText) {
-//         return typeText;
-//       }
-//     }
-//     return null;
-//   }
+    return (
+      <ScrollView onScroll={this.handleScroll} style={styles.container}>
+        <Example1 {...itemProps}/>
+        <Example2 {...itemProps}/>
+        <Example3 {...itemProps}/>
+      </ScrollView>
+    );
+  }
+}
 
-//   getColor=(status) => {
-//     if (status === 'Approved') {
-//       return {
-//         color: '#ADDB31'
-//       };
-//     } if (status === 'Rejected') {
-//       return {
-//         color: '#E76E54'
-//       };
-//     }
-//     return {
-//       color: '#75B9EE'
-//     };
-//   }
+function Example1({onOpen, onClose}) {
+  return (
+    <Swipeable
+      leftContent={(
+        <View style={[styles.leftSwipeItem, {backgroundColor: 'lightskyblue'}]}>
+          <Text>Pull action</Text>
+        </View>
+      )}
+      rightButtons={[
+        <TouchableOpacity style={[styles.rightSwipeItem, {backgroundColor: 'lightseagreen'}]}>
+          <Text>1</Text>
+        </TouchableOpacity>,
+        <TouchableOpacity style={[styles.rightSwipeItem, {backgroundColor: 'orchid'}]}>
+          <Text>2</Text>
+        </TouchableOpacity>
+      ]}
+      onRightButtonsOpenRelease={onOpen}
+      onRightButtonsCloseRelease={onClose}
+    >
+      <View style={[styles.listItem, {backgroundColor: 'salmon'}]}>
+        <Text>Example 1</Text>
+      </View>
+    </Swipeable>
+  );
+}
 
-//   render() {
-//     return (
-//       <Card elevation={2} style={styles.container} onPress={this.onPress}>
-//         <View style={styles.flexRow}>
-//           <View style={this.props.index % 2 === 0 ? styles.strip1 : styles.strip2} />
-//           <View style={styles.view}>
-//             <View style={styles.flexRow}>
-//               <Text style={[styles.flexStart, styles.leaveTypeWidth, styles.primaryFont]}>{this.getType(this.props.item.LeaveType)}</Text>
-//               <View style={styles.periodContainerWidth}>
-//                 <View style={[styles.flexEnd, styles.periodContainer]}>
-//                   <Text style={styles.secondaryFont}>
-//                     {this.props.item.StartDate}
-//                     {' '}
-//                       -
-//                     {' '}
-//                     {this.props.item.EndDate}
-//                   </Text>
-//                 </View>
-//               </View>
-//             </View>
-//             {
-//                 this.state.isExpanded
-//                   ? (
-//                     <View>
-//                       <View style={[styles.flexRow, styles.flexStart, styles.rowSpacing]}>
-//                         <Text style={styles.label}>Day's :</Text>
-//                         <Text style={{ marginStart: 3 }}>{this.props.item.AbsenceDays}</Text>
-//                       </View>
-//                       <Text style={[styles.label, styles.rowSpacing]}>Reason :</Text>
-//                       <Text>{this.props.item.Reason}</Text>
-//                       <View style={[styles.flexRow, styles.rowSpacing]}>
-//                         <View style={{ width: '50%' }}>
-//                           <Text style={styles.label}>Initiation Date : </Text>
-//                           <Text>{this.props.item.InitiatedDate}</Text>
-//                         </View>
-//                         <View style={{ width: '50%' }}>
-//                           <Text style={styles.label}>Status :</Text>
-//                           <View style={[styles.flexRow, styles.centerVertical]}>
-//                             {this.props.item.Status === 'Approved'
-//                               ? (
-//                                 <Image
-//                                   style={styles.imageStatus}
-//                                 //   source={require('../assets/images/ic_check.png')}
-//                                 />
-//                               ) : null}
+function Example2({onOpen, onClose}) {
+  return (
+    <Swipeable
+      leftButtonWidth={45}
+      leftButtons={[
+        <TouchableOpacity style={[styles.leftSwipeItem, {backgroundColor: 'papayawhip'}]}>
+          <Text>1</Text>
+        </TouchableOpacity>,
+        <TouchableOpacity style={[styles.leftSwipeItem, {backgroundColor: 'olivedrab'}]}>
+          <Text>2</Text>
+        </TouchableOpacity>
+        
+      ]}
+      rightContent={(
+        <View style={[styles.rightSwipeItem, {backgroundColor: 'linen'}]}>
+          <Text>Pull action</Text>
+        </View>
+      )}
+      onLeftButtonsOpenRelease={onOpen}
+      onLeftButtonsCloseRelease={onClose}
+    >
+      <View style={[styles.listItem, {backgroundColor: 'paleturquoise'}]}>
+        <Text>Example 2</Text>
+      </View>
+    </Swipeable>
+  );
+}
 
-//                             {this.props.item.Status === 'Rejected'
-//                               ? (
-//                                 <Image
-//                                   style={styles.imageStatus}
-//                                 //   source={require('../assets/images/ic_cross.png')}
-//                                 />
-//                               ) : null}
-//                             <Text style={this.getColor(this.props.item.Status)}>{this.props.item.Status}</Text>
-//                           </View>
-//                         </View>
-//                       </View>
-//                       <Text style={[styles.label, styles.rowSpacing]}>Approvers Comment</Text>
-//                       <Text>{this.props.item.ApprComments ? this.props.item.ApprComments : '--'}</Text>
-//                     </View>
-//                   )
-//                   : null
-//             }
-//           </View>
-//         </View>
-//       </Card>
-//     );
-//   }
-// }
+class Example3 extends Component {
+
+  state = {
+    leftActionActivated: false,
+    toggle: false
+  };
+
+  render() {
+    const {leftActionActivated, toggle} = this.state;
+
+    return (
+      <Swipeable
+        leftActionActivationDistance={200}
+        leftContent={(
+          <View style={[styles.leftSwipeItem, {backgroundColor: leftActionActivated ? 'lightgoldenrodyellow' : 'steelblue'}]}>
+            {leftActionActivated ?
+              <Text>release!</Text> :
+              <Text>keep pulling!</Text>}
+          </View>
+        )}
+        onLeftActionActivate={() => this.setState({leftActionActivated: true})}
+        onLeftActionDeactivate={() => this.setState({leftActionActivated: false})}
+        onLeftActionComplete={() => this.setState({toggle: !toggle})}
+      >
+        <View style={[styles.listItem, {backgroundColor: toggle ? 'thistle' : 'darkseagreen'}]}>
+          <Text>Example 3</Text>
+        </View>
+      </Swipeable>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: 20
+  },
+  listItem: {
+    height: 75,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  leftSwipeItem: {
+    flex: 1,
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    paddingRight: 20
+  },
+  rightSwipeItem: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingLeft: 20
+  },
+
+});
