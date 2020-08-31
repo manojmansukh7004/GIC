@@ -13,7 +13,7 @@ import { connect } from 'react-redux'
 import { setUser, setBaseUrl } from '../Redux/Action'
 const displayWidth = Dimensions.get('window').width;
 const contantPadding = 30;
-// import { FetchMobileVersion } from "../Services/Version/FetchMobileVersion"
+import {  ProgressBar } from 'material-bread';
 import {
   BallIndicator,
   BarIndicator,
@@ -132,7 +132,7 @@ class SplashScreen extends Component {
           .catch(err => alert("An error occurred"));
       }
 
-    }, 2000)
+    }, 1000)
   }
 
 
@@ -165,10 +165,13 @@ class SplashScreen extends Component {
     return (
       <View ref="rootView" style={[styles.Container]}>
       <StatusBar translucent barStyle="light-content" backgroundColor='#297AF9' />
-       <View style={{marginTop: this.state.orientation=='landscape' ? 80: 150, }}>
+       <View style={{marginTop:80}}>
        <Image style={{ height: 100, width: 280 ,}} source={require('../Assets/logo.jpg')} />
       {
-        this.state.loading == true ? <UIActivityIndicator color= "#297AF9" size= {50}/>:null
+        this.state.loading == true ? 
+        <UIActivityIndicator style={{bottom:120}} color= "gray" size= {50}/>
+        
+        :null
       }
 
        </View>

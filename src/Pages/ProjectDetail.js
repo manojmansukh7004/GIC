@@ -288,7 +288,7 @@ class TimesheetEntry extends Component {
                                                         <Text style={{ color: this.props.primaryColor }}>{this.state.lblMon}</Text>
                                                         <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotMon}</Text>
                                                         <View style={styles.hrsData}>
-                                                            <Text>{this.state.timesheetData.Mon}</Text>
+                                                            <Text>{this.state.timesheetData.Mon ==""? "--:--":this.state.timesheetData.Mon }</Text>
                                                         </View>
                                                         <TouchableOpacity onPress={() =>
                                                             this.setState({ addDescVisible: true, addDescField: 1, addDesc: this.state.timesheetData.Mon_TaskComments })}>
@@ -299,7 +299,7 @@ class TimesheetEntry extends Component {
                                                         <Text style={{ color: this.props.primaryColor }}>{this.state.lblTue}</Text>
                                                         <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotTue}</Text>
                                                         <View style={styles.hrsData}>
-                                                            <Text>{this.state.timesheetData.Tue}</Text>
+                                                            <Text>{this.state.timesheetData.Tue ==""? "--:--":this.state.timesheetData.Tue}</Text>
                                                         </View>
                                                         <TouchableOpacity onPress={() =>
                                                             this.setState({ addDescVisible: true, addDescField: 2, addDesc: this.state.timesheetData.Tue_TaskComments })}>
@@ -310,7 +310,7 @@ class TimesheetEntry extends Component {
                                                         <Text style={{ color: this.props.primaryColor }}>{this.state.lblWed}</Text>
                                                         <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotWed}</Text>
                                                         <View style={styles.hrsData}>
-                                                            <Text>{this.state.timesheetData.Wed}</Text>
+                                                            <Text>{this.state.timesheetData.Wed ==""? "--:--":this.state.timesheetData.Wed}</Text>
                                                         </View>
                                                         <TouchableOpacity onPress={() =>
                                                             this.setState({ addDescVisible: true, addDescField: 3, addDesc: this.state.timesheetData.Wed_TaskComments })}>
@@ -321,7 +321,7 @@ class TimesheetEntry extends Component {
                                                         <Text style={{ color: this.props.primaryColor }}>{this.state.lblThu}</Text>
                                                         <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotThu}</Text>
                                                         <View style={styles.hrsData}>
-                                                            <Text>{this.state.timesheetData.Thu}</Text>
+                                                            <Text>{this.state.timesheetData.Thu ==""? "--:--":this.state.timesheetData.Thu}</Text>
                                                         </View>
                                                         <TouchableOpacity onPress={() =>
                                                             this.setState({ addDescVisible: true, addDescField: 4, addDesc: this.state.timesheetData.Thu_TaskComments })}>
@@ -332,7 +332,7 @@ class TimesheetEntry extends Component {
                                                         <Text style={{ color: this.props.primaryColor }}>{this.state.lblFri}</Text>
                                                         <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotFri}</Text>
                                                         <View style={styles.hrsData}>
-                                                            <Text>{this.state.timesheetData.Fri}</Text>
+                                                            <Text>{this.state.timesheetData.Fri ==""? "--:--":this.state.timesheetData.Fri}</Text>
                                                         </View>
                                                         <TouchableOpacity onPress={() =>
                                                             this.setState({ addDescVisible: true, addDescField: 5, addDesc: this.state.timesheetData.Fri_TaskComments })}>
@@ -343,7 +343,7 @@ class TimesheetEntry extends Component {
                                                         <Text style={{ color: this.props.primaryColor }}>{this.state.lblSat}</Text>
                                                         <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotSat}</Text>
                                                         <View style={styles.hrsData}>
-                                                            <Text>{this.state.timesheetData.Sat}</Text>
+                                                            <Text>{this.state.timesheetData.Sat ==""? "--:--":this.state.timesheetData.Sat}</Text>
                                                         </View>
                                                         <TouchableOpacity onPress={() =>
                                                             this.setState({ addDescVisible: true, addDescField: 6, addDesc: this.state.timesheetData.Sat_TaskComments })}>
@@ -354,7 +354,7 @@ class TimesheetEntry extends Component {
                                                         <Text style={{ color: this.props.primaryColor }}>{this.state.lblSun}</Text>
                                                         <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotSun}</Text>
                                                         <View style={styles.hrsData}>
-                                                            <Text>{this.state.timesheetData.Sun}</Text>
+                                                            <Text>{this.state.timesheetData.Sun ==""? "--:--":this.state.timesheetData.Sun}</Text>
                                                         </View>
                                                         <TouchableOpacity onPress={() =>
                                                             this.setState({ addDescVisible: true, addDescField: 7, addDesc: this.state.timesheetData.Sun_TaskComments })}>

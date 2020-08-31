@@ -59,7 +59,11 @@ class TimeSheet extends Component {
             data: [],
             client: [],
             project: [],
+            deliverType: [],
+            projectGroup: [],
             clientValue: [],
+            deliverTypeValue:[],
+            projectGroupValue:[],
             projectValue: [],
             resourceName: '',
             tsName: '',
@@ -73,6 +77,8 @@ class TimeSheet extends Component {
             dropDownData: [],
             projectList: [],
             clientList: [],
+            deliverTypeList: [],
+            projectGroupList: [],
             ratingList1: [],
             ratingList2: [],
             typeList: [],
@@ -123,8 +129,8 @@ class TimeSheet extends Component {
             loading: false,
             daysData: [],
             details: [],
-            Status: ''
-
+            Status: '',
+            field:''
         }
     }
 
@@ -137,6 +143,28 @@ class TimeSheet extends Component {
             this.setState({ selectedVal: this.state.clientList, client: this.state.clientList, clientValue: selectedNode, project: [], type: '', resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] },
                 async () => {
                     var projectData = await GetDataOnClientChange(this.props.user, this.state.clientValue, this.props.baseUrl)
+                    this.setState({ projectList: projectData.ProjectList[0] })
+                })
+        }
+        else if (this.state.field == 11) {
+            var selectedNode = []
+            Object.getOwnPropertyNames(this.state.data).map((key, index) => (
+                selectedNode.push(this.state.data[key].Value)
+            ))
+            this.setState({ selectedVal: this.state.deliverTypeList, deliverType: this.state.deliverTypeList, deliverTypeValue: selectedNode, project: [], type: '', resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] },
+                async () => {
+                    var projectData = await GetDataOnClientChange(this.props.user,this.state.deliverTypeValue,this.state.projectGroupValue, this.state.clientValue, this.props.baseUrl)
+                    this.setState({ projectList: projectData.ProjectList[0] })
+                })
+        }
+        else if (this.state.field == 12) {
+            var selectedNode = []
+            Object.getOwnPropertyNames(this.state.data).map((key, index) => (
+                selectedNode.push(this.state.data[key].Value)
+            ))
+            this.setState({ selectedVal: this.state.projectGroupList, projectGroup: this.state.projectGroupList, projectGroupValue: selectedNode, project: [], type: '', resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] },
+                async () => {
+                    var projectData = await GetDataOnClientChange(this.props.user,this.state.deliverTypeValue,this.state.projectGroupValue, this.state.clientValue, this.props.baseUrl)
                     this.setState({ projectList: projectData.ProjectList[0] })
                 })
         }
@@ -157,15 +185,45 @@ class TimeSheet extends Component {
         else if (this.state.field == 2) {
             this.setState({ project: [], selectedVal: [] })
         }
+        else if (this.state.field == 11) {
+            this.setState({ deliverType: [], selectedVal: [] })
+        }
+        else if (this.state.field == 12) {
+            this.setState({ projectGroup: [], selectedVal: [] })
+        }
     }
 
     searchFilterFunction =
+    
         text => {
             this.setState({
                 value: text,
             });
+            console.log( this.state.arrayholder)
+            
+                const newData = this.state.arrayholder.filter(item => {
+                    const itemData =  this.state.field==11 || this.state.field ==12 ? `${item.Text.toUpperCase()} ${item.Value}` : ` ${item.Text.toUpperCase()} ${item.Value.toUpperCase()} `
+                    const textData = text.toUpperCase();
+                    return itemData.indexOf(textData) > -1;
+                });
+            
+          
+
+            this.setState({
+                data: newData,
+            });
+        };
+
+        searchFilterFunction1 =
+    
+        text => {
+            this.setState({
+                value: text,
+            });
+            console.log( this.state.arrayholder)
+
             const newData = this.state.arrayholder.filter(item => {
-                const itemData = ` ${item.Text.toUpperCase()} ${item.Value.toUpperCase()} `;
+                const itemData = `${item.Text.toUpperCase()} ${item.Value} `;
                 const textData = text.toUpperCase();
                 return itemData.indexOf(textData) > -1;
             });
@@ -194,6 +252,54 @@ class TimeSheet extends Component {
     }
 
     handleSelectedData = (item, index) => {
+        if (this.state.field == 11) {
+            if (this.state.selectedVal.includes(item)) {
+                var selectedNode = this.state.deliverType.filter(element => element !== item)
+                var selectedNode1 = this.state.selectedVal.filter(element => element !== item)
+                var selectedNode2 = this.state.deliverTypeValue.filter(element => element !== item.Value)
+                this.setState({ selectedVal: selectedNode1, deliverType: selectedNode, deliverTypeValue: selectedNode2, project: [], type: '', resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] },
+                    async () => {
+                        var projectData = await GetDataOnClientChange(this.props.user,this.state.deliverTypeValue,this.state.projectGroupValue, this.state.clientValue, this.props.baseUrl)
+                        this.setState({ projectList: projectData.ProjectList[0] })
+                    })
+            }
+            else {
+                var selectedNode = this.state.deliverType.concat(item)
+                var selectedNode1 = this.state.selectedVal.concat(item)
+                var selectedNode2 = this.state.deliverTypeValue.concat(item.Value)
+                this.setState({ selectedVal: selectedNode1, deliverType: selectedNode, deliverTypeValue: selectedNode2, project: [], type: '', resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] },
+                    async () => {
+                        var projectData = await GetDataOnClientChange(this.props.user,this.state.deliverTypeValue,this.state.projectGroupValue, this.state.clientValue, this.props.baseUrl)
+                        console.log("projectData",projectData)
+                        
+                        this.setState({ projectList: projectData.ProjectList[0] })
+
+                    })
+            }
+        }
+        if (this.state.field == 12) {
+            if (this.state.selectedVal.includes(item)) {
+                var selectedNode = this.state.projectGroup.filter(element => element !== item)
+                var selectedNode1 = this.state.selectedVal.filter(element => element !== item)
+                var selectedNode2 = this.state.projectGroupValue.filter(element => element !== item.Value)
+                this.setState({ selectedVal: selectedNode1, projectGroup: selectedNode, projectGroupValue: selectedNode2, project: [], type: '', resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] },
+                    async () => {
+                        var projectData = await GetDataOnClientChange(this.props.user,this.state.deliverTypeValue,this.state.projectGroupValue, this.state.clientValue, this.props.baseUrl)
+                        this.setState({ projectList: projectData.ProjectList[0] })
+                    })
+            }
+            else {
+                var selectedNode = this.state.projectGroup.concat(item)
+                var selectedNode1 = this.state.selectedVal.concat(item)
+                var selectedNode2 = this.state.projectGroupValue.concat(item.Value)
+                this.setState({ selectedVal: selectedNode1, projectGroup: selectedNode, projectGroupValue: selectedNode2, project: [], type: '', resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] },
+                    async () => {
+                        var projectData = await GetDataOnClientChange(this.props.user,this.state.deliverTypeValue,this.state.projectGroupValue, this.state.clientValue, this.props.baseUrl)
+                        this.setState({ projectList: projectData.ProjectList[0] })
+
+                    })
+            }
+        }
 
         if (this.state.field == 1) {
             if (this.state.selectedVal.includes(item)) {
@@ -202,7 +308,7 @@ class TimeSheet extends Component {
                 var selectedNode2 = this.state.clientValue.filter(element => element !== item.Value)
                 this.setState({ selectedVal: selectedNode1, client: selectedNode, clientValue: selectedNode2, project: [], type: '', resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] },
                     async () => {
-                        var projectData = await GetDataOnClientChange(this.props.user, this.state.clientValue, this.props.baseUrl)
+                        var projectData = await GetDataOnClientChange(this.props.user,this.state.deliverTypeValue,this.state.projectGroupValue, this.state.clientValue, this.props.baseUrl)
                         this.setState({ projectList: projectData.ProjectList[0] })
                     })
             }
@@ -212,7 +318,7 @@ class TimeSheet extends Component {
                 var selectedNode2 = this.state.clientValue.concat(item.Value)
                 this.setState({ selectedVal: selectedNode1, client: selectedNode, clientValue: selectedNode2, project: [], type: '', resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] },
                     async () => {
-                        var projectData = await GetDataOnClientChange(this.props.user, this.state.clientValue, this.props.baseUrl)
+                        var projectData = await GetDataOnClientChange(this.props.user,this.state.deliverTypeValue,this.state.projectGroupValue, this.state.clientValue, this.props.baseUrl)
                         this.setState({ projectList: projectData.ProjectList[0] })
 
                     })
@@ -223,13 +329,13 @@ class TimeSheet extends Component {
                 var selectedNode = this.state.project.filter(element => element !== item)
                 var selectedNode1 = this.state.selectedVal.filter(element => element !== item)
                 var selectedNode2 = this.state.projectValue.filter(element => element !== item.Value)
-                this.setState({ selectedVal: selectedNode1, project: selectedNode, projectValue: selectedNode2, type: '', resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] })
+                this.setState({ selectedVal: selectedNode1, project: selectedNode, projectValue: selectedNode2, type: '',type1:[], resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] })
             }
             else {
                 var selectedNode = this.state.project.concat(item)
                 var selectedNode1 = this.state.selectedVal.concat(item)
                 var selectedNode2 = this.state.projectValue.concat(item.Value)
-                this.setState({ selectedVal: selectedNode1, project: selectedNode, projectValue: selectedNode2, type: '', resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] })
+                this.setState({ selectedVal: selectedNode1, project: selectedNode, projectValue: selectedNode2, type: '', type1:[], resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] })
             }
         }
         else if (this.state.field == 3) {
@@ -263,7 +369,7 @@ class TimeSheet extends Component {
 
     handleClear = () => {
         this.setState({
-            dataTable: false,
+            dataTable: false, projectGroupList:[], projectGroup:[] ,deliverTypeValue:[], deliverType:[], deliverTypeList:[], 
             client: [], project: [], type: '', resourceName: '', resource: [], timesheet: '', timesheetData: [],
             resourceList: [], timesheetList: [], resourceList: [], type1: '', resource1: '', timesheet1: '', visible: true
         })
@@ -329,8 +435,9 @@ class TimeSheet extends Component {
         if (this.state.OTP == '') { showToast("Fill-up on time performance.") }
         else if (this.state.resource.length == 0) { showToast("Fill-up Quality of work.") }
         else {
-            this.setState({ ratingVisible: false, validation: false })
+            this.setState({ ratingVisible: false, validation: false, daysVisible: false })
             if (this.state.singleRecord == true) {
+
                 this.SaveUpdateApproverActionData(this.state.autoId)
             }
             else if (this.state.multiselector == true) {
@@ -346,8 +453,10 @@ class TimeSheet extends Component {
         this.setState({ validation: true, loading: true })
         if (this.state.rating3 == '') { showToast("Give the Remark .") }
         else {
-            this.setState({ ratingVisible: false, validation: false })
+            this.setState({ ratingVisible: false, validation: false, daysVisible: false })
             if (this.state.singleRecord == true) {
+                console.log("aaaaaaa", this.state.autoId, this.state.action);
+
                 this.SaveUpdateApproverActionData(this.state.autoId)
             }
             else if (this.state.multiselector == true) {
@@ -477,10 +586,10 @@ class TimeSheet extends Component {
 
         details.push({ ProjectName: item.ProjectName, ClientName: item.ClientName, Status: item.Status, ApprOTPRating: item.ApprOTPRating, ApprQOWRating: item.ApprQOWRating, })
 
-        this.setState({ daysData: arr, details: details, projectName: item.ProjectName, clientName: item.ClientName, dayIndex: index }, () => {
+        this.setState({ ratingVisible: false, daysData: arr, details: details, projectName: item.ProjectName, clientName: item.ClientName, dayIndex: index }, () => {
             console.log("mjjjjjj", this.state.details);
 
-            this.setState({ daysVisible: true, })
+            this.setState({ daysVisible: true, ratingVisible: false })
         })
 
     }
@@ -550,6 +659,10 @@ class TimeSheet extends Component {
                 underlayColor={'#AAA'}
             >
                 <>
+                {
+                    console.log("ssssss",this.state.daysData.time)
+                    
+                }
                     <Card elevation={2} style={styles.container} >
                         <View style={styles.flexRow}>
                             <View style={2 % 2 === 0 ? styles.strip1 : styles.strip2} />
@@ -561,7 +674,7 @@ class TimeSheet extends Component {
                                     <View style={{ width: "40%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
                                         <TouchableOpacity onPress={() => { this.setState({ timeVisible: data.item.Status == "Saved" ? true : false, dayField: 'Tue', dayField: this.state.daysData.dayField, }) }}
                                             style={[styles.hrsData, { backgroundColor: data.item.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
-                                            <Text style={{ fontSize: 16 }}>{this.state.daysData.time == "" ? "0:00" : data.item.time}</Text>
+                                            <Text style={{ fontSize: 16 }}>{data.item.time == "" ? "--:--" : data.item.time}</Text>
                                         </TouchableOpacity>
                                         <TouchableOpacity style={{ flexDirection: 'row', }} onPress={() =>
                                             this.setState({ addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false, addDesc: data.item.comment, addDescField: this.state.daysData.dayField, },
@@ -580,9 +693,9 @@ class TimeSheet extends Component {
     renderHiddenItem = (data, rowMap) => (
         //      <Card elevation={2} style={styles.container} onPress={this.onPress}>
 
-        <View style={[styles.rowBack, { height: 99, width: this.state.orientation == 'landscape' ? '100%' : 'auto', }]}>
+        <View style={[styles.rowBack, { height: 99, width: '99%', }]}>
             <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('ProjectDetail', { "timesheetData": data.item, "headerData": this.state.headerData, "headerHrsData": this.state.headerHrsData, "Status": data.item.Status == "Saved" ? true : false })}
+                onPress={() => this.props.navigation.navigate('ProjectDetail', {"Type": this.state.type , "backNavigation": "TsApproval", "timesheetData": data.item, "headerData": this.state.headerData, "headerHrsData": this.state.headerHrsData, "Status": data.item.Status == "Saved" ? true : false })}
             >
                 <Text style={[styles.backTextWhite, { color: this.props.textColor }]}>Details</Text>
             </TouchableOpacity>
@@ -631,15 +744,15 @@ class TimeSheet extends Component {
     );
 
     renderHiddenItem1 = (data, rowMap) => (
-        console.log("ddddddddddddddddd",data),
-        
+        console.log("ddddddddddddddddd", data),
+
 
         <View style={[styles.rowBack, { borderRadius: 10, height: 60, margin: 5, width: this.state.orientation == 'landscape' ? '100%' : 'auto', }]}>
-            <TouchableOpacity
+            {/* <TouchableOpacity
                 onPress={() => this.props.navigation.navigate('ProjectDetail', { "timesheetData": data.item, "headerData": this.state.headerData, "headerHrsData": this.state.headerHrsData, "Status": data.item.Status == "Saved" ? true : false })}
             >
                 <Text style={[styles.backTextWhite, { color: this.props.textColor }]}>Details</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             {
                 Status == "Approved" ?
@@ -661,20 +774,20 @@ class TimeSheet extends Component {
                     <>
                         <TouchableOpacity
                             style={[styles.backRightBtn1, styles.backRightBtnLeft]}
-                            onPress={() => this.setState({  singleRecord: true, ratingVisible: data.item.time !== "" || data.item.time !== null ?true: false, action: 'Approved', autoId: data.item.entryId, })}
+                            onPress={() => this.setState({ singleRecord: true, ratingVisible: data.item.time !== "" && data.item.time !== null ? true : false, action: 'Approved', autoId: data.item.entryId, })}
                         >
                             <Image
                                 source={require('../Assets/greenTick.png')}
-                                style={{ width: 52, height: 52, }}
+                                style={{ width: 47, height: 47, }}
                             />
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={[styles.backRightBtn1, styles.backRightBtnRight1]}
-                            onPress={() => this.setState({ singleRecord: true, ratingVisible: data.item.time !== "" || data.item.time !== null ?true: false, action: 'Rejected', autoId: data.item.entryId })}
+                            onPress={() => this.setState({ singleRecord: true, ratingVisible: data.item.time !== "" && data.item.time !== null ? true : false, action: 'Rejected', autoId: data.item.entryId })}
                         >
                             <Image
                                 source={require('../Assets/cross.png')}
-                                style={{ width: 40, height: 40, }}
+                                style={{ width: 35, height: 35 }}
                             />
                         </TouchableOpacity>
                     </>
@@ -691,6 +804,8 @@ class TimeSheet extends Component {
         this.setState({
             clientList: drpTSApproval.ClientList[0],
             projectList: drpTSApproval.ProjectList[0],
+            deliverTypeList: drpTSApproval.DeliverType[0],
+            projectGroupList: drpTSApproval.ProjectGroup[0],
             ratingList1: drpTSApproval.Rating1List[0],
             ratingList2: drpTSApproval.Rating2List[0],
             validation: false,
@@ -791,7 +906,8 @@ class TimeSheet extends Component {
                                                                     data={this.state.daysData}
                                                                     renderItem={this.renderItem1}
                                                                     renderHiddenItem={this.renderHiddenItem1}
-                                                                    leftOpenValue={75}
+                                                                    disableLeftSwipe={false}
+                                                                    // leftOpenValue={0}
                                                                     rightOpenValue={-130}
                                                                     previewRowKey={'0'}
                                                                     previewOpenValue={-40}
@@ -1013,7 +1129,27 @@ class TimeSheet extends Component {
                                     />
                                     <Text style={{ fontSize: title }}>Filter Criteria</Text>
                                 </View>
-                                <ScrollView style={{ marginBottom: 20 }}>
+                                <ScrollView style={{ marginBottom: 40 }}>
+                                    <Card style={[styles.cards, { borderWidth: 1, borderColor: "transparent" }]}>
+                                        <TouchableOpacity onPress={() => this.setState({
+                                            title: "Deliver Type", multiPickerVisible: true,
+                                            field: 11, data: this.state.deliverTypeList, selectedVal: this.state.deliverType, arrayholder: this.state.deliverTypeList
+                                        })}
+                                            style={styles.cardMenuSpasing}>
+                                            <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>DELIVERY TYPE</Text>
+                                            <Text numberOfLines={1} style={[styles.twoCardLabel1, { color: "#4D504F", }]}>{this.state.deliverType == '' ? "--select--" : this.state.deliverType[1] == null ? this.state.deliverType[0].Text : this.state.deliverType[0].Text + ", " + this.state.deliverType[1].Text}</Text>
+                                        </TouchableOpacity>
+                                    </Card>
+                                    <Card style={[styles.cards, { borderWidth: 1, borderColor: "transparent" }]}>
+                                        <TouchableOpacity onPress={() => this.setState({
+                                            title: "Project Group", multiPickerVisible: true,
+                                            field: 12, data: this.state.projectGroupList, selectedVal: this.state.projectGroup, arrayholder: this.state.projectGroupList
+                                        })}
+                                            style={styles.cardMenuSpasing}>
+                                            <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>PROJECT GROUP</Text>
+                                            <Text numberOfLines={1} style={[styles.twoCardLabel1, { color: "#4D504F", }]}>{this.state.projectGroup == '' ? "--select--" : this.state.projectGroup[1] == null ? this.state.projectGroup[0].Text : this.state.projectGroup[0].Text + ", " + this.state.projectGroup[1].Text}</Text>
+                                        </TouchableOpacity>
+                                    </Card>
                                     <Card style={[styles.cards, { borderWidth: 1, borderColor: "transparent" }]}>
                                         <TouchableOpacity onPress={() => this.setState({
                                             title: "Client List", multiPickerVisible: true,
@@ -1240,13 +1376,13 @@ class TimeSheet extends Component {
                                             </TouchableOpacity>
                                         </View>
                                         {
-                                            this.state.field == 1 || this.state.field == 2 ?
+                                            this.state.field == 1 || this.state.field == 2 ||  this.state.field == 11 || this.state.field == 12 ?
                                                 <>
                                                     <TextInput style={{ height: 40, margin: 5, borderWidth: .3, borderRadius: 3, padding: 5 }}
                                                         underlineColorAndroid="transparent"
                                                         placeholder="Search here.."
                                                         autoCapitalize="none"
-                                                        onChangeText={text => this.searchFilterFunction(text)}
+                                                        onChangeText={text =>  this.searchFilterFunction(text)}
                                                     />
                                                     <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginLeft: 5, marginRight: 5, backgroundColor: 'white', }}>
                                                         <TouchableOpacity style={styles.header3}
@@ -1577,7 +1713,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         paddingLeft: 15,
-        marginTop: 5,
+        margin: 5,
         marginBottom: 5,
         borderRadius: 5,
     },

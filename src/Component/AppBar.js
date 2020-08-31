@@ -13,6 +13,8 @@ class AppBar extends Component {
   }
 
   async componentDidMount() {
+    console.log("navvvvv",this.props.navigation.state.params.backNavigation);
+    
     this.setState({
 
       backNavigation: this.props.navigation.state.params.backNavigation,
@@ -34,7 +36,7 @@ class AppBar extends Component {
           <View style={{ justifyContent: 'center', alignItems: 'center', width: "10%", marginLeft: 5 }}>
             <TouchableOpacity onPress={() =>
             this.props.title == "Timesheet Entry"? this.props.navigation.navigate('TimeSheet',{"Loading": false}):
-            this.props.title == "Edit Timesheet Entry"? this.props.navigation.navigate('TimeSheet'):
+            this.props.title == "Edit Timesheet Entry"? this.props.navigation.navigate('TimeSheet',{"Loading": false}):
             this.props.title == "Project Details"? this.state.backNavigation=="TsApproval"? this.props.navigation.navigate('TsApproval',{"Loading": false}): this.props.navigation.navigate('TimeSheet',{"Loading": false}): 
             null
           }>
