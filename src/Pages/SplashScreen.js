@@ -14,18 +14,8 @@ import { setUser, setBaseUrl } from '../Redux/Action'
 const displayWidth = Dimensions.get('window').width;
 const contantPadding = 30;
 import {  ProgressBar } from 'material-bread';
-import {
-  BallIndicator,
-  BarIndicator,
-  DotIndicator,
-  MaterialIndicator,
-  PacmanIndicator,
-  PulseIndicator,
-  SkypeIndicator,
-  UIActivityIndicator,
-  WaveIndicator,
-} from 'react-native-indicators';
-
+import { UIActivityIndicator } from 'react-native-indicators';
+import { FetchMobileVersion } from '../Services/FetchMobileVersion'
 class SplashScreen extends Component {
   state = {
     loading: true,
@@ -78,7 +68,7 @@ class SplashScreen extends Component {
   }
 
   onPressUpdate = () => {
-    Linking.openURL('https://play.google.com/store/apps/details?id=com.ipmf');
+    Linking.openURL('https://play.google.com/store/apps/details?id=com.gic');
   }
 
   async componentDidMount() {
@@ -86,11 +76,7 @@ class SplashScreen extends Component {
     Dimensions.addEventListener('change', () => {
         this.getOrientation();
     });
-    let oldVersionCode =1
-    //  DeviceInfo.getBuildNumber();
-    console.log("oldVersionCode", oldVersionCode);
     const version = DeviceInfo.getVersion();
-
     console.log("version", version);
     await storeData("baseUrl", "http://gictimesheettest.orgtix.com/webApi");
     setTimeout(async () => {
@@ -103,13 +89,11 @@ class SplashScreen extends Component {
         }
       }
       var baseUrl = "http://gictimesheettest.orgtix.com/webApi"
-      const response = 1
-      // await FetchMobileVersion(payload, baseUrl)
-      console.log("mjjj",response);
+      const response = await FetchMobileVersion(payload, baseUrl)
+      console.log("mjjj",response.MobileVerion[0].Table[0].androidVersionCode);
       
-      var UpdatedVersionCode = response
-      // response.MobileVerion[0].Table[0].androidVersionCode
-      if (oldVersionCode < UpdatedVersionCode) {
+      var UpdatedVersionCode = response.MobileVerion[0].Table[0].androidVersionCode
+      if (version < UpdatedVersionCode) {
         this.setState({
           updateAvailable: true,
           loading: false
@@ -141,7 +125,7 @@ class SplashScreen extends Component {
       return (
         <View style={styles.container}>
           <Card style={styles.card}>
-            <Image style={styles.img} source={require('../Assets/logo.jpg')} />
+            <Image style={{ height: 90, width: 240 , margin:20}} source={require('../Assets/logo.jpg')} />
 
             <Text style={styles.textCard}>An important update is available.</Text>
             <Text style={styles.textCard}>Please update your app to</Text>
@@ -166,7 +150,7 @@ class SplashScreen extends Component {
       <View ref="rootView" style={[styles.Container]}>
       <StatusBar translucent barStyle="light-content" backgroundColor='#297AF9' />
        <View style={{marginTop:80}}>
-       <Image style={{ height: 100, width: 280 ,}} source={require('../Assets/logo.jpg')} />
+       <Image style={{ height: 100, width: 250 ,}} source={require('../Assets/logo.jpg')} />
       {
         this.state.loading == true ? 
         <UIActivityIndicator style={{bottom:120}} color= "gray" size= {50}/>
@@ -211,7 +195,7 @@ const styles = StyleSheet.create({
     margin: 10
   },
   container: {
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     alignItems: 'center',
     flex: 1,
     backgroundColor: 'white',

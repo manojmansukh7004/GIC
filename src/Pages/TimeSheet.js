@@ -35,6 +35,7 @@ var descField = '', descIndex = '', dayField = '', dayIndex = ''
 var lblMon = "", lblTue = "", lblWed = "", lblThu = "", lblFri = "", lblSat = "", lblSun = ""
 var TotalTime = "", dvTotMon = "", dvTotTue = "", dvTotWed = "", dvTotThu = "", dvTotFri = "", dvTotSat = "", dvTotSun = ""
 var timesheetID = '', clientCode = '', projectCode = '', typeofWorkId = '', phaseId = '', activityId = '', workOrderId = '', taskDesc = '', status = '', duration = '', dailyTaskComments = '', date = '', autoId = '', status = '', currRecordStatus = ''
+var obj ='', objArr =[], count=0
 var format = (n) => `0${n / 60 ^ 0}`.slice(-2) + ':' + ('0' + n % 60).slice(-2)
 
 const actions = [
@@ -62,6 +63,7 @@ class TimeSheet extends Component {
             loading: true,
             count: 0,
             content: true,
+            rating:false,
             timeVisible: false,
             weekVisible: false,
             timesheetVisible: false,
@@ -113,6 +115,7 @@ class TimeSheet extends Component {
             headerHrsData: [],
             selectedService: '00:05'
         }
+        this.openRowRefs = [];
     }
 
     handleCalenderStatus = (status) => {
@@ -639,7 +642,13 @@ class TimeSheet extends Component {
     }
 
     setTimesheetData = () => {
-
+        Object.getOwnPropertyNames(this.state.timesheetData).map((key, index) => (
+            count = count +1,
+            obj =this.state.timesheetData[key],
+            Object.assign(obj, {key: count}),
+            console.log("ActivityId",obj.ActivityId),
+            obj.ActivityId !== undefined? objArr.push(obj):null
+       ))
         lblMon = moment(new Date(this.state.headerData[0].Mon_Date)).format("ddd D, YYYY"),
             lblTue = moment(new Date(this.state.headerData[0].Tue_Date)).format("ddd D, YYYY"),
             lblWed = moment(new Date(this.state.headerData[0].Wed_Date)).format("ddd D, YYYY"),
@@ -665,7 +674,7 @@ class TimeSheet extends Component {
             // timeSheetStatus: this.state.timesheetData[0] !== undefined ? this.state.timesheetData[0].Status : "",
             MaxHrsPerDay: this.state.headerData[0].MaxHrsPerDay,
             MinHrsPerDay: this.state.headerData[0].MinHrsPerDay,
-            pickerTime: timeArr, display:true,
+            pickerTime: timeArr, display: true,
             lblMon: lblMon, lblTue: lblTue,
             lblWed: lblWed, lblThu: lblThu,
             lblFri: lblFri, lblSat: lblSat, lblSun: lblSun,
@@ -673,8 +682,9 @@ class TimeSheet extends Component {
             dvTotWed: dvTotWed, dvTotThu: dvTotThu,
             dvTotFri: dvTotFri, dvTotSat: dvTotSat,
             dvTotSun: dvTotSun, TotalTime: TotalTime,
+            timesheetData: objArr
         }, () => {
-
+            objArr= [], obj= '',
             lblMon = "", lblTue = "", lblWed = "", lblThu = "", lblFri = "", lblSat = "", lblSun = ""
             TotalTime = "", dvTotMon = "", dvTotTue = "", dvTotWed = "", dvTotThu = "", dvTotFri = "", dvTotSat = "", dvTotSun = ""
         });
@@ -692,29 +702,13 @@ class TimeSheet extends Component {
         }
     }
 
-    closeRow = (rowMap, rowKey) => {
-        if (rowMap[rowKey]) {
-            rowMap[rowKey].closeRow();
-        }
-    };
-
-    deleteRow = (rowMap, rowKey) => {
-        this.closeRow(rowMap, rowKey);
-        const newData = [...listData];
-        const prevIndex = this.state.timesheetData.findIndex(item => item.key === rowKey);
-        newData.splice(prevIndex, 1);
-        setListData(newData);
-    };
-
-    onRowDidOpen = index => {
-        console.log('This row opened', index);
-    };
-
-
+   
+  
+    
     renderHiddenItem = (data, rowMap) => (
         //      <Card elevation={2} style={styles.container} onPress={this.onPress}>
 
-        <View style={[styles.rowBack, { width:  '99%', }]}>
+        <View style={[styles.rowBack, { width: '99%', }]}>
             <TouchableOpacity
                 onPress={() => this.props.navigation.navigate('ProjectDetail', { "timesheetData": data.item, "headerData": this.state.headerData, "headerHrsData": this.state.headerHrsData, "Status": data.item.Status == "Saved" ? true : false })}
             >
@@ -722,51 +716,64 @@ class TimeSheet extends Component {
             </TouchableOpacity>
 
             {
-                Status == "Submitted" || Status == "Approved" ?
+                Status == "Submitted" ?
                     <TouchableOpacity
                         style={[styles.backRightBtn, styles.backRightBtnRight]}
-                        // onPress={() => this.deleteRow(rowMap, data.item.key)}
+                    // onPress={() => this.deleteRow(rowMap, data.item.key)}
                     >
-                        {
-                            console.log(data.item.Approver)
-                            
-                        }
                         <Text style={[styles.backTextWhite, { marginTop: 3, marginBottom: 3, color: 'blue' }]}>Approver</Text>
                         <Text numberOfLines={3} style={styles.backTextWhite}>{data.item.Approver}</Text>
-
                     </TouchableOpacity>
                     :
-                    <>
-                        <TouchableOpacity
-                            style={[styles.backRightBtn1, styles.backRightBtnLeft]}
-                            onPress={() => this.props.navigation.navigate('EditTimeSheet', {
-                                "Edit": true,
-                                "header": "Edit Timesheet Entry",
-                                "timesheetData": data.item,
-                                "headerData": this.state.headerData,
-                                "headerHrsData": this.state.headerHrsData,
-                            })}
-                        >
-                            <Image
-                                source={require('../Assets/edit.png')}
-                                style={{ width: 25, height: 25, tintColor: 'green' }}
-                            />
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={[styles.backRightBtn1, styles.backRightBtnRight1]}
-                            onPress={() => this.setState({ visible: true, singleTsRecord: data.item })}
-                        >
-                            <Image
-                                source={require('../Assets/bin.png')}
-                                style={{ width: 25, height: 25, tintColor: 'red' }}
-                            />
-                        </TouchableOpacity>
-                    </>
+                    Status == "Approved" ?
+                        <>
+                            {/* <TouchableOpacity
+                                style={[styles.backRightBtn1, styles.backRightBtnLeft, { backgroundColor: 'red' }]}
+                            >
+                                <Text numberOfLines={3} style={[styles.backTextWhite, { color: 'green', fontSize: 16 }]}>{data.item.Status}</Text>
+
+                            </TouchableOpacity> */}
+                            <TouchableOpacity
+                                style={[styles.backRightBtn, styles.backRightBtnRight, { backgroundColor: 'transparent' , justifyContent: 'center', alignItems: 'center' }]}
+                                onPress={() => this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: data.item.ApproverRemarks })}
+                            >
+                               <Text style={[ {fontSize: 16, marginTop: 3, marginBottom: 3, color: 'blue' }]}>Approver</Text>
+                                <Text numberOfLines={1} style={{fontSize: 16}}>{data.item.Approver}</Text>
+                                <Image style={{ height: 40, width: 40,left: 5 }} source={require("../Assets/msgbg.png")} />
+                            </TouchableOpacity>
+                        </> :
+                        <>
+                            <TouchableOpacity
+                                style={[styles.backRightBtn1, styles.backRightBtnLeft]}
+                                onPress={() => this.props.navigation.navigate('EditTimeSheet', {
+                                    "Edit": true,
+                                    "header": "Edit Timesheet Entry",
+                                    "timesheetData": data.item,
+                                    "headerData": this.state.headerData,
+                                    "headerHrsData": this.state.headerHrsData,
+                                })}
+                            >
+                                <Image
+                                    source={require('../Assets/edit.png')}
+                                    style={{ width: 25, height: 25, tintColor: 'green' }}
+                                />
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={[styles.backRightBtn1, styles.backRightBtnRight1]}
+                                onPress={() => this.setState({ visible: true, singleTsRecord: data.item })}
+                            >
+                                <Image
+                                    source={require('../Assets/bin.png')}
+                                    style={{ width: 25, height: 25, tintColor: 'red' }}
+                                />
+                            </TouchableOpacity>
+                        </>
             }
 
         </View>
     );
 
+  
     handledata = (item, index) => {
         console.log("mjjjjjj", index);
 
@@ -967,21 +974,22 @@ class TimeSheet extends Component {
                                     data={this.state.timesheetData}
                                     renderItem={this.renderItem}
                                     renderHiddenItem={this.renderHiddenItem}
+                                    // closeOnRowBeginSwipe
                                     leftOpenValue={75}
-                                    rightOpenValue={ -120}
+                                    rightOpenValue={-120}
+                                    // closeOnRowOpen
                                     previewRowKey={'0'}
                                     previewOpenValue={-40}
                                     previewOpenDelay={3000}
-                                    onRowDidOpen={this.onRowDidOpen}
                                 />
 
                                 <Modal isVisible={this.state.addDescVisible} collapsable={true}>
                                     <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                                         <View style={{ backgroundColor: 'white', borderRadius: 5, width: 350, height: 250 }}>
                                             <View style={{ borderTopStartRadius: 5, borderTopEndRadius: 5, height: 50, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
-                                                <Text style={{ fontSize: title, color: this.props.fontColor }}>{'Additional Description'}</Text>
+                                                <Text style={{ fontSize: title, color: this.props.fontColor }}>{this.state.rating == true? "Rating":'Additional Description'}</Text>
                                                 <TouchableOpacity onPress={() =>
-                                                    this.setState({ addDescVisible: false, },
+                                                    this.setState({ addDescVisible: false, rating:false },
                                                         () => { this.handleAddDescription() })}>
                                                     <Image style={{ height: 30, width: 30, tintColor: 'white' }} source={require('../Assets/redCross.png')} />
                                                 </TouchableOpacity>
@@ -1481,7 +1489,7 @@ const styles = StyleSheet.create({
         width: 4,
         borderRadius: 10,
         bottom: 10,
-         borderBottomLeftRadius: 25,
+        borderBottomLeftRadius: 25,
         borderTopLeftRadius: 25
     },
 
@@ -1546,19 +1554,19 @@ const styles = StyleSheet.create({
         height: 50,
     },
     sheetData1: {
-        elevation:3,
+        elevation: 3,
         paddingRight: 10,
         paddingTop: 10,
         paddingBottom: 10,
         height: 100,
         marginTop: 5,
         marginBottom: 5,
-        borderRadius:5,
+        borderRadius: 5,
         marginStart: 3,
         marginEnd: 3,
     },
     rowBack: {
-        elevation:3,
+        elevation: 3,
         alignItems: 'center',
         backgroundColor: '#DDD',
         height: 99,
@@ -1567,7 +1575,7 @@ const styles = StyleSheet.create({
         paddingLeft: 15,
         margin: 5,
         marginBottom: 5,
-        borderRadius:5,
+        borderRadius: 5,
     },
     backRightBtn: {
         alignItems: 'flex-start',
@@ -1577,7 +1585,7 @@ const styles = StyleSheet.create({
         top: 0,
         width: 99,
         padding: 5,
-        margin:5,
+        margin: 5,
     },
     backRightBtn1: {
         alignItems: 'flex-start',

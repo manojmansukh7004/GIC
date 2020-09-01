@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { View, PermissionsAndroid, AsyncStorage, Image, StyleSheet, Dimensions } from 'react-native';
+import { View, TouchableOpacity, AsyncStorage, Image, StyleSheet, Dimensions } from 'react-native';
 import { Dialog, Avatar, Button } from 'material-bread';
 import { Title, Paragraph, Text, Headline, Caption } from 'react-native-paper';
 import { onSignOut } from "./Authentication";
+import Modal from 'react-native-modal';
 // import { storeProfileImage, removeUserId } from '../Services/FireBaseDb'
 import { storeData, getData } from '../Config/AsyncStorace'
 const displayWidth = Dimensions.get('window').width;
@@ -58,7 +59,7 @@ export default class Profile extends Component {
           color={this.randomColor()}
           onPress={() => this.setState({ visible: !this.state.visible })}
         />
-        <Dialog
+        {/* <Dialog
           visible={this.state.visible}
           onTouchOutside={() => this.setState({ visible: false })}
           style={
@@ -98,7 +99,40 @@ export default class Profile extends Component {
               )}
             />
           </View>
-        </Dialog>
+        </Dialog> */}
+        <Modal isVisible={this.state.visible}>
+          <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <View style={{ backgroundColor: 'white', borderRadius: 10, width: 280, height: 150 }}>
+              <View style={{  height: 100, justifyContent: 'center', alignItems: 'center', }}>
+              <Text style={{fontSize: 18, fontWeight: '900', color: "#4D504F" }}> Are you sure you want to</Text>
+              <Text style={{fontSize: 18, fontWeight: '900', color:  "#4D504F"}}> logout?</Text>
+              </View>
+              <View
+                style={{
+                  justifyContent: "center",
+                  flexDirection: 'row',
+                  height: 50
+                }}
+              >
+                <TouchableOpacity onPress={() => this.setState({ visible: false })}
+                  style={{ width: '50%', borderRightWidth:.5,borderTopWidth: .5, heigt: '100%', justifyContent: 'center', alignItems: 'center',}}>
+                  <Text style={{fontSize: 16, fontWeight: '900', color:  "#297AF9"}}> Cancel</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => onSignOut().then(() =>
+                    this.setState({ visible: false }),
+                    this.props.navigation.navigate('SplashScreen')
+                  )}
+                  style={{ width: '50%',borderTopWidth: .5, justifyContent: 'center', alignItems: 'center',  }}>
+                  <Text style={{fontSize: 16, fontWeight: '900', color:  "#297AF9"}}> Logout</Text>
+                </TouchableOpacity>
+
+
+              </View>
+            </View>
+          </View>
+        </Modal>
       </>
     );
   }

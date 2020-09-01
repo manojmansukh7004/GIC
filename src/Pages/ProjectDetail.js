@@ -178,7 +178,7 @@ class TimesheetEntry extends Component {
             <>
 
                 <StatusBar translucent barStyle="light-content" backgroundColor={this.props.primaryColor} />
-                <View ref="rootView" style={[styles.Container, {  }]}>
+                <View ref="rootView" style={[styles.Container, {}]}>
                     {/* <View style={{ height: 50, backgroundColor: this.props.primaryColor, }}> */}
                     <View style={{ justifyContent: 'center', alignItems: 'center', width: '100%', height: 50, backgroundColor: this.props.primaryColor }} >
                         <Appbar navigation={this.props.navigation}
@@ -201,7 +201,7 @@ class TimesheetEntry extends Component {
                                             <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.client == 0 ? 'red' : "transparent" }]}>
                                                 <View style={styles.cardMenuSpasing}>
                                                     <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>PROJECT GROUP</Text>
-                                                    <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.timesheetData.ProjectGroupText == null? '--Select--': this.state.timesheetData.ProjectGroupText}</Text>
+                                                    <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.timesheetData.ProjectGroupText == null ? '--Select--' : this.state.timesheetData.ProjectGroupText}</Text>
                                                 </View>
                                             </Card>
 
@@ -288,7 +288,7 @@ class TimesheetEntry extends Component {
                                                         <Text style={{ color: this.props.primaryColor }}>{this.state.lblMon}</Text>
                                                         <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotMon}</Text>
                                                         <View style={styles.hrsData}>
-                                                            <Text>{this.state.timesheetData.Mon ==""? "--:--":this.state.timesheetData.Mon }</Text>
+                                                            <Text>{this.state.timesheetData.Mon == "" ? "--:--" : this.state.timesheetData.Mon}</Text>
                                                         </View>
                                                         <TouchableOpacity onPress={() =>
                                                             this.setState({ addDescVisible: true, addDescField: 1, addDesc: this.state.timesheetData.Mon_TaskComments })}>
@@ -299,7 +299,7 @@ class TimesheetEntry extends Component {
                                                         <Text style={{ color: this.props.primaryColor }}>{this.state.lblTue}</Text>
                                                         <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotTue}</Text>
                                                         <View style={styles.hrsData}>
-                                                            <Text>{this.state.timesheetData.Tue ==""? "--:--":this.state.timesheetData.Tue}</Text>
+                                                            <Text>{this.state.timesheetData.Tue == "" ? "--:--" : this.state.timesheetData.Tue}</Text>
                                                         </View>
                                                         <TouchableOpacity onPress={() =>
                                                             this.setState({ addDescVisible: true, addDescField: 2, addDesc: this.state.timesheetData.Tue_TaskComments })}>
@@ -310,7 +310,7 @@ class TimesheetEntry extends Component {
                                                         <Text style={{ color: this.props.primaryColor }}>{this.state.lblWed}</Text>
                                                         <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotWed}</Text>
                                                         <View style={styles.hrsData}>
-                                                            <Text>{this.state.timesheetData.Wed ==""? "--:--":this.state.timesheetData.Wed}</Text>
+                                                            <Text>{this.state.timesheetData.Wed == "" ? "--:--" : this.state.timesheetData.Wed}</Text>
                                                         </View>
                                                         <TouchableOpacity onPress={() =>
                                                             this.setState({ addDescVisible: true, addDescField: 3, addDesc: this.state.timesheetData.Wed_TaskComments })}>
@@ -321,7 +321,7 @@ class TimesheetEntry extends Component {
                                                         <Text style={{ color: this.props.primaryColor }}>{this.state.lblThu}</Text>
                                                         <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotThu}</Text>
                                                         <View style={styles.hrsData}>
-                                                            <Text>{this.state.timesheetData.Thu ==""? "--:--":this.state.timesheetData.Thu}</Text>
+                                                            <Text>{this.state.timesheetData.Thu == "" ? "--:--" : this.state.timesheetData.Thu}</Text>
                                                         </View>
                                                         <TouchableOpacity onPress={() =>
                                                             this.setState({ addDescVisible: true, addDescField: 4, addDesc: this.state.timesheetData.Thu_TaskComments })}>
@@ -332,7 +332,7 @@ class TimesheetEntry extends Component {
                                                         <Text style={{ color: this.props.primaryColor }}>{this.state.lblFri}</Text>
                                                         <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotFri}</Text>
                                                         <View style={styles.hrsData}>
-                                                            <Text>{this.state.timesheetData.Fri ==""? "--:--":this.state.timesheetData.Fri}</Text>
+                                                            <Text>{this.state.timesheetData.Fri == "" ? "--:--" : this.state.timesheetData.Fri}</Text>
                                                         </View>
                                                         <TouchableOpacity onPress={() =>
                                                             this.setState({ addDescVisible: true, addDescField: 5, addDesc: this.state.timesheetData.Fri_TaskComments })}>
@@ -343,7 +343,7 @@ class TimesheetEntry extends Component {
                                                         <Text style={{ color: this.props.primaryColor }}>{this.state.lblSat}</Text>
                                                         <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotSat}</Text>
                                                         <View style={styles.hrsData}>
-                                                            <Text>{this.state.timesheetData.Sat ==""? "--:--":this.state.timesheetData.Sat}</Text>
+                                                            <Text>{this.state.timesheetData.Sat == "" ? "--:--" : this.state.timesheetData.Sat}</Text>
                                                         </View>
                                                         <TouchableOpacity onPress={() =>
                                                             this.setState({ addDescVisible: true, addDescField: 6, addDesc: this.state.timesheetData.Sat_TaskComments })}>
@@ -354,7 +354,7 @@ class TimesheetEntry extends Component {
                                                         <Text style={{ color: this.props.primaryColor }}>{this.state.lblSun}</Text>
                                                         <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotSun}</Text>
                                                         <View style={styles.hrsData}>
-                                                            <Text>{this.state.timesheetData.Sun ==""? "--:--":this.state.timesheetData.Sun}</Text>
+                                                            <Text>{this.state.timesheetData.Sun == "" ? "--:--" : this.state.timesheetData.Sun}</Text>
                                                         </View>
                                                         <TouchableOpacity onPress={() =>
                                                             this.setState({ addDescVisible: true, addDescField: 7, addDesc: this.state.timesheetData.Sun_TaskComments })}>
@@ -365,16 +365,27 @@ class TimesheetEntry extends Component {
                                             </ScrollView>
                                         </Card>
                                         {
-                                            this.state.type !== "Pending" && this.state.type !== "Completed" ?
+                                            this.state.type !== "Pending" ?
                                                 <>
-                                                    <View style={styles.horizontalContainer}>
-                                                        <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.workList == 0 ? 'red' : "transparent" }]}>
-                                                            <View style={styles.cardMenuSpasing}>
-                                                                <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>APPROVER</Text>
-                                                                <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.timesheetData.Approver}</Text>
 
-                                                            </View>
-                                                        </Card>
+                                                    <View style={styles.horizontalContainer}>
+                                                        {
+                                                            this.state.type !== "Completed" ?
+                                                                <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.workList == 0 ? 'red' : "transparent" }]}>
+                                                                    <View style={styles.cardMenuSpasing}>
+                                                                        <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>APPROVER</Text>
+                                                                        <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.timesheetData.Approver}</Text>
+                                                                    </View>
+                                                                </Card> 
+                                                                :
+                                                                <Card style={styles.cards}>
+                                                                <View style={styles.cardMenuSpasing}>
+                                                                    <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>STATUS</Text>
+                                                                    <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.timesheetData.Status}</Text>
+    
+                                                                </View>
+                                                            </Card>
+                                                        }
 
                                                         <Card style={styles.cards}>
                                                             <View style={styles.cardMenuSpasing}>
@@ -391,14 +402,16 @@ class TimesheetEntry extends Component {
 
                                                             </View>
                                                         </Card>
-
+                                                        {
+                                                            this.state.type !== "Completed" ?
                                                         <Card style={styles.cards}>
                                                             <View style={styles.cardMenuSpasing}>
                                                                 <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>STATUS</Text>
                                                                 <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.timesheetData.Status}</Text>
 
                                                             </View>
-                                                        </Card>
+                                                        </Card>:null 
+                                                        }
                                                     </View>
                                                 </> : null
                                         }
@@ -418,7 +431,7 @@ class TimesheetEntry extends Component {
                                                             <TextInput
                                                                 multiline={true}
                                                                 editable={false}
-                                                                value={ this.state.addDesc}
+                                                                value={this.state.addDesc}
                                                                 // placeholder="Enter Description"
                                                                 textAlignVertical="top"
                                                                 underlineColor="white"
