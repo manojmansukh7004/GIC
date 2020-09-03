@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "701189017491",
+    "firebase_url": "https://gic-timesheet.firebaseio.com",
+    "project_id": "gic-timesheet",
+    "storage_bucket": "gic-timesheet.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:701189017491:android:6c5b7cf928a7280eada266",
+        "android_client_info": {
+          "package_name": "com.gic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "701189017491-idmtekiu0niinrjngamvct4qqgkmcaj5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7UWT1fTS3vKWrtlNsJxM9UJ8qJQgXgJA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "701189017491-idmtekiu0niinrjngamvct4qqgkmcaj5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

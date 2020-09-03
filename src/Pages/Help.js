@@ -58,7 +58,7 @@ class Help extends Component {
                 // onDidFocus={() => this.handleShowReport()}
                 // onWillBlur={() =>this.pageChange()}
                 />
-                <View ref="rootView" style={[styles.Container, { backgroundColor: this.props.primaryColor }]}>
+                <View ref="rootView" style={[styles.Container]}>
                     <View style={{ height: this.state.orientation == 'landscape' ? '11%' : '7%', justifyContent: 'center', alignItems: 'center', backgroundColor: this.props.primaryColor }}>
                         <Appbar1 navigation={this.props.navigation}
                             title={"User Guide"}
@@ -68,23 +68,23 @@ class Help extends Component {
                         />
                     </View>
 
-                    <View style={[styles.container, { padding: 10, height: this.state.orientation == 'landscape' ? '86%' : '90%', backgroundColor: this.props.secColor }]}>
+                    <View style={[styles.container, {height: this.state.orientation == 'landscape' ? '86%' : '90%', backgroundColor: this.props.secColor }]}>
                         <ScrollView
                             style={{ marginBottom: 5 }}
                             showsVerticalScrollIndicator={false}>
-                            <View style={{ paddingleft: 10, paddingRight: 10, backgroundColor: 'transparent' }}>
+                            <View style={{ marginHorizontal: 10,  backgroundColor: 'transparent' }}>
                                 <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 5 }}>My Timesheet</Text>
                                 <View style={{ paddingLeft: 10 }}>
                                     <Paragraph>1. Click on plus button to select the week and date.</Paragraph>
                                     <Paragraph>2. Click on Calendar icon to create new timesheet for a particular week.</Paragraph>
                                     <Paragraph>3. Select week from the pop up, to open the timesheet for that particular week.</Paragraph>
                                     <Paragraph>4. Click on Add Row button to add timesheet records. </Paragraph>
-                                    <Paragraph>5. Timesheet records save automatically. </Paragraph>
-                                    <Paragraph>6. Time for an activity can be edited from week view page also.</Paragraph>
-                                    <Paragraph>7. Swipe right on saved row to see the timesheet details and swipe left to edit or delete the saved timesheet.</Paragraph>
-                                    <Paragraph>8. On clicking the timesheet row, pop up window with day wise timesheet details appears.</Paragraph>
-                                    <Paragraph>9. For submitted and approved timesheet, user can view approver name and approver comments.</Paragraph>
-                                    <Paragraph>10. Click on Submit button once you fill the timesheet for the whole week. Please note, timesheet once submitted cannot be edited.</Paragraph>
+                                    {/* <Paragraph>5. Time for an activity can be edited from week view page also.</Paragraph> */}
+                                    <Paragraph>5. Swipe right on saved row to see the timesheet details and swipe left to edit or delete the saved timesheet.</Paragraph>
+                                    <Paragraph>6. On clicking the timesheet row, pop up window with day wise timesheet details appears.</Paragraph>
+                                    <Paragraph>7. Click on Save button on the top to save the timesheet details. </Paragraph>
+                                    <Paragraph>8. For submitted and approved timesheet, user can view approver name and approver comments.</Paragraph>
+                                    <Paragraph>9. Click on Submit button once you fill the timesheet for the whole week. Please note, timesheet once submitted cannot be edited.</Paragraph>
                                     {/* <Paragraph>8. Close the popup window by clicking outside the window.</Paragraph> */}
                                 </View>
                                 <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 5 }}>Timesheet Approval</Text>

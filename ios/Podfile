@@ -18,6 +18,8 @@ target 'GIC' do
 
   pod 'RNDateTimePicker', :path => '../node_modules/@react-native-community/datetimepicker'
 
+  pod 'RNFirebase', :path => '../node_modules/react-native-firebase'
+
   target 'GICTests' do
     inherit! :complete
     # Pods for testing

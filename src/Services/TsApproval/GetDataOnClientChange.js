@@ -1,5 +1,5 @@
 async function GetDataOnClientChange(EmpID, DeliveryTypeId,ProjectGroup, ClientCode, baseUrl) {
-  console.log("mmmmm", EmpID,ProjectGroup.toString(), DeliveryTypeId.toString(), ClientCode.toString(), baseUrl);
+  console.log("mmmmssssssssssssssssssssssssssm", EmpID,ProjectGroup.toString(), DeliveryTypeId.toString(), ClientCode, baseUrl);
 
   const payload = {
     "loginDetails":

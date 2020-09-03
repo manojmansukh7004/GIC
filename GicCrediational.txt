@@ -1,0 +1,5 @@
+Key store path: D:\GIC-master\android\app\GIC.jks
+Key store password: 1234567890
+
+Key ailas: key
+Key password: 1234567890

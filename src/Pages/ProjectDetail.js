@@ -226,7 +226,7 @@ class TimesheetEntry extends Component {
                                             <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.workList == 0 ? 'red' : "transparent" }]}>
                                                 <View style={styles.cardMenuSpasing}>
                                                     <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>TYPE OF WORK</Text>
-                                                    <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.timesheetData.TypeOfWork}</Text>
+                                                    <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.timesheetData.TypeOfWork == null ? "--:--": this.state.timesheetData.TypeOfWork }</Text>
 
                                                 </View>
                                             </Card>
@@ -237,7 +237,7 @@ class TimesheetEntry extends Component {
                                             <Card style={styles.cards}>
                                                 <View style={styles.cardMenuSpasing}>
                                                     <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>PHASE</Text>
-                                                    <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.timesheetData.PhaseName == null ? "--Select--" : this.state.timesheetData.PhaseName}</Text>
+                                                    <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.timesheetData.PhaseName == null ? "--:--" : this.state.timesheetData.PhaseName}</Text>
 
                                                 </View>
                                             </Card>

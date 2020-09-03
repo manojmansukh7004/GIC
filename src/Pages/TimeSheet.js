@@ -35,7 +35,7 @@ var descField = '', descIndex = '', dayField = '', dayIndex = ''
 var lblMon = "", lblTue = "", lblWed = "", lblThu = "", lblFri = "", lblSat = "", lblSun = ""
 var TotalTime = "", dvTotMon = "", dvTotTue = "", dvTotWed = "", dvTotThu = "", dvTotFri = "", dvTotSat = "", dvTotSun = ""
 var timesheetID = '', clientCode = '', projectCode = '', typeofWorkId = '', phaseId = '', activityId = '', workOrderId = '', taskDesc = '', status = '', duration = '', dailyTaskComments = '', date = '', autoId = '', status = '', currRecordStatus = ''
-var obj ='', objArr =[], count=0
+var obj = '', objArr = [], count = 0
 var format = (n) => `0${n / 60 ^ 0}`.slice(-2) + ':' + ('0' + n % 60).slice(-2)
 
 const actions = [
@@ -63,7 +63,7 @@ class TimeSheet extends Component {
             loading: true,
             count: 0,
             content: true,
-            rating:false,
+            rating: false,
             timeVisible: false,
             weekVisible: false,
             timesheetVisible: false,
@@ -195,7 +195,7 @@ class TimeSheet extends Component {
             targetPost1.Sun_TaskComments = value;
         }
         this.setState({ timesheetData, daysData }, () => {
-            this.insertUpdateTimesheetEntry("Saved")
+            // this.insertUpdateTimesheetEntry("Saved")
         });
     }
 
@@ -247,7 +247,18 @@ class TimeSheet extends Component {
 
         }
         this.setState({ timesheetData, daysData }, () => {
-            this.insertUpdateTimesheetEntry("Saved")
+            // let { timesheetData } = this.state;
+
+            // console.log("mmmmmmmmmmmmmmmmm", timesheetData[0].Mon);
+
+            //     if(timesheetData[0].Mon == '' || timesheetData[0].Mon == "00:00" && timesheetData[0].Tue == '' || timesheetData[0].Tue == "00:00" && timesheetData[0].Wed == '' || timesheetData[0].Wed == "00:00" &&
+            //      timesheetData[0].Thu == '' || timesheetData[0].Tue == "00:00" && timesheetData[0].Fri == '' || timesheetData[0].Fri == "00:00" && timesheetData[0].Sat == '' || timesheetData[0].Sat == "00:00" && timesheetData[0].Sun == '' || timesheetData[0].Sun == "00:00")
+            //    {
+            //         this.setState({daysVisible: false},()=>{this.insertUpdateTimesheetEntry("Saved")})
+            //    }
+            //    else{
+            // this.insertUpdateTimesheetEntry("Saved")
+            //    } 
         });
     }
 
@@ -341,7 +352,7 @@ class TimeSheet extends Component {
             }
             if (data.SuccessList != undefined || data.ErrorList != undefined || data.ExceptionList != undefined) {
                 // validationRemove();
-                status1 == "Submitted" ? showToast('Timesheet data ' + status1 + '.') : null
+                status1 == "Submitted" ? showToast('Timesheet data ' + status1 + '.') : showToast('Timesheet data ' + "Saved" + '.')
                 if (data.SuccessList != undefined) {
                     this.empWeeklyTimesheetData(this.statetimesheetId);
                     this.empWeeklyTimesheetData()
@@ -603,12 +614,12 @@ class TimeSheet extends Component {
     }
 
     handleLoadingData = () => {
-        if (this.props.navigation.state.params.Loading == true) {
-            this.setState({ selectedWeek: '', timesheetVisible: false, empAttendanceData: [], timesheetData: [], ratingData: [], headerData: [], headerHrsData: [] }, () => { this.componentDidMount() })
-        }
-        else {
-            this.empWeeklyTimesheetData()
-        }
+        // if (this.props.navigation.state.params.Loading == true) {
+        //     this.setState({ selectedWeek: '', timesheetVisible: false, empAttendanceData: [], timesheetData: [], ratingData: [], headerData: [], headerHrsData: [] }, () => { this.componentDidMount() })
+        // }
+        // else {
+        this.empWeeklyTimesheetData()
+        // }
     }
 
     empWeeklyTimesheetData = async () => {
@@ -643,12 +654,12 @@ class TimeSheet extends Component {
 
     setTimesheetData = () => {
         Object.getOwnPropertyNames(this.state.timesheetData).map((key, index) => (
-            count = count +1,
-            obj =this.state.timesheetData[key],
-            Object.assign(obj, {key: count}),
-            console.log("ActivityId",obj.ActivityId),
-            obj.ActivityId !== undefined? objArr.push(obj):null
-       ))
+            count = count + 1,
+            obj = this.state.timesheetData[key],
+            Object.assign(obj, { key: count }),
+            console.log("ActivityId", obj.ActivityId),
+            obj.ActivityId !== undefined ? objArr.push(obj) : null
+        ))
         lblMon = moment(new Date(this.state.headerData[0].Mon_Date)).format("ddd D, YYYY"),
             lblTue = moment(new Date(this.state.headerData[0].Tue_Date)).format("ddd D, YYYY"),
             lblWed = moment(new Date(this.state.headerData[0].Wed_Date)).format("ddd D, YYYY"),
@@ -684,8 +695,8 @@ class TimeSheet extends Component {
             dvTotSun: dvTotSun, TotalTime: TotalTime,
             timesheetData: objArr
         }, () => {
-            objArr= [], obj= '',
-            lblMon = "", lblTue = "", lblWed = "", lblThu = "", lblFri = "", lblSat = "", lblSun = ""
+            objArr = [], obj = '',
+                lblMon = "", lblTue = "", lblWed = "", lblThu = "", lblFri = "", lblSat = "", lblSun = ""
             TotalTime = "", dvTotMon = "", dvTotTue = "", dvTotWed = "", dvTotThu = "", dvTotFri = "", dvTotSat = "", dvTotSun = ""
         });
     }
@@ -702,9 +713,9 @@ class TimeSheet extends Component {
         }
     }
 
-   
-  
-    
+
+
+
     renderHiddenItem = (data, rowMap) => (
         //      <Card elevation={2} style={styles.container} onPress={this.onPress}>
 
@@ -727,19 +738,15 @@ class TimeSheet extends Component {
                     :
                     Status == "Approved" ?
                         <>
-                            {/* <TouchableOpacity
-                                style={[styles.backRightBtn1, styles.backRightBtnLeft, { backgroundColor: 'red' }]}
-                            >
-                                <Text numberOfLines={3} style={[styles.backTextWhite, { color: 'green', fontSize: 16 }]}>{data.item.Status}</Text>
-
-                            </TouchableOpacity> */}
+                      
+                         
                             <TouchableOpacity
-                                style={[styles.backRightBtn, styles.backRightBtnRight, { backgroundColor: 'transparent' , justifyContent: 'center', alignItems: 'center' }]}
-                                onPress={() => this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: data.item.ApproverRemarks })}
+                                style={[styles.backRightBtn, styles.backRightBtnRight, { backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }]}
+                                onPress={() => this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: data.item.ApproverRemarks },()=>{ console.log("dedddd", data.item )})}
                             >
-                               <Text style={[ {fontSize: 16, marginTop: 3, marginBottom: 3, color: 'blue' }]}>Approver</Text>
-                                <Text numberOfLines={1} style={{fontSize: 16}}>{data.item.Approver}</Text>
-                                <Image style={{ height: 40, width: 40,left: 5 }} source={require("../Assets/msgbg.png")} />
+                                <Text style={[{ fontSize: 16, marginTop: 3, marginBottom: 3, color: 'blue' }]}>Approver</Text>
+                                <Text numberOfLines={1} style={{ fontSize: 16 }}>{data.item.Approver}</Text>
+                                <Image style={{ height: 40, width: 40, left: 5 }} source={require("../Assets/msgbg.png")} />
                             </TouchableOpacity>
                         </> :
                         <>
@@ -773,7 +780,7 @@ class TimeSheet extends Component {
         </View>
     );
 
-  
+
     handledata = (item, index) => {
         console.log("mjjjjjj", index);
 
@@ -783,7 +790,7 @@ class TimeSheet extends Component {
 
     renderItem = (data) => (
         Status = data.item.Status,
-        console.log("Status", selectedRow),
+        // console.log("Stafffffffffffffffus", Status, data),
         <>
             <TouchableHighlight
                 onPress={() => { this.handledata(data.item, data.index) }}
@@ -911,8 +918,8 @@ class TimeSheet extends Component {
                         {
                             this.state.timesheetVisible == true ?
                                 <>
-                                    <View style={{ flexDirection: 'row', bottom: 2, justifyContent: 'space-between', alignItems: 'center', backgroundColor: this.props.primaryColor }}>
-                                        <View style={{ bottom: 3, margin: 5, }}>
+                                    <View style={{width:'100%', height: 50, paddingHorizontal:10, flexDirection: 'row',  justifyContent: 'space-between', alignItems: 'center', backgroundColor: this.props.primaryColor }}>
+                                        <View style={{ width:'50%', justifyContent: 'center', alignItems: 'flex-start' }}>
                                             {
                                                 this.state.timesheetVisible == true ?
                                                     <Text style={styles.totalHrs}> {"Total Hours - " + this.state.TotalTime}</Text>
@@ -920,7 +927,7 @@ class TimeSheet extends Component {
                                             }
                                         </View>
                                         <TouchableOpacity onPress={() => this.setState({ weekVisible: true })}
-                                            style={{ flexDirection: 'row', width: 200, justifyContent: 'center', alignItems: 'center', bottom: 3, borderWidth: 1, margin: 5, borderRadius: 3, borderColor: 'white' }}>
+                                            style={{ flexDirection: 'row', width: "50%", justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderRadius: 3, borderColor: 'white' }}>
                                             <Image style={{ height: 20, width: 20, marginLeft: 5, tintColor: 'white' }} source={require("../Assets/calendar.png")} />
                                             <Text style={styles.text}> {firstDate1 == '' ? "Select Week" : firstDate1 + " - " + lastDate1}</Text>
                                         </TouchableOpacity>
@@ -987,9 +994,9 @@ class TimeSheet extends Component {
                                     <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                                         <View style={{ backgroundColor: 'white', borderRadius: 5, width: 350, height: 250 }}>
                                             <View style={{ borderTopStartRadius: 5, borderTopEndRadius: 5, height: 50, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
-                                                <Text style={{ fontSize: title, color: this.props.fontColor }}>{this.state.rating == true? "Rating":'Additional Description'}</Text>
+                                                <Text style={{ fontSize: title, color: this.props.fontColor }}>{this.state.rating == true ? "Rating" : 'Additional Description'}</Text>
                                                 <TouchableOpacity onPress={() =>
-                                                    this.setState({ addDescVisible: false, rating:false },
+                                                    this.setState({ addDescVisible: false, rating: false },
                                                         () => { this.handleAddDescription() })}>
                                                     <Image style={{ height: 30, width: 30, tintColor: 'white' }} source={require('../Assets/redCross.png')} />
                                                 </TouchableOpacity>
@@ -1145,21 +1152,30 @@ class TimeSheet extends Component {
                                     </View>
                                 </Modal>
 
-                                <SheetBottom
-                                    visible={this.state.calenderVisible}
-                                    style={{ backgroundColor: this.props.primaryColor }}
-                                    onBackdropPress={() => this.setState({ calenderVisible: false })}
-                                    onSwipeDown={() => this.setState({ calenderVisible: false })}>
-                                    <CalendarPicker
-                                        onDateChange={this.onDateChange}
-                                        startFromMonday={true}
-                                        maxDate={new Date()}
-                                        width={350}
-                                        height={800}
-                                        textStyle={{ fontSize: 16, color: 'white' }}
-                                        todayBackgroundColor={'tomato'}
-                                    />
-                                </SheetBottom>
+                                <Modal isVisible={this.state.calenderVisible}>
+                                    <View style={{ backgroundColor: 'transparent' }}>
+                                        <TouchableOpacity onPress={() =>this.setState({ calenderVisible: false})}
+                                    style={{ justifyContent: 'center', alignItems: 'flex-end',marginHorizontal:20,marginVertical:40 }}
+                                    >
+                                        <Image style={{ height: 30, width: 30, tintColor: 'white' }} source={require('../Assets/redCross.png')} />
+                                    </TouchableOpacity>
+                                        <View style={{ justifyContent: 'center', alignItems: 'center', }}>
+                                            <CalendarPicker
+                                                onDateChange={this.onDateChange}
+                                                startFromMonday={true}
+                                                maxDate={new Date()}
+                                                width={350}
+                                                height={800}
+                                                textStyle={{ fontSize: 16, color: 'white' }}
+                                                todayBackgroundColor={'tomato'}
+                                            />
+                                        </View>
+                                        {/* <TouchableOpacity style={{ backgroundColor:'red', borderRadius:5, height:30, borderWidth: 1, margin: 5, marginRight: 5, top: 30, borderColor: 'white' }}
+                                         onPress={() => this.setState({ calenderVisible: false })}>
+                                            <Text style={{fontSize: 16, color: 'white'}}>Close</Text>
+                                        </TouchableOpacity> */}
+                                    </View>
+                                </Modal>
 
                                 <View style={{ flex: 1 }}>
                                     <SheetBottom
@@ -1177,9 +1193,14 @@ class TimeSheet extends Component {
                                                     <Text numberOfLines={1} style={{ color: "#4D504F" }}>{"(" + this.state.daysData.ClientName + ")"}</Text>
                                                     {/* <Text numberOfLines={1} style={{ color: "#4D504F" }}>{this.state.daysData.TaskDesc}</Text> */}
                                                 </View>
-                                                <View style={{ width: "40%", height: '100%', margin: 2, justifyContent: 'flex-start', alignItems: 'center' }}>
-                                                    <Text style={{ fontSize: 18, color: this.state.daysData.Status == "Saved" ? 'red' : 'green' }}>{this.state.daysData.Status}</Text>
-                                                </View>
+                                                {this.state.daysData.Status == "Saved" ?
+
+                                                    <TouchableOpacity onPress={() => this.setState({ daysVisible: false }, () => { this.insertUpdateTimesheetEntry("Saved") })}
+                                                        style={[styles.saveButton, { width: '30%' }]}>
+                                                        <Text style={styles.text}> {"Save"}</Text>
+                                                    </TouchableOpacity>
+                                                    : null
+                                                }
                                             </View>
                                             {/* </Card> */}
                                             <Card elevation={2} style={styles.container} >
@@ -1193,7 +1214,7 @@ class TimeSheet extends Component {
                                                             <View style={{ width: "40%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
                                                                 <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.daysData.Status == "Saved" ? true : false, dayField: 'Mon', dayField: 1, }) }}
                                                                     style={[styles.hrsData, { backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
-                                                                    <Text style={{ fontSize: 16 }}>{this.state.daysData.Mon == "" ? "--:--" : this.state.daysData.Mon}</Text>
+                                                                    <Text style={{ fontSize: 16 }}>{this.state.daysData.Mon == "" || this.state.daysData.Mon == undefined ? "--:--" : this.state.daysData.Mon}</Text>
                                                                 </TouchableOpacity>
                                                                 <TouchableOpacity style={{ flexDirection: 'row', }} onPress={() =>
                                                                     this.setState({ addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false, addDesc: this.state.daysData.Mon_TaskComments, addDescField: 1, },

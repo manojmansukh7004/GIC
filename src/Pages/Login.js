@@ -10,6 +10,7 @@ import { attemptLogin } from "../Services/LoginService"
 import { onSignIn } from "./Authentication";
 import { connect } from 'react-redux'
 import { setUser, } from '../Redux/Action'
+import firebase from 'react-native-firebase'
 const displayWidth = Dimensions.get('window').width;
 const contantPadding = 30;
 var url
@@ -34,7 +35,8 @@ class Login extends Component {
     getData('baseUrl').then((value) => {
       this.setState({ baseUrl: value })
     })
-
+    const fcmToken = await firebase.messaging().getToken();
+    console.log("fcmTofffffffffffffffffffffffffken,",fcmToken);
   }
 
   loginValidation() {
@@ -186,7 +188,7 @@ class Login extends Component {
             <Button
               uppercase={false}
               // color={'#297AF9'}
-              onPress={() => this.props.navigation.navigate('ForgotPassword', { companyData: this.state.companyData })}
+              onPress={() => this.props.navigation.navigate('ForgotPassword')}
             >
               Forgot Password?
               </Button>

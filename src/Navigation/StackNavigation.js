@@ -14,9 +14,7 @@ const MainNavigator = createStackNavigator(
 
     },
     {
-        initialRouteName: 'Drawer',
-        transitionConfig: () => zoomIn(1000),
-
+        initialRouteName: 'Drawer'
     }
 
 );

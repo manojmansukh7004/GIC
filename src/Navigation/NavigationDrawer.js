@@ -10,15 +10,32 @@ import TsApproval from '../Pages/TsApproval';
 import Help from '../Pages/Help'
 import ProjectStatus from '../Pages/ProjectStatus';
 import SplashScreen11 from '../Pages/SplashScreen'
+import TimesheetEntry from '../Pages/TimesheetEntry'
+import EditTimeSheet from '../Pages/EditTimeSheet'
+import ProjectDetail from '../Pages/ProjectDetail'
 
+// TimesheetEntry: { screen: TimesheetEntry, navigationOptions: { header: null } },
+// ProjectDetail: { screen: ProjectDetail, navigationOptions: { header: null } },
+// EditTimeSheet: { screen: EditTimeSheet, navigationOptions: { header: null } }
+
+
+const myTimesheetStack = createStackNavigator({
+  TimeSheet: { screen: TimeSheet, navigationOptions: { header: null } },
+TimesheetEntry: { screen: TimesheetEntry, navigationOptions: { header: null } },
+ProjectDetail: { screen: ProjectDetail, navigationOptions: { header: null } },
+EditTimeSheet: { screen: EditTimeSheet, navigationOptions: { header: null } }
+})
+
+const tsApprovaltStack = createStackNavigator({
+  TsApproval: { screen: TsApproval, navigationOptions: { header: null } },
+ProjectDetail: { screen: ProjectDetail, navigationOptions: { header: null } },
+})
 
 const DrawerNavigator = createDrawerNavigator({
     TimeSheet: { screen: TimeSheet },
     TsApproval: { screen: TsApproval },
     ProjectStatus: { screen: ProjectStatus },
     Help: { screen: Help },
-
-
 },
   {
 

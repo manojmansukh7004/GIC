@@ -91,7 +91,7 @@ class DrawerComponent extends Component {
     }
 
     async componentDidMount() {
-        BackHandler.addEventListener("hardwareBackPress", this.backAction);
+        // BackHandler.addEventListener("hardwareBackPress", this.backAction);
 
     }
 
@@ -124,7 +124,7 @@ class DrawerComponent extends Component {
                         <View style={{ marginRight: 10, marginLeft: 20 }}>
                             <Image style={{ height: 23, width: 23 }} source={require("../Assets/darkCalendar.png")} />
                         </View>
-                        <Text style={[styles.text, { color: this.state.key === 1 ? 'blue' : 'black' }]}>My TimeSheet</Text>
+                        <Text style={[styles.text, { color: this.state.key === 1 ? 'black' : 'black' }]}>My TimeSheet</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.strip}
@@ -133,7 +133,7 @@ class DrawerComponent extends Component {
                         <View style={{ marginRight: 10, marginLeft: 20 }}>
                             <Image style={{ height: 23, width: 23 }} source={require("../Assets/approval.png")} />
                         </View>
-                        <Text style={[styles.text, { color: this.state.key === 2 ? 'blue' : 'black' }]}>TimeSheet Approval</Text>
+                        <Text style={[styles.text, { color: this.state.key === 2 ? 'black' : 'black' }]}>TimeSheet Approval</Text>
                     </TouchableOpacity>
 
                     {/* <Divider style={{ borderWidth: .3, borderColor: 'grey', backgroundColor: 'grey' }} /> */}
@@ -168,7 +168,7 @@ class DrawerComponent extends Component {
                         <View style={{ marginRight: 10, marginLeft: 20 }}>
                             <Image style={{ height: 23, width: 23 }} source={require("../Assets/question.png")} />
                         </View>
-                        <Text style={[styles.text, { color: this.state.key === 3 ? 'blue' : 'black' }]}>{"User Guide"}</Text>
+                        <Text style={[styles.text, { color: this.state.key === 3 ? 'black' : 'black' }]}>{"User Guide"}</Text>
                     </TouchableOpacity>
                     <Divider style={{ borderWidth: .3, borderColor: 'grey', backgroundColor: 'grey' }} />
 

@@ -9,7 +9,7 @@ import Modal from 'react-native-modal';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import Icon1 from 'react-native-vector-icons/Ionicons';
 
-import {UIActivityIndicator} from 'react-native-indicators';
+import { UIActivityIndicator } from 'react-native-indicators';
 // import PickerCheckBox from 'react-native-picker-checkbox';
 import moment from 'moment';
 import { setTsId } from '../Redux/Action'
@@ -25,7 +25,7 @@ var lblMon = "", lblTue = "", lblWed = "", lblThu = "", lblFri = "", lblSat = ""
 var TotalTime = "", dvTotMon = "", dvTotTue = "", dvTotWed = "", dvTotThu = "", dvTotFri = "", dvTotSat = "", dvTotSun = ""
 var timesheetID = '', clientCode = '', projectCode = '', typeofWorkId = '', phaseId = '', activityId = '', workOrderId = '', taskDesc = '', status = '', duration = '', dailyTaskComments = '', date = '', autoId = '', status = '', currRecordStatus = ''
 var Status = '', selectedRow = ''
-var obj ='', objArr =[], count=0
+var obj = '', objArr = [], count = 0
 const showToast = (Msg) => {
     ToastAndroid.show(Msg, ToastAndroid.LONG);
 };
@@ -128,11 +128,15 @@ class TimeSheet extends Component {
         if (this.state.field == 1) {
             var selectedNode = []
             Object.getOwnPropertyNames(this.state.data).map((key, index) => (
-                selectedNode.push(this.state.data[key].Value)
+                this.state.data[key].Value !==undefined? selectedNode.push(this.state.data[key].Value):null
             ))
             this.setState({ selectedVal: this.state.clientList, client: this.state.clientList, clientValue: selectedNode, project: [], type: '', resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] },
                 async () => {
-                    var projectData = await GetDataOnClientChange(this.props.user, this.state.clientValue, this.props.baseUrl)
+                    console.log("aasssss",this.state.clientValue);
+                    
+                    var projectData = await GetDataOnClientChange(this.props.user, this.state.deliverTypeValue, this.state.projectGroupValue, this.state.clientValue, this.props.baseUrl)
+                    console.log("PPPPPPPPPPPPP", projectData);
+
                     this.setState({ projectList: projectData.ProjectList[0] })
                 })
         }
@@ -385,20 +389,20 @@ class TimeSheet extends Component {
             headerData: timesheetData.TimesheetHeaderData[0],
             headerHrsData: timesheetData.TimesheetTotalHrs[0],
         }, () => {
-            console.log("timesheetdatttttttt",this.state.timesheetData);
-           
+            console.log("timesheetdatttttttt", this.state.timesheetData);
+
             this.setTimesheetData();
         });
     }
     setTimesheetData = () => {
-            Object.getOwnPropertyNames(this.state.timesheetData).map((key, index) => (
-            count = count +1,
-            obj =this.state.timesheetData[key],
-            Object.assign(obj, {key: count}),
-            console.log("ActivityId",obj.ActivityId),
-            obj.ActivityId !== undefined? objArr.push(obj):null
-       ))
-       
+        Object.getOwnPropertyNames(this.state.timesheetData).map((key, index) => (
+            count = count + 1,
+            obj = this.state.timesheetData[key],
+            Object.assign(obj, { key: count }),
+            console.log("ActivityId", obj.ActivityId),
+            obj.ActivityId !== undefined ? objArr.push(obj) : null
+        ))
+
         lblMon = moment(new Date(this.state.headerData[0].Mon_Date)).format("ddd D, YYYY"),
             lblTue = moment(new Date(this.state.headerData[0].Tue_Date)).format("ddd D, YYYY"),
             lblWed = moment(new Date(this.state.headerData[0].Wed_Date)).format("ddd D, YYYY"),
@@ -424,7 +428,7 @@ class TimeSheet extends Component {
             dvTotSun: dvTotSun, TotalTime: TotalTime,
             dataTable: true, timesheetData: objArr
         }, () => {
-            objArr= [], obj= '', lblMon = "", lblTue = "", lblWed = "", lblThu = "", lblFri = "", lblSat = "", lblSun = ""
+            objArr = [], obj = '', lblMon = "", lblTue = "", lblWed = "", lblThu = "", lblFri = "", lblSat = "", lblSun = ""
             TotalTime = "", dvTotMon = "", dvTotTue = "", dvTotWed = "", dvTotThu = "", dvTotFri = "", dvTotSat = "", dvTotSun = ""
         });
     }
@@ -484,6 +488,8 @@ class TimeSheet extends Component {
 
     handleTsEntryId = () => {
         var tsEntryId = []
+        console.log("EEeeeee",this.state.apprActionData)
+
         if (this.state.apprActionData.Mon_AutoId !== null) { tsEntryId.push(this.state.apprActionData.Mon_AutoId) }
         if (this.state.apprActionData.Tue_AutoId !== null) { tsEntryId.push(this.state.apprActionData.Tue_AutoId) }
         if (this.state.apprActionData.Wed_AutoId !== null) { tsEntryId.push(this.state.apprActionData.Wed_AutoId) }
@@ -491,6 +497,8 @@ class TimeSheet extends Component {
         if (this.state.apprActionData.Fri_AutoId !== null) { tsEntryId.push(this.state.apprActionData.Fri_AutoId) }
         if (this.state.apprActionData.Sat_AutoId !== null) { tsEntryId.push(this.state.apprActionData.Sat_AutoId) }
         if (this.state.apprActionData.Sun_AutoId !== null) { tsEntryId.push(this.state.apprActionData.Sun_AutoId) }
+       console.log("ttttttttttttttttttttttt",tsEntryId);
+       
         this.SaveUpdateApproverActionData(tsEntryId)
     }
 
@@ -517,7 +525,7 @@ class TimeSheet extends Component {
                 if (data.SuccessList != undefined) {
                     this.searchRecord()
                     showToast("Action completed sucessfully.");
-                    this.setState({ rating1: [], rating2: [], rating3: '', loading: false })
+                    this.setState({ singleRecord: false,rating1: [], rating2: [], rating3: '', loading: false })
                 }
                 else {
                     showToast("Error has an occer.");
@@ -651,7 +659,7 @@ class TimeSheet extends Component {
 
         <>
             <TouchableHighlight
-                onPress={() => { this.handledata(data.item, data.index) }}
+                // onPress={() => { this.handledata(data.item, data.index) }}
                 // style={[styles.sheetData1, { flexDirection: 'row', backgroundColor: this.props.stripColor, flexDirection: 'row', padding: data.item.ApproverAction !== "Rejected" ? 10 : null }]}
                 underlayColor={'#AAA'}
             >
@@ -669,7 +677,8 @@ class TimeSheet extends Component {
                                         <Text style={{ fontSize: 16 }}>{data.item.date}</Text>
                                     </View>
                                     <View style={{ width: "40%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
-                                        <TouchableOpacity onPress={() => { this.setState({ timeVisible: data.item.Status == "Saved" ? true : false, dayField: 'Tue', dayField: this.state.daysData.dayField, }) }}
+                                        <TouchableOpacity
+                                            onPress={() => { this.setState({ timeVisible: data.item.Status == "Saved" ? true : false, dayField: 'Tue', dayField: this.state.daysData.dayField, }) }}
                                             style={[styles.hrsData, { backgroundColor: data.item.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
                                             <Text style={{ fontSize: 16 }}>{data.item.time == "" ? "--:--" : data.item.time}</Text>
                                         </TouchableOpacity>
@@ -797,6 +806,7 @@ class TimeSheet extends Component {
         Dimensions.addEventListener('change', () => {
             this.getOrientation();
         });
+        //  this.props.navigation.state.params.Loading == true ? this.handleClear() : null
         var drpTSApproval = await GetDrpDataForTSApproval(this.props.user, this.props.baseUrl)
         this.setState({
             clientList: drpTSApproval.ClientList[0],
@@ -819,7 +829,7 @@ class TimeSheet extends Component {
             <>
                 <StatusBar translucent barStyle="light-content" backgroundColor={this.props.primaryColor} />
                 <NavigationEvents
-                    onDidFocus={() => this.props.navigation.state.params.Loading == true ? this.handleClear() : null}
+                // onDidFocus={() => this.props.navigation.state.params.Loading == true ? this.handleClear() : null}
                 // onWillBlur={() =>this.handleClear()}
                 />
                 <View ref="rootView" style={[styles.Container, {}]}>
@@ -843,7 +853,7 @@ class TimeSheet extends Component {
                                         <View style={{ width: '50%', height: 50, justifyContent: 'center', alignItems: 'center', }}>
                                             <Text style={styles.totalHrs}> {this.state.resourceName}</Text>
                                         </View>
-                                        <View style={{ borderWidth: 1, margin: 5, borderRadius: 3, borderColor: 'white', justifyContent: 'center', alignItems: 'center', }}>
+                                        <View style={{ width: '50%', borderWidth: 1, margin: 5, borderRadius: 3, borderColor: 'white', justifyContent: 'center', alignItems: 'center', }}>
                                             {/* <Image style={{ height: 20, width: 20, marginLeft: 5, tintColor: 'white' }} source={require("../Assets/calendar.png")} /> */}
                                             <Text style={styles.text}> {this.state.timesheet == '' ? "--select--" :
                                                 moment(new Date(this.state.timesheet.slice(0, 10).split('-').reverse().join('/'))).format("DD MMM")
@@ -1129,7 +1139,7 @@ class TimeSheet extends Component {
                                 <ScrollView style={{ marginBottom: 40 }}>
                                     <Card style={[styles.cards, { borderWidth: 1, borderColor: "transparent" }]}>
                                         <TouchableOpacity onPress={() => this.setState({
-                                            title: "Deliver Type", multiPickerVisible: true,
+                                            title: "Delivery Type", multiPickerVisible: true,
                                             field: 11, data: this.state.deliverTypeList, selectedVal: this.state.deliverType, arrayholder: this.state.deliverTypeList
                                         })}
                                             style={styles.cardMenuSpasing}>
