@@ -1,7 +1,6 @@
 
 async function CreateNewTimesheet(EmpID, date, baseUrl) {
-console.log("mmmmmmmmm",EmpID, date, baseUrl);
-
+  
     const payload = {
         "loginDetails":
         {

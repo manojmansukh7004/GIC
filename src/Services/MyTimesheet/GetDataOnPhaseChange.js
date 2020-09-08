@@ -1,7 +1,5 @@
 async function GetDataOnPhaseChange(EmpID, TimesheetId,ProjectCode, Phase, baseUrl) {
 
-console.log("jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj",EmpID, TimesheetId, Phase, baseUrl);
-
     const payload = {
         "loginDetails":
         {

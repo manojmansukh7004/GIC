@@ -1,6 +1,5 @@
 
 async function CheckPreviousEmpTSStatus(EmpID, timesheetId, baseUrl) {
-    console.log("mmmmmmmmm",EmpID, timesheetId, baseUrl);
     
         const payload = {
             "loginDetails":

@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:701189017491:android:6c5b7cf928a7280eada266",
+        "mobilesdk_app_id": "1:701189017491:android:d39e7106707738bfada266",
         "android_client_info": {
-          "package_name": "com.gic"
+          "package_name": "com.gic.timesheet"
         }
       },
       "oauth_client": [

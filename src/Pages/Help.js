@@ -1,16 +1,9 @@
 import React, { Component } from 'react';
-import { ToastAndroid, TextInput, Image, StatusBar, StyleSheet, Dimensions, ScrollView, Text, FlatList, View, TouchableOpacity } from 'react-native';
-import { Divider, Title, Paragraph, Subheading } from 'react-native-paper';
+import { StatusBar, StyleSheet, Dimensions, ScrollView, Text, View } from 'react-native';
+import { Paragraph } from 'react-native-paper';
 import Appbar1 from '../Component/AppBar1'
 import { connect } from 'react-redux'
-import { Dialog, List, Checkbox, SheetSide, } from 'material-bread';
 import { NavigationEvents } from 'react-navigation'
-
-const title = 18
-const cardTitle = 16
-const cardDate = 14
-const subTitle = 14
-
 
 class Help extends Component {
 
@@ -21,7 +14,6 @@ class Help extends Component {
             visible: '',
         }
     }
-
 
     sideDrawerVisible = (status) => {
         this.setState({ visible: status })
@@ -39,18 +31,14 @@ class Help extends Component {
         }
     }
 
-
-
     async componentDidMount() {
         this.getOrientation();
         Dimensions.addEventListener('change', () => {
             this.getOrientation();
         });
-
     }
 
     render() {
-
         return (
             <>
                 <StatusBar translucent barStyle="light-content" backgroundColor={this.props.primaryColor} />
@@ -62,9 +50,7 @@ class Help extends Component {
                     <View style={{ height: this.state.orientation == 'landscape' ? '11%' : '7%', justifyContent: 'center', alignItems: 'center', backgroundColor: this.props.primaryColor }}>
                         <Appbar1 navigation={this.props.navigation}
                             title={"User Guide"}
-                            // filter={true}
                             sideDrawerVisible={this.sideDrawerVisible}
-                        // handleCalenderStatus={this.handleCalenderStatus}
                         />
                     </View>
 
@@ -101,10 +87,7 @@ class Help extends Component {
                         </ScrollView>
                     </View>
                 </View>
-
-
             </>
-
         );
     }
 }
@@ -126,7 +109,7 @@ const mapStateToProps = state => {
 }
 const mapDispatchToProps = dispatch => {
     return {
-        // ts_Id: (data) => dispatch(setTsId(data))
+
     }
 }
 
@@ -134,7 +117,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(Help)
 
 const styles = StyleSheet.create({
     Container: {
-
         flex: 1,
         display: 'flex',
         top: 22.5,

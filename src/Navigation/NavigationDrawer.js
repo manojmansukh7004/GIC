@@ -14,11 +14,6 @@ import TimesheetEntry from '../Pages/TimesheetEntry'
 import EditTimeSheet from '../Pages/EditTimeSheet'
 import ProjectDetail from '../Pages/ProjectDetail'
 
-// TimesheetEntry: { screen: TimesheetEntry, navigationOptions: { header: null } },
-// ProjectDetail: { screen: ProjectDetail, navigationOptions: { header: null } },
-// EditTimeSheet: { screen: EditTimeSheet, navigationOptions: { header: null } }
-
-
 const myTimesheetStack = createStackNavigator({
   TimeSheet: { screen: TimeSheet, navigationOptions: { header: null } },
 TimesheetEntry: { screen: TimesheetEntry, navigationOptions: { header: null } },
@@ -38,13 +33,9 @@ const DrawerNavigator = createDrawerNavigator({
     Help: { screen: Help },
 },
   {
-
     contentComponent: DrawerComponent,
-
   }
 );
-
-
 
 export default createAppContainer(DrawerNavigator);
 const styles = StyleSheet.create({

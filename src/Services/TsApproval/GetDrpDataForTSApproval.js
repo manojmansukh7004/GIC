@@ -1,5 +1,4 @@
 async function GetDrpDataForTSApproval(EmpID, baseUrl) {
-console.log("mmmmm",EmpID, baseUrl);
 
     const payload = {
         "loginDetails":

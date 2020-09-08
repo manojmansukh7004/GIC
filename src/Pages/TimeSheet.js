@@ -18,12 +18,9 @@ import { CheckPreviousEmpTSStatus } from '../Services/MyTimesheet/CheckPreviousT
 import { DeleteTimesheetRecord } from '../Services/MyTimesheet/DeleteTimesheetRecord';
 import { setTsId } from '../Redux/Action'
 import Icon1 from 'react-native-vector-icons/Ionicons';
-// import TimesheetView from '../Component/TimesheetViewheetView'
 const showToast = (Msg) => {
     ToastAndroid.show(Msg, ToastAndroid.LONG);
 };
-const height = Dimensions.get('window').height
-const width = Dimensions.get('window').width
 
 const title = 18
 const cardTitle = 16
@@ -209,8 +206,6 @@ class TimeSheet extends Component {
         let targetPost = timesheetData[index];
         let targetPost1 = daysData
 
-        console.log("dayyyy", dayField, index, value, targetPost, targetPost1);
-
         if (dayField == 1) {
             targetPost.Mon = value;
             targetPost1.Mon = value;
@@ -247,18 +242,6 @@ class TimeSheet extends Component {
 
         }
         this.setState({ timesheetData, daysData }, () => {
-            // let { timesheetData } = this.state;
-
-            // console.log("mmmmmmmmmmmmmmmmm", timesheetData[0].Mon);
-
-            //     if(timesheetData[0].Mon == '' || timesheetData[0].Mon == "00:00" && timesheetData[0].Tue == '' || timesheetData[0].Tue == "00:00" && timesheetData[0].Wed == '' || timesheetData[0].Wed == "00:00" &&
-            //      timesheetData[0].Thu == '' || timesheetData[0].Tue == "00:00" && timesheetData[0].Fri == '' || timesheetData[0].Fri == "00:00" && timesheetData[0].Sat == '' || timesheetData[0].Sat == "00:00" && timesheetData[0].Sun == '' || timesheetData[0].Sun == "00:00")
-            //    {
-            //         this.setState({daysVisible: false},()=>{this.insertUpdateTimesheetEntry("Saved")})
-            //    }
-            //    else{
-            // this.insertUpdateTimesheetEntry("Saved")
-            //    } 
         });
     }
 
@@ -277,8 +260,6 @@ class TimeSheet extends Component {
             taskDesc = data[item].TaskDesc
             status = status1
             currRecordStatus = data[item].Status
-            console.log("status1", data[item].Status);
-
             for (var dayField = 1; dayField <= 7; dayField++) {
 
                 if (dayField == 1) {
@@ -341,7 +322,6 @@ class TimeSheet extends Component {
                     TimesheetEntryId: autoId == null ? '' : autoId,
                     Status: status1,
                     CurrRecordStatus: currRecordStatus == null ? '' : currRecordStatus
-
                 });
             }
         })
@@ -351,12 +331,10 @@ class TimeSheet extends Component {
                 showToast(data.Message);
             }
             if (data.SuccessList != undefined || data.ErrorList != undefined || data.ExceptionList != undefined) {
-                // validationRemove();
                 status1 == "Submitted" ? showToast('Timesheet data ' + status1 + '.') : showToast('Timesheet data ' + "Saved" + '.')
                 if (data.SuccessList != undefined) {
                     this.empWeeklyTimesheetData(this.statetimesheetId);
                     this.empWeeklyTimesheetData()
-
                 }
             }
 
@@ -367,8 +345,6 @@ class TimeSheet extends Component {
     }
 
     submitTimesheetEntry = async () => {
-        // console.log("submit",this.state.headerData);
-        // var timesheeData =
         var timesheetData = [];
         var errMinCnt = 0;
         var errMaxCnt = 0;
@@ -380,7 +356,6 @@ class TimeSheet extends Component {
         var maxHrsTime = maxHrs.search(":") == -1 ? (parseInt(maxHrs * 60)) : (parseInt(maxHrs.split(':')[0] * 60) + (maxHrs.split(':')[1] == undefined ? 0 : parseInt(maxHrs.split(':')[1])));
         var Mon = [], Tue = [], Wed = [], Thu = [], Fri = [], Sat = [], Sun = [];
         var mon = 0, tue = 0, wed = 0, thu = 0, fri = 0, sat = 0, sun = 0;
-        console.log("minHrsTime", minHrsTime, maxHrsTime);
         var data = this.state.timesheetData
         var empAttendanceData = this.state.empAttendanceData
         var i = 0
@@ -614,16 +589,10 @@ class TimeSheet extends Component {
     }
 
     handleLoadingData = () => {
-        // if (this.props.navigation.state.params.Loading == true) {
-        //     this.setState({ selectedWeek: '', timesheetVisible: false, empAttendanceData: [], timesheetData: [], ratingData: [], headerData: [], headerHrsData: [] }, () => { this.componentDidMount() })
-        // }
-        // else {
         this.empWeeklyTimesheetData()
-        // }
     }
 
     empWeeklyTimesheetData = async () => {
-        // console.log(" this.state.timesheetData''''''''''''''''''''.", this.props.navigation.state.params.Loading);
 
         var timesheetData = await GetEmpWeeklyTimesheetData(this.props.user, this.state.selectedWeek.Value, this.props.baseUrl)
         this.setState({
@@ -637,7 +606,6 @@ class TimeSheet extends Component {
             Object.keys(this.state.timesheetData).map((item, index) => {
                 if (this.state.timesheetData[item].Status == "Saved") {
                     saveCount += 1
-
                 }
             })
             if (saveCount > 0) {
@@ -701,7 +669,6 @@ class TimeSheet extends Component {
         });
     }
 
-
     getOrientation = () => {
         if (this.refs.rootView) {
             if (Dimensions.get('window').width < Dimensions.get('window').height) {
@@ -713,11 +680,7 @@ class TimeSheet extends Component {
         }
     }
 
-
-
-
     renderHiddenItem = (data, rowMap) => (
-        //      <Card elevation={2} style={styles.container} onPress={this.onPress}>
 
         <View style={[styles.rowBack, { width: '99%', }]}>
             <TouchableOpacity
@@ -730,7 +693,6 @@ class TimeSheet extends Component {
                 Status == "Submitted" ?
                     <TouchableOpacity
                         style={[styles.backRightBtn, styles.backRightBtnRight]}
-                    // onPress={() => this.deleteRow(rowMap, data.item.key)}
                     >
                         <Text style={[styles.backTextWhite, { marginTop: 3, marginBottom: 3, color: 'blue' }]}>Approver</Text>
                         <Text numberOfLines={3} style={styles.backTextWhite}>{data.item.Approver}</Text>
@@ -738,8 +700,6 @@ class TimeSheet extends Component {
                     :
                     Status == "Approved" ?
                         <>
-                      
-                         
                             <TouchableOpacity
                                 style={[styles.backRightBtn, styles.backRightBtnRight, { backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }]}
                                 onPress={() => this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: data.item.ApproverRemarks },()=>{ console.log("dedddd", data.item )})}
@@ -780,17 +740,12 @@ class TimeSheet extends Component {
         </View>
     );
 
-
     handledata = (item, index) => {
-        console.log("mjjjjjj", index);
-
         this.setState({ daysVisible: true, daysData: item, dayIndex: index })
-
     }
 
     renderItem = (data) => (
         Status = data.item.Status,
-        // console.log("Stafffffffffffffffus", Status, data),
         <>
             <TouchableHighlight
                 onPress={() => { this.handledata(data.item, data.index) }}
@@ -836,13 +791,9 @@ class TimeSheet extends Component {
                     }
                 </>
             </TouchableHighlight>
-
-
-
         </>
 
     );
-
 
     DeleteRecord = async () => {
         var tsEntryId = []
@@ -853,7 +804,6 @@ class TimeSheet extends Component {
         if (this.state.singleTsRecord.Fri_AutoId !== null) { tsEntryId.push(this.state.singleTsRecord.Fri_AutoId) }
         if (this.state.singleTsRecord.Sat_AutoId !== null) { tsEntryId.push(this.state.singleTsRecord.Sat_AutoId) }
         if (this.state.singleTsRecord.Sun_AutoId !== null) { tsEntryId.push(this.state.singleTsRecord.Sun_AutoId) }
-
         var data = await DeleteTimesheetRecord(this.props.user, this.state.timesheetId, tsEntryId.toString(), this.props.baseUrl)
         console.log(data);
 
@@ -862,10 +812,8 @@ class TimeSheet extends Component {
                 showToast(data.Message);
             }
             if (data.SuccessList != undefined || data.ErrorList != undefined || data.ExceptionList != undefined) {
-                // validationRemove();
                 if (data.SuccessList != undefined) {
                     showToast("Record deleted successfully.");
-                    // this.props.navigation.navigate("TimeSheet")
                     this.empWeeklyTimesheetData(this.props.tsId);
                 }
                 else {
@@ -880,19 +828,15 @@ class TimeSheet extends Component {
     }
 
     componentDidMount() {
-
         this.getOrientation();
         Dimensions.addEventListener('change', () => {
             this.getOrientation();
         });
         this.empTimesheetList()
-
     }
 
     render() {
         const startDate = this.state.selectedDate ? this.state.selectedDate.toString() : '';
-
-
         return (
             <>
                 <StatusBar translucent barStyle="light-content" backgroundColor={this.props.primaryColor} />
@@ -909,16 +853,14 @@ class TimeSheet extends Component {
                             calenderVisible={this.state.calenderVisible}
                             handleCalenderStatus={this.handleCalenderStatus}
                             submit={true}
-
                         />
                     </View>
 
                     <View style={{ height: this.state.orientation == 'landscape' ? '86%' : '90%', backgroundColor: this.state.secColor }}>
-                        {/* this.state.timesheetVisible== true ? "80%" */}
                         {
                             this.state.timesheetVisible == true ?
                                 <>
-                                    <View style={{width:'100%', height: 50, paddingHorizontal:10, flexDirection: 'row',  justifyContent: 'space-between', alignItems: 'center', backgroundColor: this.props.primaryColor }}>
+                                    <View style={{width:'100%', height: 50, bottom:2, paddingHorizontal:10, flexDirection: 'row',  justifyContent: 'space-between', alignItems: 'center', backgroundColor: this.props.primaryColor }}>
                                         <View style={{ width:'50%', justifyContent: 'center', alignItems: 'flex-start' }}>
                                             {
                                                 this.state.timesheetVisible == true ?
@@ -928,7 +870,7 @@ class TimeSheet extends Component {
                                         </View>
                                         <TouchableOpacity onPress={() => this.setState({ weekVisible: true })}
                                             style={{ flexDirection: 'row', width: "50%", justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderRadius: 3, borderColor: 'white' }}>
-                                            <Image style={{ height: 20, width: 20, marginLeft: 5, tintColor: 'white' }} source={require("../Assets/calendar.png")} />
+                                            {/* <Image style={{ height: 20, width: 20, marginLeft: 5, tintColor: 'white' }} source={require("../Assets/calendar.png")} /> */}
                                             <Text style={styles.text}> {firstDate1 == '' ? "Select Week" : firstDate1 + " - " + lastDate1}</Text>
                                         </TouchableOpacity>
                                     </View>
@@ -953,10 +895,6 @@ class TimeSheet extends Component {
                                             {
                                                 this.state.timeSheetButton == false ?
                                                     <>
-                                                        {/* <TouchableOpacity onPress={() => this.insertUpdateTimesheetEntry("Saved")}
-                                                            style={styles.saveButton}>
-                                                            <Text style={styles.text}> {"Save"}</Text>
-                                                        </TouchableOpacity> */}
                                                         <TouchableOpacity onPress={() => this.submitTimesheetEntry("Submitted")}
                                                             style={[styles.saveButton, { width: "46%" }]}>
                                                             <Text style={styles.text}> {"Submit"}</Text>
@@ -964,7 +902,6 @@ class TimeSheet extends Component {
                                                     </> : null
                                             }
                                         </View>
-                                        // : null
                                     }
 
                                 </> : null
@@ -1065,7 +1002,6 @@ class TimeSheet extends Component {
                                         }
                                     }
                                 >
-
                                     <Text style={{ fontSize: 20, marginBottom: 5, color: this.props.primaryColor }}>
                                         {"Are you sure ?"}
                                     </Text>
@@ -1170,10 +1106,6 @@ class TimeSheet extends Component {
                                                 todayBackgroundColor={'tomato'}
                                             />
                                         </View>
-                                        {/* <TouchableOpacity style={{ backgroundColor:'red', borderRadius:5, height:30, borderWidth: 1, margin: 5, marginRight: 5, top: 30, borderColor: 'white' }}
-                                         onPress={() => this.setState({ calenderVisible: false })}>
-                                            <Text style={{fontSize: 16, color: 'white'}}>Close</Text>
-                                        </TouchableOpacity> */}
                                     </View>
                                 </Modal>
 
@@ -1185,7 +1117,6 @@ class TimeSheet extends Component {
                                         onSwipeDown={() => this.setState({ daysVisible: false })}>
 
                                         <View style={{ backgroundColor: this.props.secColor }}>
-                                            {/* <Card  style={{}} > */}
                                             <View style={[styles.flexRow1, { backgroundColor: 'transparent', borderRadius: 10, marginStart: 8, marginEnd: 8, }]}>
 
                                                 <View style={{ width: "60%", height: '100%', margin: 2 }}>
@@ -1202,7 +1133,7 @@ class TimeSheet extends Component {
                                                     : null
                                                 }
                                             </View>
-                                            {/* </Card> */}
+
                                             <Card elevation={2} style={styles.container} >
                                                 <View style={styles.flexRow}>
                                                     <View style={this.props.index % 2 === 0 ? styles.strip1 : styles.strip2} />
@@ -1226,6 +1157,7 @@ class TimeSheet extends Component {
                                                     </View>
                                                 </View>
                                             </Card>
+
                                             <Card elevation={2} style={styles.container} >
                                                 <View style={styles.flexRow}>
                                                     <View style={2 % 2 === 0 ? styles.strip1 : styles.strip2} />
@@ -1249,6 +1181,7 @@ class TimeSheet extends Component {
                                                     </View>
                                                 </View>
                                             </Card>
+
                                             <Card elevation={2} style={styles.container} >
                                                 <View style={styles.flexRow}>
                                                     <View style={this.props.index % 2 === 0 ? styles.strip1 : styles.strip2} />
@@ -1272,6 +1205,7 @@ class TimeSheet extends Component {
                                                     </View>
                                                 </View>
                                             </Card>
+                                            
                                             <Card elevation={2} style={styles.container} >
                                                 <View style={styles.flexRow}>
                                                     <View style={2 % 2 === 0 ? styles.strip1 : styles.strip2} />
@@ -1295,6 +1229,7 @@ class TimeSheet extends Component {
                                                     </View>
                                                 </View>
                                             </Card>
+
                                             <Card elevation={2} style={styles.container} >
                                                 <View style={styles.flexRow}>
                                                     <View style={this.props.index % 2 === 0 ? styles.strip1 : styles.strip2} />
@@ -1318,6 +1253,7 @@ class TimeSheet extends Component {
                                                     </View>
                                                 </View>
                                             </Card>
+
                                             <Card elevation={2} style={styles.container} >
                                                 <View style={styles.flexRow}>
                                                     <View style={2 % 2 === 0 ? styles.strip1 : styles.strip2} />
@@ -1341,6 +1277,7 @@ class TimeSheet extends Component {
                                                     </View>
                                                 </View>
                                             </Card>
+
                                             <Card elevation={2} style={styles.container} >
                                                 <View style={styles.flexRow}>
                                                     <View style={this.props.index % 2 === 0 ? styles.strip1 : styles.strip2} />
@@ -1417,13 +1354,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(TimeSheet)
 
 const styles = StyleSheet.create({
     Container: {
-
         flex: 1,
         display: 'flex',
         top: 23.5,
         width: '100%',
         height: '100%',
-
     },
     Title: {
         fontSize: 20,
@@ -1431,9 +1366,7 @@ const styles = StyleSheet.create({
         top: 3,
         marginLeft: 10,
         justifyContent: 'center'
-        // fontWeight:'bold'
     },
-
     card: {
         padding: 9,
         borderRadius: 5,
@@ -1441,8 +1374,6 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         borderColor: '#C1C0B9',
         top: 3,
-        // height: 350,
-        // backgroundColor:'pink'
     },
 
     text: {
@@ -1451,19 +1382,15 @@ const styles = StyleSheet.create({
         fontSize: 16,
         padding: 5,
         color: 'white'
-
     },
     saveButton: {
         justifyContent: 'space-around',
         alignItems: 'center',
-        // width: "46%",
-        // bottom: 3,
         borderWidth: .3,
         margin: 5,
         borderRadius: 3,
         height: 40,
         backgroundColor: '#747474'
-        // backgroundColor: '#424543'
     },
     buttonText: {
         textAlign: 'center',
@@ -1481,7 +1408,6 @@ const styles = StyleSheet.create({
     textPopup: {
         padding: 10,
         fontSize: cardDate,
-        // margin: 5,
         marginLeft: 15,
     },
     button: {
@@ -1496,11 +1422,9 @@ const styles = StyleSheet.create({
     },
     sheetHeader: {
         padding: 10,
-        // borderWidth: .3,
         height: 75,
         width: 200,
         marginTop: 5,
-        // left: 2,
         marginBottom: 5,
     },
 

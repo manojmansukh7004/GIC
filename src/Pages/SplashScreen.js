@@ -1,6 +1,4 @@
-/* eslint-disable max-len */
-/* eslint-disable no-plusplus */
-/* eslint-disable no-unused-vars */
+
 import React, { Component } from 'react';
 import {
   StyleSheet, View, Image, Dimensions, Text, Linking, StatusBar
@@ -68,7 +66,7 @@ class SplashScreen extends Component {
   }
 
   onPressUpdate = () => {
-    Linking.openURL('https://play.google.com/store/apps/details?id=com.gic');
+    Linking.openURL('https://play.google.com/store/apps/details?id=com.gic.timesheet');
   }
 
   async componentDidMount() {
@@ -78,7 +76,7 @@ class SplashScreen extends Component {
     });
     const version = DeviceInfo.getVersion();
     console.log("version", version);
-    await storeData("baseUrl", "http://gictimesheettest.orgtix.com/webApi");
+    await storeData("baseUrl", "https://gictimesheet.orgtix.com/webApi");
     setTimeout(async () => {
       const payload = {
         "inputData":
@@ -88,7 +86,7 @@ class SplashScreen extends Component {
           "iosVersionCode": "1"
         }
       }
-      var baseUrl = "http://gictimesheettest.orgtix.com/webApi"
+      var baseUrl = "https://gictimesheet.orgtix.com/webApi"
       const response = await FetchMobileVersion(payload, baseUrl)
       console.log("mjjj",response.MobileVerion[0].Table[0].androidVersionCode);
       
@@ -102,11 +100,7 @@ class SplashScreen extends Component {
       else {
         isSignedIn()
           .then(res => {
-            console.log("rrrr",res);
-            // res =false
             if (res == true) {
-              // this.setState({ loading: false });  
-              // this.props.navigation.navigate('TimeSheet')
               this.FetchFiltetData()
             }
             else {

@@ -1,6 +1,5 @@
 
 async function FetchMobileVersion(payload, baseUrl) {
-console.log("vvvvvv",payload, baseUrl);
 
   const formBody = JSON.stringify(payload, (key, value) => {
     if (value !== null) {      

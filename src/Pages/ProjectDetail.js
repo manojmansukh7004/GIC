@@ -179,7 +179,6 @@ class TimesheetEntry extends Component {
 
                 <StatusBar translucent barStyle="light-content" backgroundColor={this.props.primaryColor} />
                 <View ref="rootView" style={[styles.Container, {}]}>
-                    {/* <View style={{ height: 50, backgroundColor: this.props.primaryColor, }}> */}
                     <View style={{ justifyContent: 'center', alignItems: 'center', width: '100%', height: 50, backgroundColor: this.props.primaryColor }} >
                         <Appbar navigation={this.props.navigation}
                             title={"Project Details"}
@@ -226,7 +225,7 @@ class TimesheetEntry extends Component {
                                             <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.workList == 0 ? 'red' : "transparent" }]}>
                                                 <View style={styles.cardMenuSpasing}>
                                                     <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>TYPE OF WORK</Text>
-                                                    <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.timesheetData.TypeOfWork == null ? "--:--": this.state.timesheetData.TypeOfWork }</Text>
+                                                    <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.timesheetData.TypeOfWork == null ? "--:--" : this.state.timesheetData.TypeOfWork}</Text>
 
                                                 </View>
                                             </Card>
@@ -249,13 +248,6 @@ class TimesheetEntry extends Component {
                                                 </View>
                                             </Card>
 
-                                            {/* <Card style={styles.cards}>
-                                                <View style={styles.cardMenuSpasing}>
-                                                    <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>WORK ORDER</Text>
-                                                    <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.timesheetData.WorkOrderName}</Text>
-
-                                                </View>
-                                            </Card> */}
                                         </View>
                                         <Card style={[styles.descCard, { borderWidth: 1, borderColor: this.state.validation == true && this.state.projectDesc == "" ? 'red' : "transparent" }]}>
                                             <View style={styles.reasonView}>
@@ -376,15 +368,15 @@ class TimesheetEntry extends Component {
                                                                         <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>APPROVER</Text>
                                                                         <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.timesheetData.Approver}</Text>
                                                                     </View>
-                                                                </Card> 
+                                                                </Card>
                                                                 :
                                                                 <Card style={styles.cards}>
-                                                                <View style={styles.cardMenuSpasing}>
-                                                                    <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>STATUS</Text>
-                                                                    <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.timesheetData.Status}</Text>
-    
-                                                                </View>
-                                                            </Card>
+                                                                    <View style={styles.cardMenuSpasing}>
+                                                                        <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>STATUS</Text>
+                                                                        <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.timesheetData.Status}</Text>
+
+                                                                    </View>
+                                                                </Card>
                                                         }
 
                                                         <Card style={styles.cards}>
@@ -399,18 +391,16 @@ class TimesheetEntry extends Component {
                                                             <View style={styles.cardMenuSpasing}>
                                                                 <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>ON TIME PERFORMANCE</Text>
                                                                 <Text style={[styles.twoCardLabel, { color: "#4D504F", }]}>{this.state.timesheetData.ApprOTPRating}</Text>
-
                                                             </View>
                                                         </Card>
                                                         {
                                                             this.state.type !== "Completed" ?
-                                                        <Card style={styles.cards}>
-                                                            <View style={styles.cardMenuSpasing}>
-                                                                <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>STATUS</Text>
-                                                                <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.timesheetData.Status}</Text>
-
-                                                            </View>
-                                                        </Card>:null 
+                                                                <Card style={styles.cards}>
+                                                                    <View style={styles.cardMenuSpasing}>
+                                                                        <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>STATUS</Text>
+                                                                        <Text style={[styles.twoCardLabel, { color: "#4D504F" }]}>{this.state.timesheetData.Status}</Text>
+                                                                    </View>
+                                                                </Card> : null
                                                         }
                                                     </View>
                                                 </> : null
@@ -432,48 +422,18 @@ class TimesheetEntry extends Component {
                                                                 multiline={true}
                                                                 editable={false}
                                                                 value={this.state.addDesc}
-                                                                // placeholder="Enter Description"
                                                                 textAlignVertical="top"
                                                                 underlineColor="white"
                                                                 keyboardType="default"
                                                                 autoFocus={false}
                                                                 style={styles.longText}
-                                                            // dense
-                                                            // onChangeText={value => this.setState({ addDesc: value, description: value })}
-                                                            // onChangeText={value => this.handleAddDescription({ value})}
-                                                            />
+                                                             />
                                                         </View>
                                                     </View>
                                                 </View>
                                             </View>
                                         </Modal>
-                                        {/* <Dialog
-                                            visible={this.state.addDescVisiblre}
-                                            style={{ backgroundColor: 'white', height: 250, width: 350 }}
-                                            onTouchOutside={() => this.setState({ addDescVisible: false })}
-
-                                        >
-                                            <View style={{ backgroundColor: 'white', height: 300, width: 400, bottom: 25, right: 25 }}>
-                                                <View style={{ height: 50, padding: 15, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
-                                                    <Text style={{ fontSize: title, color: this.props.fontColor }}>{'Additional Descriptions'}</Text>
-                                                </View>
-                                                <View style={{ justifyContent: 'center', alignItems: 'center', right: 25 }}>
-                                                    <View style={{ borderRadius: 5, borderWidth: .5, width: 300, height: 170, margin: 15 }}>
-                                                        <TextInput
-                                                            multiline={true}
-                                                            editable={false}
-                                                            value={this.state.addDesc}
-                                                            textAlignVertical="top"
-                                                            underlineColor="white"
-                                                            keyboardType="default"
-                                                            autoFocus={false}
-                                                            style={styles.longText}
-                                                        />
-                                                    </View>
-                                                </View>
-                                            </View>
-                                        </Dialog> */}
-
+                                       
                                         <Dialog
                                             visible={this.state.visible}
                                             onTouchOutside={() => this.setState({ visible: false })}
@@ -554,8 +514,7 @@ const styles = StyleSheet.create({
 
         paddingLeft: 10,
         paddingRight: 10,
-        // backgroundColor: '#F9F9F9',
-        // marginBottom: 30,
+
     },
     cards: {
         elevation: 3,
@@ -566,12 +525,10 @@ const styles = StyleSheet.create({
     cardContainer: { backgroundColor: 'white', height: 20, fontSize: 16 },
     singleCardLabel: {
         fontSize: 12,
-        // color: '#F2721C',
         paddingStart: 8
     },
     twoCardLabel: {
         fontSize: 16,
-        // color: '#F2721C',
         paddingStart: 12
     },
     pickers: { height: 20 },

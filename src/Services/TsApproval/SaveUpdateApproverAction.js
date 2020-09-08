@@ -1,5 +1,4 @@
 async function SaveUpdateApproverAction(EmpID,employeeNo,tsEntryId, ApprRating1, ApprRating2, ApproverRemarks, apprAction,status, baseUrl) {
-    console.log("SaveUpdateApproverAction",EmpID,employeeNo,tsEntryId.toString(), ApprRating1, ApprRating2, ApproverRemarks, apprAction,status,baseUrl);
     
         const payload = {
             "loginDetails":

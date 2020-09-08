@@ -61,8 +61,6 @@ class ProjectStatus extends Component {
         }
     }
 
-
-
     async componentDidMount() {
         this.getOrientation();
         Dimensions.addEventListener('change', () => {
@@ -86,7 +84,6 @@ class ProjectStatus extends Component {
                             title={"Project Status Report"}
                             filter={true}
                             sideDrawerVisible={this.sideDrawerVisible}
-                        // handleCalenderStatus={this.handleCalenderStatus}
                         />
                     </View>
 
@@ -95,12 +92,9 @@ class ProjectStatus extends Component {
                             style={{ marginBottom: 5 }}
                             showsVerticalScrollIndicator={false}>
 
-
                         </ScrollView>
                     </View>
                 </View>
-
-
             </>
 
         );

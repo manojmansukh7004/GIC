@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { StyleSheet, View, TouchableOpacity, Image, Text } from 'react-native';
 import { Title, } from 'react-native-paper';
 import ProfileAvtar from '../Pages/ProfileAvtar'
-import { Dialog, Avatar, Button } from 'material-bread';
-import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux'
 
 class AppBar extends Component {
@@ -21,15 +19,14 @@ class AppBar extends Component {
   toggleDrawer() {
     this.props.navigation.toggleDrawer()
   };
-  componentDidMount() {
 
+  componentDidMount() {
     this.setState({
       calenderVisible: this.props.calenderVisible
     })
   }
 
   render() {
-
     return (
       <View style={styles.subContiner1}>
         <View style={{ backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center', width: '15%' }}>
@@ -48,7 +45,6 @@ class AppBar extends Component {
           </View>
           <View style={{ backgroundColor: 'transparent', flexDirection: 'row', justifyContent: 'center', alignItems: "flex-end",  }}>
          
-           
             {
               this.props.calender == true ?
                 <TouchableOpacity style={{ height: 50, width: 50, justifyContent: "center", alignItems: 'center' }}
@@ -77,7 +73,6 @@ class AppBar extends Component {
   }
 }
 
-
 const mapStateToProps = state => {
   return {
     user: state.user,
@@ -85,41 +80,24 @@ const mapStateToProps = state => {
 
   }
 }
-export default connect(mapStateToProps)(AppBar)
 
+export default connect(mapStateToProps)(AppBar)
 const styles = StyleSheet.create({
   Container: {
-
     flex: 1,
     width: '100%',
     height: '100%',
-    // backgroundColor: "white"
-
   },
   Title: {
     fontSize: 18,
-    // margin: 5,
-    // top: 3,
-    // marginLeft: 10,
     justifyContent: 'center',
     color: 'white'
-    // fontWeight:'bold'
   },
   subContiner1: {
     flexDirection: 'row',
     height: '100%',
     justifyContent: 'center',
     alignContent: 'center',
-    // height: '100%',
-    // borderWidth: 0.2,
-    // borderColor: '#C1C0B9',
-    // borderRadius: 5,
-    // marginLeft: 5,
-    // marginRight: 5,
-    // marginBottom: 5,
-    // top: 3,
-    // justifyContent: 'space-between',
-    // backgroundColor: "pink"
   },
   img: {
     width: 25,

@@ -119,10 +119,6 @@ class TimeSheet extends Component {
     createTimesheet = async () => {
         var data = await CreateNewTimesheet(this.props.user, this.state.selectedDate, this.props.baseUrl)
         if (data != null && data != "") {
-            // if (data.ErrMsg != null && data.ErrMsg != "") {
-            //     alert(data.ErrMsg);
-            // }
-            // else 
             if (data.SuccessList != undefined || data.ErrorList != undefined || data.ExceptionList != undefined) {
 
                 if (data.SuccessList != undefined) {
@@ -137,10 +133,7 @@ class TimeSheet extends Component {
         }
     }
 
-
-
     handleAddDescription = () => {
-
         let addDescField = this.state.addDescField
         let index = this.state.addDescIndex
         let value = this.state.addDesc
@@ -309,8 +302,7 @@ class TimeSheet extends Component {
     }
 
     submitTimesheetEntry = async () => {
-        // console.log("submit",this.state.headerData);
-        // var timesheeData =
+      
         var timesheetData = [];
         var errMinCnt = 0;
         var errMaxCnt = 0;
@@ -990,31 +982,7 @@ class TimeSheet extends Component {
                                     </View>
                                 </Modal>
 
-                                {/* <Dialog
-                                    visible={this.state.addDescVisiblee}
-                                    style={{ backgroundColor: 'white', height: 250, width: 350 }}
-                                    onTouchOutside={() => this.setState({ addDescVisible: false }, () => { this.handleAddDescription() })}
-
-                                >
-                                    <View style={{ backgroundColor: '#FFFF', height: 250, width: 350, bottom: 25, right: 25, }}>
-                                        <View style={{ height: 50, padding: 15, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
-                                            <Text style={{ fontSize: title, color: this.props.fontColor }}>{'Additional Description'}</Text>
-                                        </View>
-                                        <View style={{ justifyContent: 'center', alignItems: 'center', }}>
-                                            <View style={{ borderRadius: 5, borderWidth: .5, width: 300, height: 170, margin: 15, backgroundColor: this.state.descEdit == true ? "white" : "#E9ECEF" }}>
-                                                {this.state.descEdit == true ?
-                                                    <TextInput
-                                                        multiline={true}
-                                                        value={this.state.addDesc}
-                                                        onChangeText={value => this.setState({ addDesc: value })}
-                                                    // onChangeText={value => this.handleAddDescription({ value})}
-                                                    /> : null
-                                                }
-                                            </View>
-                                        </View>
-                                    </View>
-                                </Dialog> */}
-
+                               
                                 <Dialog
                                     visible={this.state.timeVisible}
                                     onTouchOutside={() =>
@@ -1109,62 +1077,6 @@ class TimeSheet extends Component {
                                     </View>
                                 </Modal>
 
-                                {/* <Dialog
-                                    visible={this.state.weekVisible1}
-                                    style={{ backgroundColor: 'white', width: 250 }}
-                                    onTouchOutside={() => this.setState({ weekVisible: false }, () => { })}
-
-                                >
-                                    <View style={{ backgroundColor: 'white', width: 250, height: 300, bottom: 25, right: 25 }}>
-                                        <View style={{ height: 50, padding: 15, marginBottom: 8, backgroundColor: this.props.primaryColor }}>
-                                            <Text style={{ fontSize: title, color: this.props.fontColor }}>{'Select Week'}</Text>
-                                        </View>
-                                        <View style={{ justifyContent: 'flex-start', alignItems: 'flex-start', height: 275 }}>
-                                            <View style={{ borderRadius: 5, width: 250, }}>
-                                                {
-                                                    this.state.timesheetList.length == 0 ?
-                                                        <View style={{ width: '100%', }}>
-                                                            <Text style={styles.textPopup}>
-                                                                {"No Data Available"}
-                                                            </Text>
-                                                            <Divider />
-                                                        </View>
-                                                        :
-                                                        <FlatList
-                                                            data={Object.keys(this.state.timesheetList)}
-                                                            renderItem={({ item, index }) => (
-
-                                                                <TouchableOpacity onPress={() => {
-                                                                    this.setState({ selectedWeek: this.state.timesheetList[item], timesheetId: this.state.timesheetList[item].Value, weekVisible: false, timesheetVisible: true },
-                                                                        () => {
-                                                                            this.props.ts_Id(this.state.timesheetList[item].Value)
-                                                                            firstDate1 = moment(new Date(this.state.selectedWeek.Text.slice(0, 10).split('-').reverse().join('/'))).format("DD MMM"),
-                                                                                lastDate1 = moment(new Date(this.state.selectedWeek.Text.slice(14, 24).split('-').reverse().join('/'))).format("DD MMM YYYY"),
-                                                                                this.empWeeklyTimesheetData()
-                                                                        })
-                                                                }}
-                                                                    style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 15 }}>
-                                                                    <View style={{ width: '100%', }}>
-
-                                                                        {
-                                                                            firstDate = moment(new Date(this.state.timesheetList[item].Text.slice(0, 10).split('-').reverse().join('/'))).format("DD MMM"),
-                                                                            lastDate = moment(new Date(this.state.timesheetList[item].Text.slice(14, 24).split('-').reverse().join('/'))).format("DD MMM YYYY"),
-                                                                            console.log(" ")
-                                                                        }
-                                                                        <Text style={styles.textPopup}>
-
-                                                                            {firstDate.toUpperCase() + " - " + lastDate.toUpperCase()}
-                                                                        </Text>
-                                                                        <Divider />
-                                                                    </View>
-                                                                </TouchableOpacity>)}
-                                                        />
-                                                }
-                                            </View>
-                                        </View>
-                                    </View>
-                                </Dialog> */}
-
                                 <View style={{ flex: 1 }}>
                                     <SheetBottom
                                         visible={this.state.calenderVisible}
@@ -1246,7 +1158,6 @@ const styles = StyleSheet.create({
         top: 3,
         marginLeft: 10,
         justifyContent: 'center'
-        // fontWeight:'bold'
     },
 
     card: {
@@ -1256,8 +1167,6 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         borderColor: '#C1C0B9',
         top: 3,
-        // height: 350,
-        // backgroundColor:'pink'
     },
 
     text: {
@@ -1277,7 +1186,6 @@ const styles = StyleSheet.create({
         margin: 5,
         borderRadius: 3,
         backgroundColor: '#747474'
-        // backgroundColor: '#424543'
     },
     buttonText: {
         textAlign: 'center',
@@ -1310,11 +1218,9 @@ const styles = StyleSheet.create({
     },
     sheetHeader: {
         padding: 10,
-        // borderWidth: .3,
         height: 75,
         width: 200,
         marginTop: 5,
-        // left: 2,
         marginBottom: 5,
     },
     sheetData1: {
@@ -1325,21 +1231,12 @@ const styles = StyleSheet.create({
         width: 200,
         marginTop: 5,
         marginBottom: 5,
-        // bottom: 10,
-        // borderWidth: .3,
-        // justifyContent: 'center',
-        // alignItems: 'center'
     },
     rejected: {
         marginRight: 10,
         height: 80,
         width: 2,
-        // marginTop: 5,
-        // marginBottom: 5,
         bottom: 10
-        // borderWidth: .3,
-        // justifyContent: 'center',
-        // alignItems: 'center'
     },
 
     sheetData: {
@@ -1348,11 +1245,8 @@ const styles = StyleSheet.create({
         width: 75,
         marginTop: 5,
         marginBottom: 5,
-        // borderWidth: .3,
         justifyContent: 'center',
         alignItems: 'center',
-        // right: 4,
-        // backgroundColor:'red'
     },
     approver: {
         padding: 10,
@@ -1360,11 +1254,8 @@ const styles = StyleSheet.create({
         width: 110,
         marginTop: 5,
         marginBottom: 5,
-        // borderWidth: .3,
         justifyContent: 'center',
         alignItems: 'center',
-        // right: 4,
-        // backgroundColor:'#FFFF'
     },
     OTP: {
         padding: 10,
@@ -1372,11 +1263,8 @@ const styles = StyleSheet.create({
         width: 125,
         marginTop: 5,
         marginBottom: 5,
-        // borderWidth: .3,
         justifyContent: 'center',
         alignItems: 'center',
-        // right: 4,
-        // backgroundColor:'red'
     },
     hrsData: {
         padding: 10,
@@ -1386,19 +1274,15 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 10,
-        // backgroundColor: 'red'
-
     },
     hrsData1: {
         padding: 10,
         borderWidth: .3,
         borderRadius: 3,
-        // width: 60,
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 10,
         backgroundColor: '#FFFF'
-
     },
     picker: {
         height: 200,

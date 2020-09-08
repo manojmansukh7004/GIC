@@ -1,7 +1,7 @@
 # OSX
 #
-.DS_Store
-
+*.nc
+*.DS_store
 # Xcode
 #
 build/
@@ -28,7 +28,7 @@ build/
 .gradle
 local.properties
 *.iml
-
+*.hprof
 # node.js
 #
 node_modules/

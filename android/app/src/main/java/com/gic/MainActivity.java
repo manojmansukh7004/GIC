@@ -1,4 +1,4 @@
-package com.gic;
+package com.gic.timesheet;
 
 import com.facebook.react.ReactActivity;
 

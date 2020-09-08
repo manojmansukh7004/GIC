@@ -36,7 +36,7 @@ class Login extends Component {
       this.setState({ baseUrl: value })
     })
     const fcmToken = await firebase.messaging().getToken();
-    console.log("fcmTofffffffffffffffffffffffffken,",fcmToken);
+    console.log("fcmToken,",fcmToken);
   }
 
   loginValidation() {
@@ -84,22 +84,16 @@ class Login extends Component {
 
         this.props.userData(data.EmployeeDetails[0][0].UserID)
         onSignIn()
-        // this.props.navigation.navigate('TimeSheet')
         if (data.EmployeeDetails[0][0].RedirectPage == "") {
           alert("Unauthorised Access!!!");
           this.props.navigation.navigate('Login')
 
         }
         else {
-          // if (data.EmployeeDetails[0][0].IsFirstLogin == "True" && data.EmployeeDetails[0][0].AllowForcePwdChange == "True") {
-          //     location.href = "change-password.html";
-          // } else {
-          console.log("loginnnnn");
           await storeData("UserId", data.EmployeeDetails[0][0].UserID)
           await storeData("UserName", data.EmployeeDetails[0][0].LoginEmpName)
           await storeData("UserRole", data.EmployeeDetails[0][0].LoginEmpRole)
           this.props.navigation.navigate('SplashScreen')
-          // }
         }
       }
     }
@@ -107,10 +101,8 @@ class Login extends Component {
     else {
       var error = data.responseText;
       alert(error);
-      //messageList(error);
     }
-    //  
-    // });
+  
   }
 
   togglePasswordVisibility = () => {
@@ -119,22 +111,18 @@ class Login extends Component {
     }));
   }
 
-
   render() {
     return (
-      // <ImageBackground style={styles.image}source={require('../Assets/bg.jpg')}>
 
       <KeyboardAwareScrollView
         enableOnAndroid
         keyboardShouldPersistTaps="handled"
-        // style={{ flex: 1, }}
         contentContainerStyle={styles.container}
       >
         <StatusBar translucent barStyle="dark-content" backgroundColor="#e7ebee" />
 
 
         <Image style={styles.imgTop} source={require('../Assets/logo.jpg')} />
-        {/* <Text style={styles.textWelcome}>Welcome</Text> */}
         <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginTop: 30, }}>
           <View ><Text style={{ color: '#4285F4', fontSize: 40, fontWeight: 'bold', }}>S</Text></View>
           <View><Text style={{ color: '#DB4437', fontSize: 40, fontWeight: 'bold' }}>i</Text></View>
@@ -144,10 +132,8 @@ class Login extends Component {
           <View ><Text style={{ color: '#0F9D58', fontSize: 40, fontWeight: 'bold' }}>i</Text></View>
           <View ><Text style={{ color: '#DB4437', fontSize: 40, fontWeight: 'bold', }}>n</Text></View>
         </View>
-        {/* <View ><Text style={{ color: 'black', fontSize: 40,  marginTop: 30, }}>Sign in</Text></View> */}
 
         {
-
           <View style={{width: '100%', alignItems: 'center', marginTop: 20}}>
             <TextInput
               ref={(input) => { this.userName = input; }}
@@ -187,7 +173,6 @@ class Login extends Component {
 
             <Button
               uppercase={false}
-              // color={'#297AF9'}
               onPress={() => this.props.navigation.navigate('ForgotPassword')}
             >
               Forgot Password?
@@ -195,8 +180,6 @@ class Login extends Component {
 
             <Button
               color={'#727376'}
-              // loading={this.state.reqesting}
-              // disabled={this.state.reqesting}
               contentStyle={{ height: 45 }}
               style={styles.button}
               labelStyle={{ color: 'white', fontSize: 18, textAlign: 'center' }}
@@ -215,20 +198,13 @@ class Login extends Component {
               Powered by Circular Angle
               </Button>
               </View>
-
-           
             {
               this.state.loading == true ? <ActivityIndicator size={40} animating={true} color={Colors.blue800} style={{ top: 25 }} /> : null
             }
-
-
           </View>
 
         }
-
-        {/* <Image style={styles.imgBottom} source={require('../Assets/login_bg.png')} /> */}
       </KeyboardAwareScrollView>
-      // </ImageBackground>
     );
   }
 }
@@ -274,7 +250,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 50,
     marginBottom: 50,
-    // color: Colors.blackText,
   },
   textInput: {
     width: '100%',

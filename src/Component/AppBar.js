@@ -25,11 +25,7 @@ class AppBar extends Component {
   render() {
 
     return (
-      // <View style={{ height: "100%",top:"3%", backgroundColor: this.props.primaryColor, borderWidth: 1, borderColor: 'red' }}>
-      //   <Text>{this.props.title}</Text>
-      //   <Text>mj</Text>
-
-      // </View>
+ 
       <View style={styles.subContiner1}>
 
         <View style={{ flexDirection: 'row', width: "75%",height:'100%',}}>
@@ -116,7 +112,6 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
-    // backgroundColor: "white"
 
   },
   Title: {
@@ -133,15 +128,6 @@ const styles = StyleSheet.create({
     flex:1,
     flexDirection: 'row',
     height: "100%",
-    // borderWidth: 0.2,
-    // borderColor: '#C1C0B9',
-    // borderRadius: 5,
-    // marginLeft: 5,
-    // marginRight: 5,
-    // marginBottom: 5,
-    // top: 3,
-    // justifyContent: 'space-between',
-    // backgroundColor: "red"
   },
   img: {
     width: 25,

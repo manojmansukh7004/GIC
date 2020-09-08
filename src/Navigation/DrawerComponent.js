@@ -136,32 +136,6 @@ class DrawerComponent extends Component {
                         <Text style={[styles.text, { color: this.state.key === 2 ? 'black' : 'black' }]}>TimeSheet Approval</Text>
                     </TouchableOpacity>
 
-                    {/* <Divider style={{ borderWidth: .3, borderColor: 'grey', backgroundColor: 'grey' }} /> */}
-
-                    {/* <View style={styles.drawer}>
-                        <Text style={styles.Title}>REPORTS</Text>
-                    </View>
-
-                    <TouchableOpacity
-                        style={styles.title}
-                        onPress={() => this.setState({ key: 4 }, () => {navigation.navigate("ProjectStatus",{"Loading": true})})}
-                    >
-                        <View style={{ marginRight: 10, marginLeft: 20 }}>
-                            <Image style={{ height: 23, width: 23 }} source={require("../Assets/darkCalendar.png")} />
-                        </View>
-                        <Text style={[styles.text, { color: this.state.key === 4 ? 'blue' : 'black' }]}>Project Status</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.strip}
-                        onPress={() => this.setState({ key: 5 }, () => {navigation.navigate("Help")})}
-                    >
-                        <View style={{ marginRight: 10, marginLeft: 20 }}>
-                            <Image style={{ height: 23, width: 23 }} source={require("../Assets/question.png")} />
-                        </View>
-                        <Text style={[styles.text, { color: this.state.key === 5 ? 'blue' : 'black' }]}>Employee Timesheet Status</Text>
-                    </TouchableOpacity> */}
-
-
                     <TouchableOpacity style={styles.strip}
                         onPress={() => this.setState({ key: 3 }, () => {navigation.navigate("Help")})}
                     >
@@ -171,8 +145,6 @@ class DrawerComponent extends Component {
                         <Text style={[styles.text, { color: this.state.key === 3 ? 'black' : 'black' }]}>{"User Guide"}</Text>
                     </TouchableOpacity>
                     <Divider style={{ borderWidth: .3, borderColor: 'grey', backgroundColor: 'grey' }} />
-
-                   
                     </View>
                     </ScrollView>
                 </View>
@@ -193,38 +165,16 @@ const mapStateToProps = state => {
 
 // const mapDispatchToProps = dispatch => {
 //     return {
-//         setCountry: (country) => dispatch(setCountry(country)),
-//         setCompany: (company) => dispatch(setCompany(company)),
-//         setDivision: (division) => dispatch(setDivision(division)),
-//         setSeason: (season) => dispatch(setSeason(season)),
-//         setZone: (zone) => dispatch(setZone(zone)),
-//         setRegion: (region) => dispatch(setRegion(region)),
-//         setRbm: (rbm) => dispatch(setRbm(rbm)),
-//         setterritory: (territory) => dispatch(setterritory(territory)),
-//         setTbm: (tbm) => dispatch(setTbm(tbm)),
-//         setCustomer: (customer) => dispatch(setCustomer(customer)),
-//         setPlc: (plc) => dispatch(setPlc(plc)),
-//         setCropType: (cropType) => dispatch(setCropType(cropType)),
-//         setCrop: (crop) => dispatch(setCrop(crop)),
-//         setProduct: (product) => dispatch(setProduct(product)),
-//         setPlant: (plant) => dispatch(setPlant(plant)),
-//         setSyear: (sYear) => dispatch(setSyear(sYear)),
-//         setCenter: (center) => dispatch(setCenter(center)),
-//         setTeamMember: (teamMember) => setTeamMember(setPlant(teamMember)),
-//         setTfa: (tfa) => dispatch(setTfa(tfa)),
-//         setOrganizer: (organiser) => dispatch(setOrganiser(organiser)),
-//         setGrower: (grower) => dispatch(setGrower(grower)),
-
 
 //     }
 // }
+
 export default connect(mapStateToProps)(DrawerComponent)
 const styles = StyleSheet.create({
     Title: {
         fontSize: 14,
         marginLeft: 15,
         color: 'grey'
-        // fontWeight: 'bold',
     },
     title: {
         flexDirection: 'row',
@@ -237,19 +187,14 @@ const styles = StyleSheet.create({
         fontSize: 16,
         margin: 5,
         marginLeft: 15,
-        // fontWeight: 'bold',
-
     },
     icon: {
         width: 24,
         height: 24,
-        // margin: 5
     },
     sideMenuContainer: {
         width: '100%',
         height: '100%',
-        // backgroundColor: '#fff',
-        // alignItems: 'flex-start',
         marginTop: 20,
     },
     sideMenuProfileIcon: {

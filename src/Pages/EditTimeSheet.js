@@ -172,8 +172,6 @@ class TimesheetEntry extends Component {
 
     insertUpdateTimesheetEntry = async () => {
         var timesheetData = []
-
-        // timesheetId = this.state.timesheetId
         clientCode = this.state.client
         projectCode = this.state.project
         typeofWorkId = this.state.typeOfWorkId
@@ -182,7 +180,6 @@ class TimesheetEntry extends Component {
         workOrderId = this.state.workOrder == 0 ? "" : this.state.workOrder
         taskDesc = this.state.projectDesc
         status = "Saved"
-        // autoId = null
 
         for (var dayField = 1; dayField <= 7; dayField++) {
             if (dayField == 1) {
@@ -260,7 +257,6 @@ class TimesheetEntry extends Component {
                 showToast(data.Message);
             }
             if (data.SuccessList != undefined || data.ErrorList != undefined || data.ExceptionList != undefined) {
-                // validationRemove();
                 if (data.SuccessList != undefined) {
                     showToast("Timesheet data Saved.");
                     this.props.navigation.navigate("TimeSheet", { "Loading": false })
@@ -295,7 +291,6 @@ class TimesheetEntry extends Component {
     }
 
     handleDataOnPhaseChange = async () => {
-        console.log("phase change", this.state.phase);
 
         if (this.state.phase !== null) {
             var phaseChange = await GetDataOnPhaseChange(this.props.user, this.state.timesheetId, this.state.project, this.state.phase == null ? "" : this.state.phase, this.props.baseUrl)
@@ -326,8 +321,6 @@ class TimesheetEntry extends Component {
             this.getOrientation();
         });
         var dropdownData = await getTsEntryDropdownData(this.props.user, this.props.baseUrl)
-        // console.log(dropdownData.ProjectGrpList[0]);
-
         this.setState({
             clientList: dropdownData.ClientList[0],
             typeOfWorkList: dropdownData.TypeOfWorkList[0],
@@ -376,8 +369,6 @@ class TimesheetEntry extends Component {
 
             }, () => {
                 if (this.state.edit == true) {
-                    // console.log("eeeeeeeeeee", this.state.projectGrpList);
-
                     this.editTimesheet()
                 }
             });
@@ -464,11 +455,8 @@ class TimesheetEntry extends Component {
 
 
     render() {
-        // console.log("projectGroup", this.state.projectGroup);
-
         return (
             <>
-
                 <StatusBar translucent barStyle="light-content" backgroundColor='#297AF9' />
                 <View ref="rootView" style={[styles.Container, {}]}>
                     <View style={{ justifyContent: 'center', alignItems: 'center', height: 50, backgroundColor: this.props.primaryColor }}>
@@ -512,14 +500,9 @@ class TimesheetEntry extends Component {
                                     <TouchableOpacity onPress={() => this.setState({ title: "Type Of Work", fieldVisible: true, field: 3, data: this.state.typeOfWorkList })}
                                         style={styles.cardMenuSpasing}>
                                         <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>TYPE OF WORK</Text>
-                                        {
-                                            console.log("this.state.typeOfWork",this.state.typeOfWork)
-                                            
-                                        }
                                         <Text numberOfLines={1} style={[styles.twoCardLabel1, { color: "#4D504F" }]}>{this.state.typeOfWork == '' || this.state.typeOfWork == null? "--select--" : this.state.typeOfWork}</Text>
                                     </TouchableOpacity>
                                 </Card>
-
 
                             </View>
                             <View style={styles.horizontalContainer}>
@@ -690,49 +673,6 @@ class TimesheetEntry extends Component {
                                 </View>
                             </Modal>
 
-                            {/* <Dialog
-                                visible={this.state.fieldVisible1}
-                                style={{ backgroundColor: 'white', width: 350 }}
-                                onTouchOutside={() => this.setState({ fieldVisible: false }, () => { })}
-
-                            >
-                                <View style={{ backgroundColor: 'white', height: 300, bottom: 25, right: 25, width: 350 }}>
-                                    <View style={{ height: 50, padding: 15, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
-                                        <Text style={{ fontSize: title, color: this.props.fontColor }}>{this.state.title}</Text>
-                                    </View>
-                                    <View style={{ justifyContent: 'flex-start', alignItems: 'flex-start', top: 15 }}>
-                                        <View style={{ borderRadius: 5, height: 275, }}>
-                                            {
-                                                this.state.data.length == 0 ?
-                                                    <View style={{ width: '100%', }}>
-                                                        <Text style={styles.textPopup}>
-                                                            {"No Data Available"}
-                                                        </Text>
-                                                        <Divider />
-                                                    </View>
-                                                    :
-                                                    <FlatList
-                                                        data={Object.keys(this.state.data)}
-                                                        renderItem={({ item, index }) => (
-
-                                                            <TouchableOpacity onPress={() => {
-                                                                this.handleSelectedData(this.state.data[item], index)
-                                                            }}
-                                                                style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 15 }}>
-                                                                <View style={{ width: '100%', }}>
-                                                                    <Text style={styles.textPopup}>
-                                                                        {this.state.data[item].Text}
-                                                                    </Text>
-                                                                    <Divider />
-                                                                </View>
-                                                            </TouchableOpacity>)}
-                                                    />
-                                            }
-                                        </View>
-                                    </View>
-                                </View>
-                            </Dialog> */}
-
                             <Modal isVisible={this.state.addDescVisible}>
                                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                                     <View style={{ backgroundColor: 'white', borderRadius: 5, width: 350, height: 250 }}>
@@ -757,43 +697,12 @@ class TimesheetEntry extends Component {
                                                     // maxLength={500}
                                                     dense
                                                     onChangeText={value => this.setState({ addDesc: value, description: value })}
-                                                // onChangeText={value => this.handleAddDescription({ value})}
                                                 />
                                             </View>
                                         </View>
                                     </View>
                                 </View>
                             </Modal>
-
-                            {/* <Dialog
-                                visible={this.state.addDescVisible1}
-                                style={{ backgroundColor: 'white', height: 250, width: 350 }}
-                                onTouchOutside={() => this.setState({ addDescVisible: false }, () => { this.handleDescription() })}
-
-                            >
-                                <View style={{ backgroundColor: 'white', height: 300, width: 400, bottom: 25, right: 25 }}>
-                                    <View style={{ height: 50, padding: 15, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
-                                        <Text style={{ fontSize: title, color: this.props.fontColor }}>{'Additional Description'}</Text>
-                                    </View>
-                                    <View style={{ justifyContent: 'center', alignItems: 'center', right: 25 }}>
-                                        <View style={{ borderRadius: 5, borderWidth: .5, width: 300, height: 170, margin: 15 }}>
-                                            <TextInput
-                                                multiline={true}
-                                                value={this.state.addDesc}
-                                                placeholder="Enter Description"
-                                                textAlignVertical="top"
-                                                underlineColor="white"
-                                                keyboardType="default"
-                                                autoFocus={false}
-                                                // maxLength={500}
-                                                dense
-                                                onChangeText={value => this.setState({ addDesc: value, description: value })}
-                                            // onChangeText={value => this.handleAddDescription({ value})}
-                                            />
-                                        </View>
-                                    </View>
-                                </View>
-                            </Dialog> */}
 
                             <Dialog
                                 visible={this.state.timeVisible}
@@ -852,19 +761,14 @@ const mapStateToProps = state => {
 export default connect(mapStateToProps)(TimesheetEntry)
 const styles = StyleSheet.create({
     Container: {
-
         flex: 1,
-        // display: 'flex',
         top: 23.5,
         width: '100%',
         height: '100%',
-
     },
     container: {
         paddingLeft: 10,
         paddingRight: 10,
-        // backgroundColor: '#F9F9F9',
-        // marginBottom: 20,
     },
     cards: {
         elevation: 3,
@@ -876,13 +780,11 @@ const styles = StyleSheet.create({
     cardContainer: { backgroundColor: 'white', height: 20, fontSize: 16 },
     singleCardLabel: {
         fontSize: 14,
-        // color: '#F2721C',
         paddingStart: 8
     },
 
     twoCardLabel1: {
         fontSize: 16,
-        // color: '#F2721C',
         paddingStart: 12
     },
     pickers: { height: 20 },
@@ -905,7 +807,6 @@ const styles = StyleSheet.create({
         elevation: 3,
         borderRadius: 5,
         marginTop: 10,
-
     },
     longText: { backgroundColor: 'white', color: "#4D504F", fontSize: 16, marginEnd: 10, padding: 10 },
     reasonView: { paddingStart: 15, padding: 10, },

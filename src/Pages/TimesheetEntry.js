@@ -317,14 +317,10 @@ class TimesheetEntry extends Component {
         });
     }
 
-
-
     render() {
-        // console.log("clientclientclient", this.state.timesheetID);
 
         return (
             <View>
-
                 <StatusBar translucent barStyle="light-content" backgroundColor='#297AF9' />
                 <View style={{ height: "100%", width: '100%', top: '3%' }}>
                     <View style={{ height: '7%', backgroundColor: this.props.primaryColor, }}>
@@ -345,12 +341,10 @@ class TimesheetEntry extends Component {
                                             mode="dropdown"
                                             selectedValue={this.state.client}
                                             style={styles.pickers}
-                                            // enabled={this.item.AttStatus !== 'MissingPunches'}
                                             onValueChange={(itemValue, ) => this.setState({ client: itemValue }, () => {
                                                 this.handleDataOnClientChange()
                                             })}
                                         >
-
                                             <Picker.Item label="--Select--" value="0" />
                                             {this.state.clientList.map((item, index) => {
                                                 return (<Picker.Item label={item.Text} value={item.Value} key={index} />)
@@ -366,7 +360,6 @@ class TimesheetEntry extends Component {
                                             mode="dropdown"
                                             selectedValue={this.state.project}
                                             style={styles.pickers}
-                                            // enabled={this.item.AttStatus !== 'MissingPunches'}
                                             onValueChange={(itemValue) => this.setState({ project: itemValue }, () => { this.handleDataOnProjectChange() })}
                                         >
                                             <Picker.Item label="--Select--" value="0" />
@@ -377,6 +370,7 @@ class TimesheetEntry extends Component {
                                     </View>
                                 </Card>
                             </View>
+
                             <View style={styles.horizontalContainer}>
                                 <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.typeOfWorkId == 0 ? 'red' : "transparent" }]}>
                                     <View style={styles.cardMenuSpasing}>
@@ -385,7 +379,6 @@ class TimesheetEntry extends Component {
                                             mode="dropdown"
                                             selectedValue={this.state.typeOfWorkId}
                                             style={styles.pickers}
-                                            // enabled={this.item.AttStatus !== 'MissingPunches'}
                                             onValueChange={(itemValue) => this.setState({ typeOfWorkId: itemValue })}
                                         >
                                             <Picker.Item label="--Select--" value="0" />
@@ -403,7 +396,6 @@ class TimesheetEntry extends Component {
                                             mode="dropdown"
                                             selectedValue={this.state.phase == undefined ? "" : this.state.phase}
                                             style={styles.pickers}
-                                            // enabled={this.item.AttStatus !== 'MissingPunches'}
                                             onValueChange={(itemValue) => this.setState({ phase: itemValue }, () => { this.handleDataOnPhaseChange() })}
                                         >
                                             <Picker.Item label="--Select--" value="0" />
@@ -414,6 +406,7 @@ class TimesheetEntry extends Component {
                                     </View>
                                 </Card>
                             </View>
+
                             <View style={styles.horizontalContainer}>
                                 <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.activity == 0 ? 'red' : "transparent" }]}>
                                     <View style={styles.cardMenuSpasing}>
@@ -423,7 +416,6 @@ class TimesheetEntry extends Component {
                                             mode="dropdown"
                                             selectedValue={this.state.activity}
                                             style={styles.pickers}
-                                            // enabled={this.item.AttStatus !== 'MissingPunches'}
                                             onValueChange={(itemValue) => this.setState({ activity: itemValue })}
                                         >
                                             <Picker.Item label="--Select--" value="0" />
@@ -431,27 +423,9 @@ class TimesheetEntry extends Component {
                                                 return (<Picker.Item label={item.Text} value={item.Value} key={index} />)
                                             })}
                                         </Picker>
-
                                     </View>
                                 </Card>
 
-                                {/* <Card style={styles.cards}>
-                                    <View style={styles.cardMenuSpasing}>
-                                        <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>WORK ORDER</Text>
-                                        <Picker
-                                            mode="dropdown"
-                                            selectedValue={this.state.workOrder}
-                                            style={styles.pickers}
-                                            // enabled={this.item.AttStatus !== 'MissingPunches'}
-                                            onValueChange={(itemValue) => this.setState({ workOrder: itemValue })}
-                                        >
-                                            <Picker.Item label="--Select--" value="0" />
-                                            {this.state.workOrderList.map((item, index) => {
-                                                return (<Picker.Item label={item.Text} value={index} key={index} />)
-                                            })}
-                                        </Picker>
-                                    </View>
-                                </Card> */}
                             </View>
                             <Card style={[styles.descCard, { borderWidth: 1, borderColor: this.state.validation == true && this.state.projectDesc == "" ? 'red' : "transparent" }]}>
                                 <View style={styles.reasonView}>
@@ -475,6 +449,7 @@ class TimesheetEntry extends Component {
                                     />
                                 </View>
                             </Card>
+
                             <Card style={styles.descCard}>
                                 <ScrollView horizontal={true}>
                                     <View style={styles.timeView}>
@@ -489,6 +464,7 @@ class TimesheetEntry extends Component {
                                                 <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
                                             </TouchableOpacity>
                                         </View>
+
                                         <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
                                             <Text style={{ color: this.props.primaryColor }}>{this.state.lblTue1}</Text>
                                             <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotTue1}</Text>
@@ -500,6 +476,7 @@ class TimesheetEntry extends Component {
                                                 <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
                                             </TouchableOpacity>
                                         </View>
+
                                         <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
                                             <Text style={{ color: this.props.primaryColor }}>{this.state.lblWed1}</Text>
                                             <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotWed1}</Text>
@@ -511,6 +488,7 @@ class TimesheetEntry extends Component {
                                                 <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
                                             </TouchableOpacity>
                                         </View>
+
                                         <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
                                             <Text style={{ color: this.props.primaryColor }}>{this.state.lblThu1}</Text>
                                             <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotThu1}</Text>
@@ -522,6 +500,7 @@ class TimesheetEntry extends Component {
                                                 <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
                                             </TouchableOpacity>
                                         </View>
+
                                         <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
                                             <Text style={{ color: this.props.primaryColor }}>{this.state.lblFri1}</Text>
                                             <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotFri1}</Text>
@@ -533,6 +512,7 @@ class TimesheetEntry extends Component {
                                                 <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
                                             </TouchableOpacity>
                                         </View>
+
                                         <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
                                             <Text style={{ color: this.props.primaryColor }}>{this.state.lblSat1}</Text>
                                             <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotSat1}</Text>
@@ -544,6 +524,7 @@ class TimesheetEntry extends Component {
                                                 <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
                                             </TouchableOpacity>
                                         </View>
+
                                         <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
                                             <Text style={{ color: this.props.primaryColor }}>{this.state.lblSun1}</Text>
                                             <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotSun1}</Text>
@@ -591,36 +572,6 @@ class TimesheetEntry extends Component {
                                 </View>
                             </Modal>
 
-                            {/* <Dialog
-                                visible={this.state.addDescVisiblee}
-                                style={{ backgroundColor: 'white', height: 250, width: 350 }}
-                                onTouchOutside={() => this.setState({ addDescVisible: false }, () => { this.handleDescription() })}
-
-                            >
-                                <View style={{ backgroundColor: 'white', height: 300, width: 400, bottom: 25, right: 25 }}>
-                                    <View style={{ height: 50, padding: 15, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
-                                        <Text style={{ fontSize: title, color: this.props.fontColor }}>{'Additional Description'}</Text>
-                                    </View>
-                                    <View style={{ justifyContent: 'center', alignItems: 'center', right: 25 }}>
-                                        <View style={{ borderRadius: 5, borderWidth: .5, width: 300, height: 170, margin: 15 }}>
-                                            <TextInput
-                                                multiline={true}
-                                                value={this.state.addDesc}
-                                                placeholder="Enter Description"
-                                                textAlignVertical="top"
-                                                underlineColor="white"
-                                                keyboardType="default"
-                                                autoFocus={false}
-                                                // maxLength={500}
-                                                dense
-                                                onChangeText={value => this.setState({ addDesc: value, description: value })}
-                                            // onChangeText={value => this.handleAddDescription({ value})}
-                                            />
-                                        </View>
-                                    </View>
-                                </View>
-                            </Dialog> */}
-
                             <Dialog
                                 visible={this.state.timeVisible}
                                 onTouchOutside={() =>
@@ -655,10 +606,7 @@ class TimesheetEntry extends Component {
                             </Dialog>
                         </KeyboardAwareScrollView>
                     </View>
-
                 </View>
-
-
             </View>
         )
     }
@@ -697,12 +645,10 @@ const styles = StyleSheet.create({
     cardContainer: { backgroundColor: 'white', height: 20, fontSize: 16 },
     singleCardLabel: {
         fontSize: 14,
-        // color: '#F2721C',
         paddingStart: 8
     },
     twoCardLabel: {
         fontSize: 14,
-        // color: '#F2721C',
         paddingStart: 12
     },
     pickers: { height: 20 },
@@ -731,15 +677,11 @@ const styles = StyleSheet.create({
     timeView: { padding: 10, flexDirection: 'row' },
     sheetData: {
         padding: 10,
-        // height: 70,
         width: 85,
         marginTop: 5,
         marginBottom: 5,
-        // borderWidth: .3,
         justifyContent: 'center',
         alignItems: 'center',
-        // right: 4,
-        // backgroundColor:'red'
     },
     hrsData: {
         padding: 10,
@@ -754,7 +696,6 @@ const styles = StyleSheet.create({
     textPopup: {
         padding: 3,
         fontSize: cardDate,
-        // margin: 5,
         marginLeft: 15,
     },
     

@@ -1,5 +1,4 @@
 async function GetEmpListForApproval(EmpID, Status,ClientCode,ProjectCode, baseUrl) {
-    console.log("GetEmpListForApproval",EmpID, Status,ClientCode,ProjectCode, baseUrl);
     
         const payload = {
             "loginDetails":

@@ -85,7 +85,7 @@ class ForgotPasswordScreen extends Component {
     Keyboard.dismiss();
     const { UserID } = this.state;
     if (UserID) {
-      var baseUrl = "http://gictimesheettest.orgtix.com/webApi"
+      var baseUrl = "https://gictimesheet.orgtix.com/webApi"
       const response =  await forgotPassword(this.state.UserID, baseUrl);
       if (response) {
         if (response.SuccessList) {

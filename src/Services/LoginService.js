@@ -1,6 +1,5 @@
 
 async function attemptLogin(payload, baseUrl) {
-console.log(payload,baseUrl);
 
   const formBody = JSON.stringify(payload, (key, value) => {
     if (value !== null) {      

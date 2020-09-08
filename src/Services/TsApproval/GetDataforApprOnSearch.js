@@ -1,6 +1,4 @@
 async function GetDataforApprOnSearch(EmpID,type, empNo,timesheet, client, projet,baseUrl) {
-    console.log("GetDataforApprOnSeaggggggggggggggggggggggggrch",
-    EmpID,type, empNo,timesheet, client, projet,baseUrl);
     
         const payload = {
             "loginDetails":
