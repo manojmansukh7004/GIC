@@ -282,7 +282,8 @@ class TimesheetEntry extends Component {
     }
     handleDataOnProjectChange = async () => {
         var projectChange = await getDataOnProjectChange(this.props.user, this.state.timesheetId, this.state.project, this.props.baseUrl)
-
+        console.log("aaaaaaa", projectChange.ActivityList[0]);
+        
         this.setState({
             phaseList: projectChange.PhaseList[0],
             activityList: projectChange.ActivityList[0],
@@ -376,20 +377,22 @@ class TimesheetEntry extends Component {
     }
 
     editTimesheet = () => {
+        console.log("ddddddd",this.state.timesheetData);
+        
         this.setState({
 
-            // projectGroup: this.state.projectGrpList.
-            // projectGroupName: this.state.projectGrpList.
+            projectGroup: this.state.timesheetData.ProjectGroupID,
+            projectGroupName: this.state.timesheetData.ProjectGroupText,
             client: this.state.timesheetData.ClientCode,
             clientName: this.state.timesheetData.ClientName,
             project: this.state.timesheetData.ProjectCode,
-            // projectName: this.state.timesheetData.ProjectName,
+            projectName: this.state.timesheetData.ProjectName,
             typeOfWorkId: this.state.timesheetData.TypeOfWorkId,
             typeOfWork: this.state.timesheetData.TypeOfWork,
             phase: this.state.timesheetData.PhaseId,
-            // phaseName: this.state.timesheetData.PhaseName,
+            phaseName: this.state.timesheetData.PhaseName,
             activity: this.state.timesheetData.ActivityId,
-            // activityName: this.state.timesheetData.ActivityName,
+            activityName: this.state.timesheetData.ActivityName,
             projectDesc: this.state.timesheetData.TaskDesc,
             lblMon: this.state.timesheetData.Mon,
             lblTue: this.state.timesheetData.Tue,
@@ -419,9 +422,13 @@ class TimesheetEntry extends Component {
     }
     handleSelectedData = (item, index) => {
         if (this.state.field == 0) {
+            console.log("ppppp",this.state.project, this.state.projectName);
+            
             this.setState({
-                projectGroupName: item.Text, projectGroup: item.Value, fieldVisible: false, data: []
-            }, () => { this.state.client !== "" ? this.handleDataOnClientChange() : null })
+                projectGroupName: item.Text, projectGroup: item.Value, fieldVisible: false, data: [], projectName:'',project:[], activity: [],activityName:''
+            }, () => { 
+                console.log("ppppp",this.state.project, this.state.projectName)
+                this.state.client !== "" ? this.handleDataOnClientChange() : null })
         }
         else if (this.state.field == 1) {
             this.setState({
@@ -524,6 +531,10 @@ class TimesheetEntry extends Component {
                             <Card style={[styles.descCard, { borderWidth: 1, borderColor: this.state.validation == true && this.state.projectDesc == "" ? 'red' : "transparent" }]}>
                                 <View style={styles.reasonView}>
                                     <Text style={[styles.twoCardLabel, { color: this.props.primaryColor }]}>DESCRIPTION</Text>
+                                    <ScrollView 
+                                    persistentScrollbar={true}
+                                    showsVerticalScrollIndicator={true}
+                                    nestedScrollEnabled={true}>
                                     <TextInput
                                         mode="flat"
                                         underlineColor="white"
@@ -541,6 +552,7 @@ class TimesheetEntry extends Component {
                                         numberOfLines={5}
                                         style={styles.longText}
                                     />
+                                    </ScrollView>
                                 </View>
                             </Card>
                             <Card style={styles.descCard}>
@@ -767,8 +779,8 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     container: {
-        paddingLeft: 10,
-        paddingRight: 10,
+        paddingLeft: 5,
+        paddingRight: 5,
     },
     cards: {
         elevation: 3,
@@ -809,7 +821,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     longText: { backgroundColor: 'white', color: "#4D504F", fontSize: 16, marginEnd: 10, padding: 10 },
-    reasonView: { paddingStart: 15, padding: 10, },
+    reasonView: { paddingStart: 15, padding: 10, height:200 },
     timeView: { padding: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
     sheetData: {
         padding: 10,

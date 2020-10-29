@@ -76,7 +76,7 @@ class SplashScreen extends Component {
     });
     const version = DeviceInfo.getVersion();
     console.log("version", version);
-    await storeData("baseUrl", "https://gictimesheet.orgtix.com/webApi");
+    await storeData("baseUrl", "http://gictimesheettest.orgtix.com/webApi");
     setTimeout(async () => {
       const payload = {
         "inputData":
@@ -86,7 +86,7 @@ class SplashScreen extends Component {
           "iosVersionCode": "1"
         }
       }
-      var baseUrl = "https://gictimesheet.orgtix.com/webApi"
+      var baseUrl = "http://gictimesheettest.orgtix.com/webApi"
       const response = await FetchMobileVersion(payload, baseUrl)
       console.log("mjjj",response.MobileVerion[0].Table[0].androidVersionCode);
       

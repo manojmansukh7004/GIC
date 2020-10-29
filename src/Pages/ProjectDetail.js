@@ -252,7 +252,10 @@ class TimesheetEntry extends Component {
                                         <Card style={[styles.descCard, { borderWidth: 1, borderColor: this.state.validation == true && this.state.projectDesc == "" ? 'red' : "transparent" }]}>
                                             <View style={styles.reasonView}>
                                                 <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>DESCRIPTION</Text>
-                                                <ScrollView showsVerticalScrollIndicator={false}>
+                                                <ScrollView 
+                                                persistentScrollbar={true}
+                                                showsVerticalScrollIndicator={true}
+                                                nestedScrollEnabled={true}>
                                                     <TextInput
                                                         mode="flat"
                                                         underlineColor="white"
@@ -265,7 +268,7 @@ class TimesheetEntry extends Component {
                                                         autoFocus={false}
                                                         value={this.state.timesheetData.TaskDesc}
                                                         onChangeText={desc => this.setState({ projectDesc: desc, })}
-                                                        numberOfLines={5}
+                                                        // numberOfLines={5}
                                                         style={styles.longText}
                                                     />
                                                 </ScrollView>
@@ -512,8 +515,8 @@ const styles = StyleSheet.create({
     },
     container: {
 
-        paddingLeft: 10,
-        paddingRight: 10,
+        paddingLeft: 5,
+        paddingRight: 5,
 
     },
     cards: {
@@ -553,7 +556,7 @@ const styles = StyleSheet.create({
         marginTop: 10
     },
     longText: { backgroundColor: 'white', fontSize: 16, marginEnd: 10, padding: 10, color: "#4D504F" },
-    reasonView: { paddingStart: 3, padding: 10, height: 150 },
+    reasonView: { paddingStart: 3, padding: 10, height: 200 },
     timeView: { padding: 10, flexDirection: 'row' },
     sheetData: {
         padding: 10,
