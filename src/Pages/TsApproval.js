@@ -99,10 +99,12 @@ class TimeSheet extends Component {
             timesheetData: [],
             headerData: [],
             headerHrsData: [],
+            ratingAllow: '',
             ratingVisible: false,
             actionVisible: false,
             singleRecord: false,
             autoId: '',
+            tsStatus: '',
             action: '',
             RatingText: '',
             rating: false,
@@ -128,12 +130,12 @@ class TimeSheet extends Component {
         if (this.state.field == 1) {
             var selectedNode = []
             Object.getOwnPropertyNames(this.state.data).map((key, index) => (
-                this.state.data[key].Value !==undefined? selectedNode.push(this.state.data[key].Value):null
+                this.state.data[key].Value !== undefined ? selectedNode.push(this.state.data[key].Value) : null
             ))
             this.setState({ selectedVal: this.state.clientList, client: this.state.clientList, clientValue: selectedNode, project: [], type: '', resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] },
                 async () => {
-                    console.log("aasssss",this.state.clientValue);
-                    
+                    console.log("aasssss", this.state.clientValue);
+
                     var projectData = await GetDataOnClientChange(this.props.user, this.state.deliverTypeValue, this.state.projectGroupValue, this.state.clientValue, this.props.baseUrl)
                     console.log("PPPPPPPPPPPPP", projectData);
 
@@ -276,7 +278,7 @@ class TimeSheet extends Component {
                 var selectedNode = this.state.projectGroup.filter(element => element !== item)
                 var selectedNode1 = this.state.selectedVal.filter(element => element !== item)
                 var selectedNode2 = this.state.projectGroupValue.filter(element => element !== item.Value)
-                this.setState({ selectedVal: selectedNode1, projectGroup: selectedNode, projectGroupValue: selectedNode2, project: [], type: '', resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] },
+                this.setState({ selectedVal: selectedNode1, projectGroup: selectedNode, projectGroupValue: selectedNode2, project: [], type: '', type1: [], resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] },
                     async () => {
                         var projectData = await GetDataOnClientChange(this.props.user, this.state.deliverTypeValue, this.state.projectGroupValue, this.state.clientValue, this.props.baseUrl)
                         this.setState({ projectList: projectData.ProjectList[0] })
@@ -286,7 +288,7 @@ class TimeSheet extends Component {
                 var selectedNode = this.state.projectGroup.concat(item)
                 var selectedNode1 = this.state.selectedVal.concat(item)
                 var selectedNode2 = this.state.projectGroupValue.concat(item.Value)
-                this.setState({ selectedVal: selectedNode1, projectGroup: selectedNode, projectGroupValue: selectedNode2, project: [], type: '', resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] },
+                this.setState({ selectedVal: selectedNode1, projectGroup: selectedNode, projectGroupValue: selectedNode2, project: [], type: '', type1: [], resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] },
                     async () => {
                         var projectData = await GetDataOnClientChange(this.props.user, this.state.deliverTypeValue, this.state.projectGroupValue, this.state.clientValue, this.props.baseUrl)
                         this.setState({ projectList: projectData.ProjectList[0] })
@@ -300,7 +302,7 @@ class TimeSheet extends Component {
                 var selectedNode = this.state.client.filter(element => element !== item)
                 var selectedNode1 = this.state.selectedVal.filter(element => element !== item)
                 var selectedNode2 = this.state.clientValue.filter(element => element !== item.Value)
-                this.setState({ selectedVal: selectedNode1, client: selectedNode, clientValue: selectedNode2, project: [], type: '', resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] },
+                this.setState({ selectedVal: selectedNode1, client: selectedNode, clientValue: selectedNode2, project: [], type: '', type1: [], resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] },
                     async () => {
                         var projectData = await GetDataOnClientChange(this.props.user, this.state.deliverTypeValue, this.state.projectGroupValue, this.state.clientValue, this.props.baseUrl)
                         this.setState({ projectList: projectData.ProjectList[0] })
@@ -310,7 +312,7 @@ class TimeSheet extends Component {
                 var selectedNode = this.state.client.concat(item)
                 var selectedNode1 = this.state.selectedVal.concat(item)
                 var selectedNode2 = this.state.clientValue.concat(item.Value)
-                this.setState({ selectedVal: selectedNode1, client: selectedNode, clientValue: selectedNode2, project: [], type: '', resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] },
+                this.setState({ selectedVal: selectedNode1, client: selectedNode, clientValue: selectedNode2, project: [], type: '', type1: [], resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] },
                     async () => {
                         var projectData = await GetDataOnClientChange(this.props.user, this.state.deliverTypeValue, this.state.projectGroupValue, this.state.clientValue, this.props.baseUrl)
                         this.setState({ projectList: projectData.ProjectList[0] })
@@ -363,9 +365,11 @@ class TimeSheet extends Component {
 
     handleClear = () => {
         this.setState({
-            dataTable: false, projectGroupList: [], projectGroup: [], deliverTypeValue: [], deliverType: [], deliverTypeList: [],
+            dataTable: false,
+            //  projectGroupList: [], deliverTypeList: [],
+            projectGroup: [], deliverTypeValue: [], deliverType: [], resourceList: [], timesheetList: [],
             client: [], project: [], type: '', resourceName: '', resource: [], timesheet: '', timesheetData: [],
-            resourceList: [], timesheetList: [], resourceList: [], type1: '', resource1: '', timesheet1: '', visible: true
+            type1: '', resource1: '', timesheet1: '', visible: true
         })
     }
 
@@ -389,7 +393,7 @@ class TimeSheet extends Component {
             headerData: timesheetData.TimesheetHeaderData[0],
             headerHrsData: timesheetData.TimesheetTotalHrs[0],
         }, () => {
-            console.log("timesheetdatttttttt", this.state.timesheetData);
+            // console.log("timesheetdatttttttt", this.state.timesheetData[0].AllowRating);
 
             this.setTimesheetData();
         });
@@ -435,8 +439,8 @@ class TimeSheet extends Component {
 
     approveAllRecord = () => {
         this.setState({ validation: true, loading: true })
-        if (this.state.OTP == '') { showToast("Fill-up on time performance.") }
-        else if (this.state.resource.length == 0) { showToast("Fill-up Quality of work.") }
+        if (this.state.OTP == '' && this.state.ratingAllow == true) { showToast("Fill-up on time performance.") }
+        else if (this.state.resource.length == 0 && this.state.ratingAllow == true) { showToast("Fill-up Quality of work.") }
         else {
             this.setState({ ratingVisible: false, validation: false, daysVisible: false })
             if (this.state.singleRecord == true) {
@@ -458,8 +462,6 @@ class TimeSheet extends Component {
         else {
             this.setState({ ratingVisible: false, validation: false, daysVisible: false })
             if (this.state.singleRecord == true) {
-                console.log("aaaaaaa", this.state.autoId, this.state.action);
-
                 this.SaveUpdateApproverActionData(this.state.autoId)
             }
             else if (this.state.multiselector == true) {
@@ -488,7 +490,7 @@ class TimeSheet extends Component {
 
     handleTsEntryId = () => {
         var tsEntryId = []
-        console.log("EEeeeee",this.state.apprActionData)
+        console.log("EEeeeee", this.state.apprActionData)
 
         if (this.state.apprActionData.Mon_AutoId !== null) { tsEntryId.push(this.state.apprActionData.Mon_AutoId) }
         if (this.state.apprActionData.Tue_AutoId !== null) { tsEntryId.push(this.state.apprActionData.Tue_AutoId) }
@@ -497,8 +499,8 @@ class TimeSheet extends Component {
         if (this.state.apprActionData.Fri_AutoId !== null) { tsEntryId.push(this.state.apprActionData.Fri_AutoId) }
         if (this.state.apprActionData.Sat_AutoId !== null) { tsEntryId.push(this.state.apprActionData.Sat_AutoId) }
         if (this.state.apprActionData.Sun_AutoId !== null) { tsEntryId.push(this.state.apprActionData.Sun_AutoId) }
-       console.log("ttttttttttttttttttttttt",tsEntryId);
-       
+        console.log("ttttttttttttttttttttttt", tsEntryId);
+
         this.SaveUpdateApproverActionData(tsEntryId)
     }
 
@@ -525,7 +527,7 @@ class TimeSheet extends Component {
                 if (data.SuccessList != undefined) {
                     this.searchRecord()
                     showToast("Action completed sucessfully.");
-                    this.setState({ singleRecord: false,rating1: [], rating2: [], rating3: '', loading: false })
+                    this.setState({ singleRecord: false, rating1: [], rating2: [], rating3: '', loading: false })
                 }
                 else {
                     showToast("Error has an occer.");
@@ -582,18 +584,19 @@ class TimeSheet extends Component {
 
 
     handledata = (item, index) => {
+
         var arr = [], details = []
-        arr.push({ key: 1, date: this.state.lblMon, addDescField: 1, Status: item.Status, time: item.Mon, entryId: item.Mon_AutoId, comment: item.Mon_TaskComments, day: "Mon" })
-        arr.push({ key: 2, date: this.state.lblTue, addDescField: 2, Status: item.Status, time: item.Tue, entryId: item.Tue_AutoId, comment: item.Tue_TaskComments, day: "Tue" })
-        arr.push({ key: 3, date: this.state.lblWed, addDescField: 3, Status: item.Status, time: item.Wed, entryId: item.Wed_AutoId, comment: item.Wed_TaskComments, day: "Wed" })
-        arr.push({ key: 4, date: this.state.lblThu, addDescField: 4, Status: item.Status, time: item.Thu, entryId: item.Thu_AutoId, comment: item.Thu_TaskComments, day: "Thu" })
-        arr.push({ key: 5, date: this.state.lblFri, addDescField: 5, Status: item.Status, time: item.Fri, entryId: item.Fri_AutoId, comment: item.Fri_TaskComments, day: "Fri" })
-        arr.push({ key: 6, date: this.state.lblSat, addDescField: 6, Status: item.Status, time: item.Sat, entryId: item.Sat_AutoId, comment: item.Sat_TaskComments, day: "Sat" })
-        arr.push({ key: 7, date: this.state.lblSun, addDescField: 7, Status: item.Status, time: item.Sun, entryId: item.Sun_AutoId, comment: item.Sun_TaskComments, day: "Sun" })
+        arr.push({ key: 1, date: this.state.lblMon, addDescField: 1, Status: item.Status, time: item.Mon, entryId: item.Mon_AutoId, comment: item.Mon_TaskComments, remark: item.Mon_ApprRemark, day: "Mon" })
+        arr.push({ key: 2, date: this.state.lblTue, addDescField: 2, Status: item.Status, time: item.Tue, entryId: item.Tue_AutoId, comment: item.Tue_TaskComments, remark: item.Tue_ApprRemark, day: "Tue" })
+        arr.push({ key: 3, date: this.state.lblWed, addDescField: 3, Status: item.Status, time: item.Wed, entryId: item.Wed_AutoId, comment: item.Wed_TaskComments, remark: item.Wed_ApprRemark, day: "Wed" })
+        arr.push({ key: 4, date: this.state.lblThu, addDescField: 4, Status: item.Status, time: item.Thu, entryId: item.Thu_AutoId, comment: item.Thu_TaskComments, remark: item.Thu_ApprRemark, day: "Thu" })
+        arr.push({ key: 5, date: this.state.lblFri, addDescField: 5, Status: item.Status, time: item.Fri, entryId: item.Fri_AutoId, comment: item.Fri_TaskComments, remark: item.Fri_ApprRemark, day: "Fri" })
+        arr.push({ key: 6, date: this.state.lblSat, addDescField: 6, Status: item.Status, time: item.Sat, entryId: item.Sat_AutoId, comment: item.Sat_TaskComments, remark: item.Sat_ApprRemark, day: "Sat" })
+        arr.push({ key: 7, date: this.state.lblSun, addDescField: 7, Status: item.Status, time: item.Sun, entryId: item.Sun_AutoId, comment: item.Sun_TaskComments, remark: item.Sun_ApprRemark, ay: "Sun" })
 
         details.push({ ProjectName: item.ProjectName, ClientName: item.ClientName, Status: item.Status, ApprOTPRating: item.ApprOTPRating, ApprQOWRating: item.ApprQOWRating, })
 
-        this.setState({ ratingVisible: false, daysData: arr, details: details, projectName: item.ProjectName, clientName: item.ClientName, dayIndex: index }, () => {
+        this.setState({ ratingVisible: false, tsStatus: item.Status, daysData: arr, details: details, projectName: item.ProjectName, clientName: item.ClientName, dayIndex: index }, () => {
             this.setState({ daysVisible: true, ratingVisible: false })
         })
 
@@ -665,7 +668,7 @@ class TimeSheet extends Component {
             >
                 <>
                     {
-                        console.log("ssssss", this.state.daysData.time)
+                        console.log("ssssss", data)
 
                     }
                     <Card elevation={2} style={styles.container} >
@@ -673,16 +676,25 @@ class TimeSheet extends Component {
                             <View style={2 % 2 === 0 ? styles.strip1 : styles.strip2} />
                             <View style={styles.view}>
                                 <View style={styles.flexRow1}>
-                                    <View style={{ width: "60%" }}>
+                                    <View style={{ width: "40%" }}>
                                         <Text style={{ fontSize: 16 }}>{data.item.date}</Text>
                                     </View>
-                                    <View style={{ width: "40%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
+                                    <View style={{ width: "60%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
+                                        {
+                                            data.item.Status == "Approved" ?
+                                                <TouchableOpacity style={{ width: "30%", justifyContent: "center", alignItems: 'center', flexDirection: 'row', }} onPress={() =>
+                                                    this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: data.item.remark },
+                                                        () => { })}>
+                                                    <Image style={{ height: 50, width: 50 }} source={require("../Assets/msgbg.png")} />
+                                                </TouchableOpacity>
+                                                : null
+                                        }
                                         <TouchableOpacity
                                             onPress={() => { this.setState({ timeVisible: data.item.Status == "Saved" ? true : false, dayField: 'Tue', dayField: this.state.daysData.dayField, }) }}
-                                            style={[styles.hrsData, { backgroundColor: data.item.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
+                                            style={[styles.hrsData, { width: "30%", justifyContent: "center", alignItems: 'center', backgroundColor: data.item.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
                                             <Text style={{ fontSize: 16 }}>{data.item.time == "" ? "--:--" : data.item.time}</Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={{ flexDirection: 'row', }} onPress={() =>
+                                        <TouchableOpacity style={{ width: "20%", justifyContent: "center", alignItems: 'center', flexDirection: 'row', }} onPress={() =>
                                             this.setState({ addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false, addDesc: data.item.comment, addDescField: this.state.daysData.dayField, },
                                                 () => { })}>
                                             <Image style={{ height: 40, width: 40 }} source={require("../Assets/message.png")} />
@@ -718,7 +730,8 @@ class TimeSheet extends Component {
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={[styles.backRightBtn, styles.backRightBtnRight, { justifyContent: 'center', alignItems: 'center' }]}
-                            onPress={() => this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: data.item.ApproverRemarks })}
+                            onPress={() =>
+                                this.handledata(data.item, data.index)}
                         >
                             <Image style={{ height: 50, width: 50, left: 5 }} source={require("../Assets/msgbg.png")} />
                         </TouchableOpacity>
@@ -727,7 +740,7 @@ class TimeSheet extends Component {
                     <>
                         <TouchableOpacity
                             style={[styles.backRightBtn1, styles.backRightBtnLeft]}
-                            onPress={() => this.setState({ ratingVisible: true, action: 'Approved', apprActionData: data.item })}
+                            onPress={() => this.setState({ ratingVisible: true, ratingAllow: data.item.AllowRating, action: 'Approved', apprActionData: data.item })}
                         >
                             <Image
                                 source={require('../Assets/greenTick.png')}
@@ -750,26 +763,15 @@ class TimeSheet extends Component {
     );
 
     renderHiddenItem1 = (data, rowMap) => (
-        console.log("ddddddddddddddddd", data),
 
 
         <View style={[styles.rowBack, { borderRadius: 10, height: 60, margin: 5, width: this.state.orientation == 'landscape' ? '100%' : 'auto', }]}>
-            {/* <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('ProjectDetail', { "timesheetData": data.item, "headerData": this.state.headerData, "headerHrsData": this.state.headerHrsData, "Status": data.item.Status == "Saved" ? true : false })}
-            >
-                <Text style={[styles.backTextWhite, { color: this.props.textColor }]}>Details</Text>
-            </TouchableOpacity> */}
+
 
             {
                 Status == "Approved" ?
                     <>
-                        {/* <TouchableOpacity
-                            style={[styles.backRightBtn1, styles.backRightBtnLeft, { backgroundColor: 'transparent' }]}
-                        >
-                            <Text style={[styles.backTextWhite, { marginTop: 3, marginBottom: 3, color: 'blue' }]}>Approver</Text>
-                            <Text numberOfLines={3} style={[styles.backTextWhite, { color: 'green', fontSize: 16 }]}>{data.item.Status}</Text>
 
-                        </TouchableOpacity> */}
                         <TouchableOpacity
                             style={[styles.backRightBtn11, styles.backRightBtnRight, { justifyContent: 'center', alignItems: 'center' }]}
                         >
@@ -808,11 +810,13 @@ class TimeSheet extends Component {
         });
         //  this.props.navigation.state.params.Loading == true ? this.handleClear() : null
         var drpTSApproval = await GetDrpDataForTSApproval(this.props.user, this.props.baseUrl)
+
         this.setState({
             clientList: drpTSApproval.ClientList[0],
             projectList: drpTSApproval.ProjectList[0],
             deliverTypeList: drpTSApproval.DeliverType[0],
             projectGroupList: drpTSApproval.ProjectGroup[0],
+            //AllowRating
             ratingList1: drpTSApproval.Rating1List[0],
             ratingList2: drpTSApproval.Rating2List[0],
             validation: false,
@@ -844,18 +848,19 @@ class TimeSheet extends Component {
 
                     <View style={[styles.container1, { height: this.state.orientation == 'landscape' ? '86%' : '90%', backgroundColor: this.props.secColor }]}>
                         <ScrollView
+                            keyboardShouldPersistTaps={'handled'}
                             style={{ marginBottom: 5 }}
                             showsVerticalScrollIndicator={false}>
 
                             {this.state.dataTable == true ?
                                 <>
-                                    <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: this.props.primaryColor }}>
-                                        <View style={{ width: '50%', height: 50, justifyContent: 'center', alignItems: 'center', }}>
+                                    <View style={{ backgroundColor: this.props.primaryColor, width: '100%', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', }}>
+                                        <View style={{ width: '45%', height: 50, justifyContent: 'center', alignItems: 'center', }}>
                                             <Text style={styles.totalHrs}> {this.state.resourceName}</Text>
                                         </View>
-                                        <View style={{ width: '50%', borderWidth: 1, margin: 5, borderRadius: 3, borderColor: 'white', justifyContent: 'center', alignItems: 'center', }}>
+                                        <View style={{ width: '45%', borderWidth: 1, borderRadius: 3, borderColor: 'white', justifyContent: 'center', alignItems: 'center', }}>
                                             {/* <Image style={{ height: 20, width: 20, marginLeft: 5, tintColor: 'white' }} source={require("../Assets/calendar.png")} /> */}
-                                            <Text style={styles.text}> {this.state.timesheet == '' ? "--select--" :
+                                            <Text numberOfLines={1} style={styles.text}> {this.state.timesheet == '' ? "--select--" :
                                                 moment(new Date(this.state.timesheet.slice(0, 10).split('-').reverse().join('/'))).format("DD MMM")
                                                 + ' - ' + moment(new Date(this.state.timesheet.slice(14, 24).split('-').reverse().join('/'))).format("DD MMM YYYY")}</Text>
                                         </View>
@@ -872,7 +877,7 @@ class TimeSheet extends Component {
                                         this.state.timesheetData.length !== 0 ?
                                             <ScrollView style={{ marginBottom: 10 }}
                                                 // horizontal={true}
-                                                // scrollEnabled={this.state.content}
+                                                keyboardShouldPersistTaps={'handled'}
                                                 showsVerticalScrollIndicator={false}
                                             >
                                                 <View style={{ height: '100%', marginLeft: 5, marginRight: 5 }}>
@@ -908,6 +913,34 @@ class TimeSheet extends Component {
                                                                         <Text style={{ fontSize: 18, color: this.state.details.Status == "Saved" ? 'red' : 'green' }}>{this.state.details.Status}</Text>
                                                                     </View> */}
                                                                 </View>
+                                                                {
+                                                                    // console.log("pppppppppppp",this.state.daysData[0].Status)
+
+                                                                }
+                                                                <View style={[styles.flexRow1,{paddingLeft:8}]}>
+                                                                    <View style={{ width: "40%" }}>
+                                                                        <Text style={{ fontSize: 16, }}>{"Day"}</Text>
+                                                                    </View>
+                                                                    <View style={{ width: "60%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'flex-start' }}>
+
+                                                                        {
+                                                                            this.state.tsStatus == "Approved" ?
+                                                                                <View style={{ width: "30%", justifyContent: 'center', alignItems: 'center' }}>
+                                                                                    <Text style={{ fontSize: 16 }}>{"Approver"}</Text>
+                                                                                    <Text style={{ fontSize: 16 }}>{"Rating."}</Text>
+                                                                                </View>
+                                                                                : null
+                                                                        }
+
+                                                                        <View style={{ width: "30%", justifyContent: 'center', alignItems: 'center' }}>
+                                                                            <Text style={{ fontSize: 16 }}>{"Working"}</Text>
+                                                                            <Text style={{ fontSize: 16 }}>{"Hr."}</Text>
+                                                                        </View>
+                                                                        <View style={{ width: "20%", justifyContent: 'center', alignItems: 'center' }}>
+                                                                            <Text style={{ fontSize: 16 }}>{"Desc."}</Text>
+                                                                        </View>
+                                                                    </View>
+                                                                </View>
                                                                 <SwipeListView
                                                                     data={this.state.daysData}
                                                                     renderItem={this.renderItem1}
@@ -936,17 +969,19 @@ class TimeSheet extends Component {
                                                                 </View>
                                                                 <View style={{ justifyContent: 'center', alignItems: 'center', }}>
                                                                     <View style={{ borderRadius: 5, borderWidth: .5, width: 300, height: 170, margin: 15 }}>
-                                                                        <TextInput
-                                                                            multiline={true}
-                                                                            editable={false}
-                                                                            value={this.state.rating == true ? this.state.ratingText : this.state.addDesc}
-                                                                            // placeholder="Enter Description"
-                                                                            textAlignVertical="top"
-                                                                            underlineColor="white"
-                                                                            keyboardType="default"
-                                                                            autoFocus={false}
-                                                                            style={styles.longText}
-                                                                        />
+                                                                        <ScrollView persistentScrollbar={true}>
+                                                                            <TextInput
+                                                                                multiline={true}
+                                                                                editable={false}
+                                                                                value={this.state.rating == true ? this.state.ratingText : this.state.addDesc}
+                                                                                // placeholder="Enter Description"
+                                                                                textAlignVertical="top"
+                                                                                underlineColor="white"
+                                                                                keyboardType="default"
+                                                                                autoFocus={false}
+                                                                                style={styles.longText}
+                                                                            />
+                                                                        </ScrollView>
                                                                     </View>
                                                                 </View>
                                                             </View>
@@ -972,7 +1007,9 @@ class TimeSheet extends Component {
                                     />
                                     <Text style={{ fontSize: title }}>Filter Criteria</Text>
                                 </View>
-                                <ScrollView style={{ marginBottom: 40 }}>
+                                <ScrollView
+                                    keyboardShouldPersistTaps={'handled'}
+                                    style={{ marginBottom: 40 }}>
                                     <Card style={[styles.cards, { borderWidth: 1, borderColor: "transparent" }]}>
                                         <TouchableOpacity onPress={() => this.setState({
                                             title: "Delivery Type", multiPickerVisible: true,
@@ -1058,9 +1095,9 @@ class TimeSheet extends Component {
                                 </ScrollView>
                             </SheetSide>
 
-                            <Modal isVisible={this.state.ratingVisible}>
+                            <Modal isVisible={this.state.ratingVisible} >
                                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                    <View style={{ backgroundColor: 'white', borderRadius: 5, width: 370, height: this.state.action == "Approved" && this.state.orientation == 'portrait' ? 450 : this.state.action == "Approved" && this.state.orientation == 'landscape' ? 300 : 300 }}>
+                                    <View style={{ backgroundColor: 'white', borderRadius: 5, width: "90%", height: this.state.action == "Approved" && this.state.ratingAllow == true ? 450 : this.state.action == "Approved" && this.state.ratingAllow == false ? 300 : 300 }}>
                                         <View style={{ borderTopStartRadius: 5, borderTopEndRadius: 5, height: 50, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
                                             <Text style={{ fontSize: title, color: this.props.fontColor }}>{'Rating'}</Text>
                                             <TouchableOpacity onPress={() =>
@@ -1069,60 +1106,70 @@ class TimeSheet extends Component {
                                                 <Image style={{ height: 30, width: 30, tintColor: 'white' }} source={require('../Assets/redCross.png')} />
                                             </TouchableOpacity>
                                         </View>
-                                        <ScrollView style={{ marginBottom: 10 }}>
+                                        <ScrollView
+                                            keyboardShouldPersistTaps={'handled'}
+                                            style={{ marginBottom: 10 }}>
                                             <View style={{ marginTop: 5, padding: 10, flexDirection: 'column' }}>
                                                 {
-                                                    this.state.action == "Approved" ?
+                                                    this.state.action == "Approved" && this.state.ratingAllow ?
                                                         <>
-                                                            <View style={{ elevation: 2, borderWidth: .5, borderColor: this.state.validation == true && this.state.rating1.length == 0 ? 'red' : "transparent", borderRadius: 5, height: 60, marginBottom: 5, margin: 5 }}>
+                                                            <View style={{ borderWidth: .5, borderColor: this.state.validation == true && this.state.rating1.length == 0 ? 'red' : "black", borderRadius: 5, height: 60, marginBottom: 5, margin: 5 }}>
                                                                 <TouchableOpacity onPress={() => this.setState({
                                                                     title: "On time performance", multiPickerVisible1: true,
                                                                     field: 1, data: this.state.ratingList1, selectedVal: this.state.rating1
                                                                 })}
                                                                     style={[styles.cardMenuSpasing, {}]}>
                                                                     <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>ON TIME PERFORMANCE</Text>
-                                                                    <Text numberOfLines={1} style={[styles.twoCardLabel1, { color: "#4D504F", }]}>{this.state.rating1.length == 0 ? "--select--" : this.state.rating1[0].Text}</Text>
+                                                                    <Text numberOfLines={1} style={[styles.twoCardLabel1, { color: "#4D504F", top: 2 }]}>{this.state.rating1.length == 0 ? "--select--" : this.state.rating1[0].Text}</Text>
                                                                 </TouchableOpacity>
                                                             </View>
-                                                            <View style={{ elevation: 2, borderWidth: .5, borderColor: this.state.validation == true && this.state.rating1.length == 0 ? 'red' : "transparent", borderRadius: 5, height: 60, marginBottom: 5, margin: 5 }}>
+                                                            <View style={{ borderWidth: .5, borderColor: this.state.validation == true && this.state.rating1.length == 0 ? 'red' : "black", borderRadius: 5, height: 60, marginBottom: 5, margin: 5 }}>
                                                                 <TouchableOpacity onPress={() => this.setState({
                                                                     title: "Quality of work", multiPickerVisible1: true,
                                                                     field: 2, data: this.state.ratingList2, selectedVal: this.state.rating2,
                                                                 })}
                                                                     style={[styles.cardMenuSpasing, {}]}>
                                                                     <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>QUALITY OF WORK</Text>
-                                                                    <Text numberOfLines={1} style={[styles.twoCardLabel1, { color: "#4D504F", }]}>{this.state.rating2.length == 0 ? "--select--" : this.state.rating2.length == 0 ? "--select--" : this.state.rating2[0].Text}</Text>
+                                                                    <Text numberOfLines={1} style={[styles.twoCardLabel1, { color: "#4D504F", top: 2 }]}>{this.state.rating2.length == 0 ? "--select--" : this.state.rating2.length == 0 ? "--select--" : this.state.rating2[0].Text}</Text>
                                                                 </TouchableOpacity>
                                                             </View>
                                                         </> : null
                                                 }
-                                                <View style={{ elevation: 2, borderWidth: .5, borderColor: this.state.action == "Rejected" && this.state.validation == true && this.state.rating3 !== null ? 'red' : "transparent", borderRadius: 5, height: 150, marginBottom: 5, margin: 5 }}>
+                                                <View style={{ borderWidth: .5, borderColor: this.state.action == "Rejected" && this.state.validation == true && this.state.rating3 !== null ? 'red' : "black", borderRadius: 5, height: 150, marginBottom: 5, margin: 5 }}>
                                                     <TouchableOpacity style={[styles.cardMenuSpasing, {}]}>
-                                                        <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>REMARK</Text>
-                                                        <TextInput
-                                                            multiline={true}
-                                                            // numberOfLines={3}
-                                                            value={this.state.rating3}
-                                                            placeholder="Enter Remark"
-                                                            textAlignVertical="top"
-                                                            underlineColor="white"
-                                                            keyboardType="default"
-                                                            autoFocus={false}
-                                                            style={{ paddingStart: 8, height: 130 }}
-                                                            dense
-                                                            onChangeText={value => this.setState({ rating3: value, })}
-                                                        />
+                                                        <Text style={[styles.singleCardLabel, { color: this.props.primaryColor, }]}>REMARKS</Text>
+                                                        <ScrollView
+                                                            keyboardShouldPersistTaps={'handled'}
+                                                            style={{ marginBottom: 15 }}
+                                                            persistentScrollbar={true}
+                                                            nestedScrollEnabled={true}
+                                                        >
+                                                            <TextInput
+                                                                multiline={true}
+                                                                // numberOfLines={3}
+                                                                keyboardAppearance
+                                                                value={this.state.rating3}
+                                                                placeholder="Enter Remark"
+                                                                textAlignVertical="top"
+                                                                underlineColor="white"
+                                                                keyboardType="default"
+                                                                autoFocus={false}
+                                                                style={styles.singleCardLabel}
+                                                                dense
+                                                                onChangeText={value => this.setState({ rating3: value, })}
+                                                            />
+                                                        </ScrollView>
                                                     </TouchableOpacity>
                                                 </View>
                                                 <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10, marginBottom: 10, margin: 5 }}>
                                                     {
                                                         this.state.action !== 'Approved' ?
-                                                            <Button mode="contained" style={{ height: 40, width: 250, backgroundColor: this.props.primaryColor }}
+                                                            <Button mode="contained" style={{ height: 40, width: "90%", backgroundColor: this.props.primaryColor }}
                                                                 onPress={this.rejectAllRecord}>
                                                                 reject
                                                      </Button>
                                                             :
-                                                            <Button mode="contained" style={{ height: 40, width: 250, backgroundColor: this.props.primaryColor }}
+                                                            <Button mode="contained" style={{ height: 40, width: "90%", backgroundColor: this.props.primaryColor }}
                                                                 onPress={this.approveAllRecord}>
                                                                 approve
                                                      </Button>
@@ -1285,7 +1332,6 @@ class TimeSheet extends Component {
                                     </View>
                                 </View>
                             </Modal>
-
 
                         </ScrollView>
                     </View>
@@ -1486,7 +1532,7 @@ const styles = StyleSheet.create({
         padding: 10,
         borderWidth: .3,
         borderRadius: 3,
-        width: 70,
+        // width: 70,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#FFFF'
@@ -1575,7 +1621,7 @@ const styles = StyleSheet.create({
         padding: 5
     },
     container: {
-        height: 60,
+        // height: 60,
         flexDirection: 'row',
         borderRadius: 10,
         margin: 5

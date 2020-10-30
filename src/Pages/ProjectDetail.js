@@ -252,10 +252,11 @@ class TimesheetEntry extends Component {
                                         <Card style={[styles.descCard, { borderWidth: 1, borderColor: this.state.validation == true && this.state.projectDesc == "" ? 'red' : "transparent" }]}>
                                             <View style={styles.reasonView}>
                                                 <Text style={[styles.singleCardLabel, { color: this.props.primaryColor }]}>DESCRIPTION</Text>
-                                                <ScrollView 
-                                                persistentScrollbar={true}
-                                                showsVerticalScrollIndicator={true}
-                                                nestedScrollEnabled={true}>
+                                                <ScrollView
+                                                    persistentScrollbar={true}
+                                                    showsVerticalScrollIndicator={true}
+                                                    nestedScrollEnabled={true}
+                                                >
                                                     <TextInput
                                                         mode="flat"
                                                         underlineColor="white"
@@ -276,6 +277,7 @@ class TimesheetEntry extends Component {
                                         </Card>
                                         <Card style={styles.descCard}>
                                             <ScrollView horizontal={true}
+                                              nestedScrollEnabled={true}
                                                 showsHorizontalScrollIndicator={false}
                                             >
                                                 <View style={styles.timeView}>
@@ -421,6 +423,7 @@ class TimesheetEntry extends Component {
                                                     </View>
                                                     <View style={{ justifyContent: 'center', alignItems: 'center', }}>
                                                         <View style={{ borderRadius: 5, borderWidth: .5, width: 300, height: 170, margin: 15 }}>
+                                                            <ScrollView persistentScrollbar={true}>
                                                             <TextInput
                                                                 multiline={true}
                                                                 editable={false}
@@ -431,51 +434,45 @@ class TimesheetEntry extends Component {
                                                                 autoFocus={false}
                                                                 style={styles.longText}
                                                              />
+                                                             </ScrollView>
                                                         </View>
                                                     </View>
                                                 </View>
                                             </View>
                                         </Modal>
-                                       
-                                        <Dialog
-                                            visible={this.state.visible}
-                                            onTouchOutside={() => this.setState({ visible: false })}
-                                            style={
-                                                {
-                                                    width: 400,
-                                                }
-                                            }
-                                        >
 
-                                            <Text style={{ fontSize: 20, marginBottom: 5, color: this.props.primaryColor }}>
-                                                {"Are you sure ?"}
-                                            </Text>
-                                            <Paragraph style={{ fontSize: 16 }}>
-                                                {"Once deleted, you will not be able to recover the record!"}
-                                            </Paragraph>
+                                        <Modal isVisible={this.state.visible}>
+                                            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                                <View style={{ backgroundColor: 'white', borderRadius: 10, width: 300, height: 180, }}>
+                                                    <View style={{ padding: 10, height: "70%", justifyContent: 'flex-start', alignItems: 'center' }}>
+                                                        <Text style={{ fontSize: 18, fontWeight: 'bold', color: "#4D504F", marginBottom: 10 }}> Are you sure?</Text>
+                                                        <Text style={{ fontSize: 18, fontWeight: '900', color: "#4D504F" }}>{"Once deleted, you will not be able to recover the record!"}</Text>
+                                                    </View>
+                                                    <View
+                                                        style={{
+                                                            justifyContent: "center",
+                                                            alignItems: 'center',
+                                                            flexDirection: 'row',
+                                                            height: "30%",
+                                                            // backgroundColor:'green'
+                                                        }}
+                                                    >
+                                                        <TouchableOpacity onPress={() => this.setState({ visible: false })}
+                                                            style={{ width: '50%', height: '100%', borderRightWidth: .5, borderTopWidth: .5, heigt: '100%', justifyContent: 'center', alignItems: 'center', }}>
+                                                            <Text style={{ fontSize: 18, fontWeight: '900', color: "#297AF9" }}> Cancel</Text>
+                                                        </TouchableOpacity>
 
-                                            <View
-                                                style={{
-                                                    justifyContent: "flex-end",
-                                                    flexDirection: 'row',
-                                                    paddingVertical: 20,
-
-                                                }}
-                                            >
-                                                <Button
-                                                    text={'cancel'}
-                                                    style={{ borderWidth: .3, margin: 5, marginRight: 5 }}
-                                                    onPress={() => this.setState({ visible: false })}
-                                                />
-                                                <Button
-                                                    text={'Confirm Delete'}
-                                                    style={{ borderWidth: 1, margin: 5, borderColor: 'red' }}
-                                                    onPress={() =>
-                                                        this.setState({ visible: false, deleteRecord: true }, () => { this.DeleteRecord() })
-                                                    }
-                                                />
+                                                        <TouchableOpacity
+                                                            onPress={() =>
+                                                                this.setState({ visible: false, deleteRecord: true }, () => { this.DeleteRecord() })
+                                                            }
+                                                            style={{ width: '50%', height: '100%', borderTopWidth: .5, justifyContent: 'center', alignItems: 'center', }}>
+                                                            <Text style={{ fontSize: 18, fontWeight: '900', color: "red" }}> Confirm Delete</Text>
+                                                        </TouchableOpacity>
+                                                    </View>
+                                                </View>
                                             </View>
-                                        </Dialog>
+                                        </Modal>
 
                                     </>
 

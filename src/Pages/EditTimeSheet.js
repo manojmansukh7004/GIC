@@ -158,6 +158,8 @@ class TimesheetEntry extends Component {
     }
 
     handleSave = () => {
+        console.log(this.state.client,this.state.project, this.state.activity  )
+        
         this.setState({ validation: true })
         if (this.state.client == 0) { showToast("Select client details.") }
         else if (this.state.project == 0) { showToast("Select project details.") }
@@ -413,7 +415,7 @@ class TimesheetEntry extends Component {
             this.handleDataOnClientChange()
             this.handleDataOnProjectChange()
             this.handleDataOnPhaseChange()
-            this.flushData()
+            // this.flushData()
         });
     }
 
@@ -422,12 +424,10 @@ class TimesheetEntry extends Component {
     }
     handleSelectedData = (item, index) => {
         if (this.state.field == 0) {
-            console.log("ppppp",this.state.project, this.state.projectName);
             
             this.setState({
                 projectGroupName: item.Text, projectGroup: item.Value, fieldVisible: false, data: [], projectName:'',project:[], activity: [],activityName:''
             }, () => { 
-                console.log("ppppp",this.state.project, this.state.projectName)
                 this.state.client !== "" ? this.handleDataOnClientChange() : null })
         }
         else if (this.state.field == 1) {
@@ -456,7 +456,7 @@ class TimesheetEntry extends Component {
         else if (this.state.field == 5) {
             this.setState({
                 activityName: item.Text, activity: item.Value, fieldVisible: false
-            }, () => { })
+            })
         }
     }
 
