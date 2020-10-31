@@ -25,6 +25,7 @@ class SplashScreen extends Component {
     division1: "01",
     baseUrl: '',
     UserId: '',
+    UserRole: '',
     filterData: '',
     customerData: '',
     RedirectPage: '',
@@ -51,8 +52,9 @@ class SplashScreen extends Component {
     await getData('UserId').then((value) => {
       this.setState({ UserId: value })
     })
-    // await getData('RedirectPage').then((value) => {
-    //   this.setState({ RedirectPage: value })
+    // await getData('UserRole').then((value) => {     
+    //  this.setState({ UserRole: value },()=>{console.log("vvvvvvvvvvvvvvvv",this.state.UserRole);
+    //  })
     // })
 
     var userId = this.state.UserId

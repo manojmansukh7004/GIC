@@ -1,4 +1,3 @@
-
 async function forgotPassword(userName, baseUrl) {
   const payload = {
     loginDetails:

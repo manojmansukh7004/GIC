@@ -15,10 +15,7 @@ async function FetchMobileVersion(payload, baseUrl) {
     },
     body: formBody,
   });
-  const responseJson = 
-  await response.json();
-  
+  const responseJson = await response.json();
   return responseJson;
 }
-
 export { FetchMobileVersion };

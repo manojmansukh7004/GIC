@@ -133,7 +133,7 @@ class TimeSheet extends Component {
     createTimesheet = async () => {
         var data = await CreateNewTimesheet(this.props.user, this.state.selectedDate, this.props.baseUrl)
         if (data != null && data != "") {
-           
+
             if (data.SuccessList != undefined || data.ErrorList != undefined || data.ExceptionList != undefined) {
 
                 if (data.SuccessList != undefined) {
@@ -647,7 +647,7 @@ class TimeSheet extends Component {
             this.props.time[key] <= format(this.state.headerData[0].MaxHrsPerDay * 60).toString() ?
                 timeArr.push(this.props.time[key]) : null
         ))
-        
+
         this.setState({
             // timeSheetStatus: this.state.timesheetData[0] !== undefined ? this.state.timesheetData[0].Status : "",
             MaxHrsPerDay: this.state.headerData[0].MaxHrsPerDay,
@@ -702,7 +702,7 @@ class TimeSheet extends Component {
                         <>
                             <TouchableOpacity
                                 style={[styles.backRightBtn, styles.backRightBtnRight, { backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }]}
-                                onPress={() =>  this.handledata(data.item, data.index)}
+                                onPress={() => this.handledata(data.item, data.index)}
                             >
                                 <Text style={[{ fontSize: 16, marginTop: 3, marginBottom: 3, color: 'blue' }]}>Approver</Text>
                                 <Text numberOfLines={1} style={{ fontSize: 16 }}>{data.item.Approver}</Text>
@@ -757,7 +757,7 @@ class TimeSheet extends Component {
                         data.item.ApproverAction == "Rejected" ?
                             <View style={[styles.rejected, { backgroundColor: "red" }]} /> : null
                     }
-                    <View style={{ flexDirection: "row", width: data.item.Status !== 'Saved' && data.item.Status !== 'Submitted' ? '70%' : '80%', backgroundColor: 'transparent' }} >
+                    <View style={{ flexDirection: "row", width: data.item.Status !== 'Saved' ? '70%' : data.item.Status !== 'Submitted' ? '70%' : '80%', backgroundColor: 'transparent' }} >
                         <View style={{ width: '90%' }}>
                             <Text numberOfLines={1} style={{ fontSize: 18, fontWeight: '900', }}>{data.item.ProjectName}</Text>
                             <Text numberOfLines={1} style={{ color: "#4D504F" }}>{"(" + data.item.ClientName + ")"}</Text>
@@ -772,21 +772,33 @@ class TimeSheet extends Component {
                         </View>
                     </View>
                     {
+                        console.log("dddddddddddddd", data.item.Status)
+                        
+                    }
+                    {
                         data.item.Status !== 'Saved' && data.item.Status !== 'Submitted' ?
                             <>
-
-                                <View style={{ justifyContent: 'flex-start', alignItems: 'center', width: '15%', backgroundColor: 'transparent' }}>
-                                    <Text style={{ fontSize: 14, color: 'blue', justifyContent: 'center', alignItems: 'center', }}>{"OTP"}</Text>
-                                    <Text style={{ fontSize: 16, color: "black", padding: 5 }}>{data.item.ApprOTPRating}</Text>
-                                </View>
-                                <View style={{ justifyContent: 'flex-start', alignItems: 'center', width: '15%', backgroundColor: 'transparent' }}>
-                                    <Text style={{ fontSize: 14, color: 'blue', justifyContent: 'center', alignItems: 'center', }}>{"QOW"}</Text>
-                                    <Text style={{ fontSize: 16, color: "black", padding: 5 }}>{data.item.ApprQOWRating}</Text>
-                                </View>
+                                {
+                                    data.item.ApprOTPRating == '' ?
+                                        <View style={{ justifyContent:'flex-start', alignItems: 'center', width: '30%',  backgroundColor: 'transparent' }}>
+                                            <Text style={{ fontSize: 14, color: 'green', justifyContent: 'center', alignItems: 'center', }}>{data.item.Status.toUpperCase()}</Text>
+                                        </View>
+                                        :
+                                        <>
+                                            <View style={{ justifyContent: 'flex-start', alignItems: 'center', width: '15%', backgroundColor: 'transparent' }}>
+                                                <Text style={{ fontSize: 14, color: 'blue', justifyContent: 'center', alignItems: 'center', }}>{"OTP"}</Text>
+                                                <Text style={{ fontSize: 16, color: "black", padding: 5 }}>{data.item.ApprOTPRating}</Text>
+                                            </View>
+                                            <View style={{ justifyContent: 'flex-start', alignItems: 'center', width: '15%', backgroundColor: 'transparent' }}>
+                                                <Text style={{ fontSize: 14, color: 'blue', justifyContent: 'center', alignItems: 'center', }}>{"QOW"}</Text>
+                                                <Text style={{ fontSize: 16, color: "black", padding: 5 }}>{data.item.ApprQOWRating}</Text>
+                                            </View>
+                                        </>
+                                }
                             </>
                             :
-                            <View style={{ justifyContent: 'flex-start', alignItems: 'center', width: '20%', backgroundColor: 'transparent' }}>
-                                <Text numberOfLines={1} style={{ color: data.item.Status == 'Saved' ? 'red' : "green" }}>{data.item.Status}</Text>
+                            <View style={{ justifyContent: 'flex-start', alignItems: 'center', width: '30%', backgroundColor: 'transparent' }}>
+                                <Text numberOfLines={1} style={{ color: data.item.Status == 'Saved' ? 'red' : "green" }}>{data.item.Status.toUpperCase()}</Text>
                             </View>
                     }
                 </>
@@ -860,8 +872,8 @@ class TimeSheet extends Component {
                         {
                             this.state.timesheetVisible == true ?
                                 <>
-                                    <View style={{width:'100%', bottom:2, padding: 5, paddingHorizontal:10, flexDirection: 'row',  justifyContent: 'space-between', alignItems: 'center', backgroundColor: this.props.primaryColor }}>
-                                        <View style={{ width:'50%', justifyContent: 'center', alignItems: 'flex-start' }}>
+                                    <View style={{ width: '100%', bottom: 2, padding: 5, paddingHorizontal: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: this.props.primaryColor }}>
+                                        <View style={{ width: '50%', justifyContent: 'center', alignItems: 'flex-start' }}>
                                             {
                                                 this.state.timesheetVisible == true ?
                                                     <Text style={styles.totalHrs}> {"Total Hours - " + this.state.TotalTime}</Text>
@@ -907,11 +919,11 @@ class TimeSheet extends Component {
                                 </> : null
                         }
 
-                        <ScrollView style={{ marginBottom: 10 }}
+                        <ScrollView style={{}}
                             // horizontal={true}
                             scrollEnabled={this.state.content}
                         >
-                            <View style={{ height: '100%', marginLeft: 5, marginRight: 5 }}>
+                            <View style={{ height: '100%', marginLeft: 5, marginRight: 5, paddingBottom: 50 }}>
 
                                 <SwipeListView
                                     data={this.state.timesheetData}
@@ -939,15 +951,15 @@ class TimeSheet extends Component {
                                                 <View style={{ borderRadius: 5, borderWidth: .5, width: 300, height: 170, margin: 15 }}>
                                                     {/* {this.state.descEdit == true ? */}
                                                     <ScrollView persistentScrollbar={true}>
-                                                    <TextInput
-                                                        editable={this.state.descEdit == true ? true : false}
-                                                        multiline={true}
-                                                        value={this.state.rating == true ? this.state.ratingText : this.state.addDesc}
-                                                        dense
-                                                        style={{ color: 'black' }}
-                                                        onChangeText={value => this.setState({ addDesc: value })}
-                                                    />
-                                                </ScrollView>
+                                                        <TextInput
+                                                            editable={this.state.descEdit == true ? true : false}
+                                                            multiline={true}
+                                                            value={this.state.rating == true ? this.state.ratingText : this.state.addDesc}
+                                                            dense
+                                                            style={{ color: 'black' }}
+                                                            onChangeText={value => this.setState({ addDesc: value })}
+                                                        />
+                                                    </ScrollView>
                                                 </View>
                                             </View>
                                         </View>
@@ -962,6 +974,8 @@ class TimeSheet extends Component {
                                         {
                                             width: 100,
                                             height: 350,
+                                            borderWidth: 1,
+                                            borderRadius: 10
                                         }
                                     }
                                 >
@@ -978,13 +992,16 @@ class TimeSheet extends Component {
 
                                                         })
                                                 }}
-                                                    style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 15 }}>
+                                                    style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
                                                     <View>
-
+                                                    <ScrollView
+                                                    showsVerticalScrollIndicator= {true}
+                                                    persistentScrollbar={true}>
                                                         <Text style={styles.textPopup}>
                                                             {this.state.pickerTime[item]}
                                                         </Text>
                                                         <Divider />
+                                                        </ScrollView>
                                                     </View>
                                                 </TouchableOpacity>)}
                                         />
@@ -995,8 +1012,8 @@ class TimeSheet extends Component {
                                 <Modal isVisible={this.state.visible}>
                                     <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                                         <View style={{ backgroundColor: 'white', borderRadius: 10, width: 300, height: 180, }}>
-                                            <View style={{ padding: 10, height: "70%", justifyContent: 'flex-start', alignItems: 'center'}}>
-                                                <Text style={{ fontSize: 18, fontWeight: 'bold', color: "#4D504F" , marginBottom: 10 }}> Are you sure?</Text>
+                                            <View style={{ padding: 10, height: "70%", justifyContent: 'flex-start', alignItems: 'center' }}>
+                                                <Text style={{ fontSize: 18, fontWeight: 'bold', color: "#4D504F", marginBottom: 10 }}> Are you sure?</Text>
                                                 <Text style={{ fontSize: 18, fontWeight: '900', color: "#4D504F" }}>{"Once deleted, you will not be able to recover the record!"}</Text>
                                             </View>
                                             <View
@@ -1014,10 +1031,10 @@ class TimeSheet extends Component {
                                                 </TouchableOpacity>
 
                                                 <TouchableOpacity
-                                                   onPress={() =>
-                                                    this.setState({ visible: false, deleteRecord: true }, () => { this.DeleteRecord() })
-                                                }
-                                                    style={{ width: '50%',height: '100%', borderTopWidth: .5, justifyContent: 'center', alignItems: 'center', }}>
+                                                    onPress={() =>
+                                                        this.setState({ visible: false, deleteRecord: true }, () => { this.DeleteRecord() })
+                                                    }
+                                                    style={{ width: '50%', height: '100%', borderTopWidth: .5, justifyContent: 'center', alignItems: 'center', }}>
                                                     <Text style={{ fontSize: 18, fontWeight: '900', color: "red" }}> Confirm Delete</Text>
                                                 </TouchableOpacity>
                                             </View>
@@ -1083,11 +1100,11 @@ class TimeSheet extends Component {
 
                                 <Modal isVisible={this.state.calenderVisible}>
                                     <View style={{ backgroundColor: 'transparent' }}>
-                                        <TouchableOpacity onPress={() =>this.setState({ calenderVisible: false})}
-                                    style={{ justifyContent: 'center', alignItems: 'flex-end',marginHorizontal:20,marginVertical:40 }}
-                                    >
-                                        <Image style={{ height: 30, width: 30, tintColor: 'white' }} source={require('../Assets/redCross.png')} />
-                                    </TouchableOpacity>
+                                        <TouchableOpacity onPress={() => this.setState({ calenderVisible: false })}
+                                            style={{ justifyContent: 'center', alignItems: 'flex-end', marginHorizontal: 20, marginVertical: 40 }}
+                                        >
+                                            <Image style={{ height: 30, width: 30, tintColor: 'white' }} source={require('../Assets/redCross.png')} />
+                                        </TouchableOpacity>
                                         <View style={{ justifyContent: 'center', alignItems: 'center', }}>
                                             <CalendarPicker
                                                 onDateChange={this.onDateChange}
@@ -1112,9 +1129,9 @@ class TimeSheet extends Component {
                                         <View style={{ backgroundColor: this.props.secColor }}>
                                             <View style={[styles.flexRow1, { backgroundColor: 'transparent', borderRadius: 10, marginStart: 8, marginEnd: 8, }]}>
 
-                                                <View style={{ width: "60%", height: '100%', margin: 2, backgroundColor:'transparent' }}>
+                                                <View style={{ width: "60%", height: '100%', margin: 2, backgroundColor: 'transparent' }}>
                                                     <Text numberOfLines={1} style={{ fontSize: 18, fontWeight: '900', }}>{this.state.daysData.ProjectName}</Text>
-                                                    <Text numberOfLines={1} style={{ }}>{"(" + this.state.daysData.ClientName + ")"}</Text>
+                                                    <Text numberOfLines={1} style={{}}>{"(" + this.state.daysData.ClientName + ")"}</Text>
                                                     {/* <Text numberOfLines={1}MaxHrsPerDay style={{ color: "#4D504F" }}>{this.state.daysData.TaskDesc}</Text> */}
                                                 </View>
                                                 {
@@ -1126,27 +1143,28 @@ class TimeSheet extends Component {
                                                         : null
                                                 }
                                             </View>
-                                            <View  style={{marginLeft: 8, marginRight:8,backgroundColor:'transparent'}} >
-                                            <View style={styles.flexRow}>
-                                                <View style={{paddingLeft:8}}>
-                                                    <View style={[styles.flexRow1]}>
-                                                        <View style={{ width: "40%" }}>
-                                                            <Text style={{ fontSize: 16, }}>{"Day"}</Text>
-                                                        </View>
+                                            <View style={{ marginLeft: 8, marginRight: 8, backgroundColor: 'transparent' }} >
+                                                <View style={styles.flexRow}>
+                                                    <View style={{ paddingLeft: 8 }}>
+                                                        <View style={[styles.flexRow1]}>
+                                                            <View style={{ width: "40%" }}>
+                                                                <Text style={{ fontSize: 16, }}>{"Day"}</Text>
+                                                            </View>
                                                             <View style={{ width: "60%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'flex-start' }}>
-                                                          
-                                                               <View style={{ width: "30%", justifyContent: 'center', alignItems: 'center' }}>
-                                                               {
-                                                                    this.state.daysData.Status == "Saved" ||  this.state.daysData.Status == "Submitted"?
-                                                                    <>
-                                                                    <Text style={{ fontSize: 16 }}>{"Total"}</Text>
-                                                                    <Text style={{ fontSize: 16 }}>{"Hr."}</Text>
-                                                                    </>:
-                                                                    <>
-                                                                     <Text style={{ fontSize: 16 }}>{"Approver"}</Text>
-                                                                     <Text style={{ fontSize: 16 }}>{"Rating."}</Text>
-                                                                    </>
-                                                               }
+
+                                                                <View style={{ width: "30%", justifyContent: 'center', alignItems: 'center' }}>
+                                                                    {/* {
+                                                                        this.state.daysData.Status == "Saved" || this.state.daysData.Status == "Submitted" ? */}
+                                                                            <>
+                                                                                <Text style={{ fontSize: 16 }}>{"Total"}</Text>
+                                                                                <Text style={{ fontSize: 16 }}>{"Hr."}</Text>
+                                                                            </>
+                                                                             {/* :
+                                                                            <>
+                                                                                <Text style={{ fontSize: 16 }}>{"Approver"}</Text>
+                                                                                <Text style={{ fontSize: 16 }}>{"Rating."}</Text>
+                                                                            </>
+                                                                    } */}
 
                                                                 </View>
                                                                 <View style={{ width: "30%", justifyContent: 'center', alignItems: 'center' }}>
@@ -1157,45 +1175,49 @@ class TimeSheet extends Component {
                                                                     <Text style={{ fontSize: 16 }}>{"Desc."}</Text>
                                                                 </View>
                                                             </View>
+                                                        </View>
                                                     </View>
                                                 </View>
                                             </View>
-                                            </View>
-                                           
+
                                             <Card elevation={2} style={styles.container} >
                                                 <View style={styles.flexRow}>
                                                     <View style={this.props.index % 2 === 0 ? styles.strip1 : styles.strip2} />
                                                     <View style={styles.view}>
                                                         <View style={[styles.flexRow1]}>
-                                                            <View style={{ width: "40%" }}>
+                                                            <View style={{ width: "30%" }}>
                                                                 <Text style={{ fontSize: 16 }}>{this.state.lblMon}</Text>
                                                             </View>
-                                                            <View style={{ width: "60%", flexDirection: 'row',   justifyContent: 'space-around', alignItems: 'center' }}>
-                                                                {
-                                                                    this.state.daysData.Status == "Saved" ||  this.state.daysData.Status == "Submitted"?
-                                                                        <TouchableOpacity style={[styles.hrsData, { width: "30%", borderColor: 'gray', backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
+                                                            <View style={{ width: "70%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
+                                                                <TouchableOpacity style={{ width: "15%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} onPress={() =>
+                                                                    this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Mon_ApprRemark })}>
+                                                                    <Image style={{ height: 40, width: 40, }} source={require("../Assets/msgbg.png")} />
+                                                                </TouchableOpacity>
+                                                                {/* {
+                                                                    this.state.daysData.Status == "Saved" || this.state.daysData.Status == "Submitted" ? */}
+                                                                        <TouchableOpacity style={[styles.hrsData, { width: "25%", borderColor: 'gray', backgroundColor: this.props.secColor}]}>
                                                                             <Text style={{ fontSize: 16, color: "#4D504F" }}>{this.state.dvTotMon}</Text>
                                                                         </TouchableOpacity>
-                                                                        :
-                                                                        <TouchableOpacity style={{ width: "30%",  justifyContent:"center", alignItems: 'center', flexDirection: 'row' }} onPress={() =>
-                                                                            this.setState({addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Mon_ApprRemark  })}>
+                                                                        {/* :
+                                                                        <TouchableOpacity style={{ width: "30%", justifyContent: "center", alignItems: 'center', flexDirection: 'row' }} onPress={() =>
+                                                                            this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Mon_ApprRemark })}>
                                                                             <Image style={{ height: 50, width: 50, }} source={require("../Assets/msgbg.png")} />
                                                                         </TouchableOpacity>
-                                                                }
+                                                                } */}
                                                                 <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.daysData.Status == "Saved" ? true : false, dayField: 'Mon', dayField: 1, }) }}
-                                                                    style={[styles.hrsData, { width: "30%", backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
+                                                                    style={[styles.hrsData, { width: "25%", backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
                                                                     <Text style={{ fontSize: 16 }}>{this.state.daysData.Mon == "" || this.state.daysData.Mon == undefined ? "--:--" : this.state.daysData.Mon}</Text>
                                                                 </TouchableOpacity>
-                                                                <TouchableOpacity style={{  width: "20%", flexDirection: 'row',  justifyContent:"center", alignItems: 'center', }} onPress={() =>
+                                                                <TouchableOpacity style={{ width: "15%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} onPress={() =>
                                                                     this.setState({ addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false, addDesc: this.state.daysData.Mon_TaskComments, addDescField: 1, })}>
-                                                                    <Image style={{ height: 40, width: 40,}} source={require("../Assets/message.png")} />
+                                                                    <Image style={{ height: 35, width: 35, }} source={require("../Assets/message.png")} />
                                                                 </TouchableOpacity>
                                                             </View>
                                                         </View>
                                                         {
-                                                            this.state.dvTotMon > this.state.MaxHrsPerDay &&  this.state.daysData.Status !== "Approved"?
+                                                            this.state.dvTotMon > this.state.MaxHrsPerDay && this.state.daysData.Status !== "Approved" ?
                                                                 <Text numberOfLines={1} style={{ fontSize: 14, fontWeight: '900', color: 'red' }}>
-                                                                    {" * Maximum time allowed per day is exceeding."}
+                                                                    {" * Maximum time allowed per day is "+  this.state.MaxHrsPerDay + " hr."}
                                                                 </Text>
                                                                 : null
                                                         }
@@ -1208,36 +1230,40 @@ class TimeSheet extends Component {
                                                     <View style={2 % 2 === 0 ? styles.strip1 : styles.strip2} />
                                                     <View style={styles.view}>
                                                         <View style={styles.flexRow1}>
-                                                            <View style={{ width: "40%" }}>
+                                                            <View style={{ width: "30%" }}>
                                                                 <Text style={{ fontSize: 16 }}>{this.state.lblTue}</Text>
                                                             </View>
-                                                            <View style={{ width: "60%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
-                                                                {
-                                                                    this.state.daysData.Status == "Saved" ||  this.state.daysData.Status == "Submitted"?
-                                                                        <TouchableOpacity style={[styles.hrsData, { width: "30%", borderColor: 'gray', backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
+                                                            <View style={{ width: "70%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
+                                                            <TouchableOpacity style={{ width: "15%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} onPress={() =>
+                                                                    this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Tue_ApprRemark })}>
+                                                                    <Image style={{ height: 40, width: 40, }} source={require("../Assets/msgbg.png")} />
+                                                                </TouchableOpacity>
+                                                                {/* {
+                                                                    this.state.daysData.Status == "Saved" || this.state.daysData.Status == "Submitted" ? */}
+                                                                        <TouchableOpacity style={[styles.hrsData, { width: "25%", borderColor: 'gray', backgroundColor: this.props.secColor }]}>
                                                                             <Text style={{ fontSize: 16, color: "#4D504F" }}>{this.state.dvTotTue}</Text>
                                                                         </TouchableOpacity>
-                                                                        :
-                                                                        <TouchableOpacity style={{ width: "30%", flexDirection: 'row',  justifyContent:"center", alignItems: 'center', }} onPress={() =>
-                                                                            this.setState({addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Tue_ApprRemark  })}>
+                                                                        {/* :
+                                                                        <TouchableOpacity style={{ width: "30%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} onPress={() =>
+                                                                            this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Tue_ApprRemark })}>
                                                                             <Image style={{ height: 50, width: 50, }} source={require("../Assets/msgbg.png")} />
                                                                         </TouchableOpacity>
-                                                                }
+                                                                } */}
                                                                 <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.daysData.Status == "Saved" ? true : false, dayField: 'Tue', dayField: 2, }) }}
-                                                                    style={[styles.hrsData, {width: "30%", backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
+                                                                    style={[styles.hrsData, { width: "25%", backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
                                                                     <Text style={{ fontSize: 16 }}>{this.state.daysData.Tue == "" ? "--:--" : this.state.daysData.Tue}</Text>
                                                                 </TouchableOpacity>
-                                                                <TouchableOpacity style={{ width: "20%", flexDirection: 'row', justifyContent:"center", alignItems: 'center', }} onPress={() =>
+                                                                <TouchableOpacity style={{ width: "15%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} onPress={() =>
                                                                     this.setState({ addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false, addDesc: this.state.daysData.Tue_TaskComments, addDescField: 2, },
                                                                         () => { })}>
-                                                                    <Image style={{ height: 40, width: 40 }} source={require("../Assets/message.png")} />
+                                                                    <Image style={{ height: 35, width: 35 }} source={require("../Assets/message.png")} />
                                                                 </TouchableOpacity>
                                                             </View>
                                                         </View>
                                                         {
-                                                            this.state.dvTotTue > this.state.MaxHrsPerDay &&  this.state.daysData.Status !== "Approved"?
+                                                            this.state.dvTotTue > this.state.MaxHrsPerDay && this.state.daysData.Status !== "Approved" ?
                                                                 <Text numberOfLines={1} style={{ fontSize: 14, fontWeight: '900', color: 'red' }}>
-                                                                    {" * Maximum time allowed per day is exceeding."}
+                                                                    {" * Maximum time allowed per day is "+  this.state.MaxHrsPerDay + " hr."}
                                                                 </Text>
                                                                 : null
                                                         }
@@ -1250,78 +1276,86 @@ class TimeSheet extends Component {
                                                     <View style={this.props.index % 2 === 0 ? styles.strip1 : styles.strip2} />
                                                     <View style={styles.view}>
                                                         <View style={styles.flexRow1}>
-                                                            <View style={{ width: "40%" }}>
+                                                            <View style={{ width: "30%" }}>
                                                                 <Text style={{ fontSize: 16 }}>{this.state.lblWed}</Text>
                                                             </View>
-                                                            <View style={{ width: "60%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
-                                                                {
-                                                                    this.state.daysData.Status == "Saved" ||  this.state.daysData.Status == "Submitted"?
-                                                                        <TouchableOpacity style={[styles.hrsData, { width: "30%", borderColor: 'gray', backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
+                                                            <View style={{ width: "70%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
+                                                            <TouchableOpacity style={{ width: "15%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} onPress={() =>
+                                                                    this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Wed_ApprRemark })}>
+                                                                    <Image style={{ height: 40, width: 40, }} source={require("../Assets/msgbg.png")} />
+                                                                </TouchableOpacity>
+                                                                {/* {
+                                                                    this.state.daysData.Status == "Saved" || this.state.daysData.Status == "Submitted" ? */}
+                                                                        <TouchableOpacity style={[styles.hrsData, { width: "25%", borderColor: 'gray', backgroundColor: this.props.secColor }]}>
                                                                             <Text style={{ fontSize: 16, color: "#4D504F" }}>{this.state.dvTotWed}</Text>
                                                                         </TouchableOpacity>
-                                                                        :
-                                                                        <TouchableOpacity style={{ width: "30%", flexDirection: 'row',  justifyContent:"center", alignItems: 'center', }} onPress={() =>
-                                                                            this.setState({addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Wed_ApprRemark  })}>
+                                                                        {/* :
+                                                                        <TouchableOpacity style={{ width: "30%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} onPress={() =>
+                                                                            this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Wed_ApprRemark })}>
                                                                             <Image style={{ height: 50, width: 50, }} source={require("../Assets/msgbg.png")} />
                                                                         </TouchableOpacity>
-                                                                }
+                                                                } */}
                                                                 <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.daysData.Status == "Saved" ? true : false, dayField: 'Wed', dayField: 3, }) }}
-                                                                    style={[styles.hrsData, {width: "30%", backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
+                                                                    style={[styles.hrsData, { width: "25%", backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
                                                                     <Text style={{ fontSize: 16 }}>{this.state.daysData.Wed == "" ? "--:--" : this.state.daysData.Wed}</Text>
                                                                 </TouchableOpacity>
-                                                                <TouchableOpacity style={{ width: "20%", flexDirection: 'row',  justifyContent:"center", alignItems: 'center', }} onPress={() =>
+                                                                <TouchableOpacity style={{ width: "15%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} onPress={() =>
                                                                     this.setState({ addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false, addDesc: this.state.daysData.Wed_TaskComments, addDescField: 3, },
                                                                         () => { })}>
-                                                                    <Image style={{  height: 40, width: 40 }} source={require("../Assets/message.png")} />
+                                                                    <Image style={{ height: 35, width: 35 }} source={require("../Assets/message.png")} />
                                                                 </TouchableOpacity>
                                                             </View>
                                                         </View>
                                                         {
-                                                            this.state.dvTotWed > this.state.MaxHrsPerDay  &&  this.state.daysData.Status !== "Approved"?
+                                                            this.state.dvTotWed > this.state.MaxHrsPerDay && this.state.daysData.Status !== "Approved" ?
                                                                 <Text numberOfLines={1} style={{ fontSize: 14, fontWeight: '900', color: 'red' }}>
-                                                                    {" * Maximum time allowed per day is exceeding."}
+                                                                    {" * Maximum time allowed per day is "+  this.state.MaxHrsPerDay + " hr."}
                                                                 </Text>
                                                                 : null
                                                         }
                                                     </View>
                                                 </View>
                                             </Card>
-                                            
+
                                             <Card elevation={2} style={styles.container} >
                                                 <View style={styles.flexRow}>
                                                     <View style={2 % 2 === 0 ? styles.strip1 : styles.strip2} />
                                                     <View style={styles.view}>
                                                         <View style={styles.flexRow1}>
-                                                            <View style={{ width: "40%" }}>
+                                                            <View style={{ width: "30%" }}>
                                                                 <Text style={{ fontSize: 16 }}>{this.state.lblThu}</Text>
                                                             </View>
-                                                            <View style={{ width: "60%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
-                                                                {
-                                                                    this.state.daysData.Status == "Saved" ||  this.state.daysData.Status == "Submitted"?
-                                                                        <TouchableOpacity style={[styles.hrsData, { width: "30%", borderColor: 'gray', backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
+                                                            <View style={{ width: "70%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
+                                                            <TouchableOpacity style={{ width: "15%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} onPress={() =>
+                                                                    this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Thu_ApprRemark })}>
+                                                                    <Image style={{ height: 40, width: 40, }} source={require("../Assets/msgbg.png")} />
+                                                                </TouchableOpacity>
+                                                                {/* {
+                                                                    this.state.daysData.Status == "Saved" || this.state.daysData.Status == "Submitted" ? */}
+                                                                        <TouchableOpacity style={[styles.hrsData, { width: "25%", borderColor: 'gray', backgroundColor: this.props.secColor }]}>
                                                                             <Text style={{ fontSize: 16, color: "#4D504F" }}>{this.state.dvTotThu}</Text>
                                                                         </TouchableOpacity>
-                                                                        :
-                                                                        <TouchableOpacity style={{ width: "30%", flexDirection: 'row',  justifyContent:"center", alignItems: 'center', }} onPress={() =>
-                                                                            this.setState({addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Thu_ApprRemark  })}>
+                                                                        {/* :
+                                                                        <TouchableOpacity style={{ width: "30%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} onPress={() =>
+                                                                            this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Thu_ApprRemark })}>
                                                                             <Image style={{ height: 50, width: 50, }} source={require("../Assets/msgbg.png")} />
                                                                         </TouchableOpacity>
-                                                                }
+                                                                } */}
                                                                 <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.daysData.Status == "Saved" ? true : false, dayField: 'Thu', dayField: 4, }) }}
-                                                                    style={[styles.hrsData, { width: "30%", backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
+                                                                    style={[styles.hrsData, { width: "25%", backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
                                                                     <Text style={{ fontSize: 16 }}>{this.state.daysData.Thu == "" ? "--:--" : this.state.daysData.Thu}</Text>
                                                                 </TouchableOpacity>
-                                                                <TouchableOpacity style={{width: "20%", flexDirection: 'row',  justifyContent:"center", alignItems: 'center', }} onPress={() =>
+                                                                <TouchableOpacity style={{ width: "15%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} onPress={() =>
                                                                     this.setState({ addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false, addDesc: this.state.daysData.Thu_TaskComments, addDescField: 4, },
                                                                         () => { })}>
-                                                                    <Image style={{ height: 40, width: 40 }} source={require("../Assets/message.png")} />
+                                                                    <Image style={{ height: 35, width: 35 }} source={require("../Assets/message.png")} />
                                                                 </TouchableOpacity>
                                                             </View>
                                                         </View>
                                                         {
-                                                            this.state.dvTotThu > this.state.MaxHrsPerDay &&  this.state.daysData.Status !== "Approved"?
+                                                            this.state.dvTotThu > this.state.MaxHrsPerDay && this.state.daysData.Status !== "Approved" ?
                                                                 <Text numberOfLines={1} style={{ fontSize: 14, fontWeight: '900', color: 'red' }}>
-                                                                    {" * Maximum time allowed per day is exceeding."}
+                                                                    {" * Maximum time allowed per day is "+  this.state.MaxHrsPerDay + " hr."}
                                                                 </Text>
                                                                 : null
                                                         }
@@ -1334,36 +1368,40 @@ class TimeSheet extends Component {
                                                     <View style={this.props.index % 2 === 0 ? styles.strip1 : styles.strip2} />
                                                     <View style={styles.view}>
                                                         <View style={styles.flexRow1}>
-                                                            <View style={{ width: "40%" }}>
+                                                            <View style={{ width: "30%" }}>
                                                                 <Text style={{ fontSize: 16 }}>{this.state.lblFri}</Text>
                                                             </View>
-                                                            <View style={{ width: "60%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
-                                                                {
-                                                                    this.state.daysData.Status == "Saved" ||  this.state.daysData.Status == "Submitted"?
-                                                                        <TouchableOpacity style={[styles.hrsData, { width: "30%", borderColor: 'gray', backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
+                                                            <View style={{ width: "70%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
+                                                                <TouchableOpacity style={{ width: "15%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} onPress={() =>
+                                                                    this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Fri_ApprRemark })}>
+                                                                    <Image style={{ height: 40, width: 40, }} source={require("../Assets/msgbg.png")} />
+                                                                </TouchableOpacity>
+                                                                {/* {
+                                                                    this.state.daysData.Status == "Saved" || this.state.daysData.Status == "Submitted" ? */}
+                                                                        <TouchableOpacity style={[styles.hrsData, { width: "25%", borderColor: 'gray', backgroundColor: this.props.secColor }]}>
                                                                             <Text style={{ fontSize: 16, color: "#4D504F" }}>{this.state.dvTotFri}</Text>
                                                                         </TouchableOpacity>
-                                                                        :
-                                                                        <TouchableOpacity style={{ width: "30%", flexDirection: 'row',  justifyContent:"center", alignItems: 'center', }} onPress={() =>
-                                                                            this.setState({addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Fri_ApprRemark  })}>
+                                                                        {/* :
+                                                                        <TouchableOpacity style={{ width: "30%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} onPress={() =>
+                                                                            this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Fri_ApprRemark })}>
                                                                             <Image style={{ height: 50, width: 50, }} source={require("../Assets/msgbg.png")} />
                                                                         </TouchableOpacity>
-                                                                }
+                                                                } */}
                                                                 <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.daysData.Status == "Saved" ? true : false, dayField: 'Fri', dayField: 5, }) }}
-                                                                    style={[styles.hrsData, { width: "30%", backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
+                                                                    style={[styles.hrsData, { width: "25%", backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
                                                                     <Text style={{ fontSize: 16 }}>{this.state.daysData.Fri == "" ? "--:--" : this.state.daysData.Fri}</Text>
                                                                 </TouchableOpacity>
-                                                                <TouchableOpacity style={{ width: "20%", flexDirection: 'row',  justifyContent:"center", alignItems: 'center', }} onPress={() =>
+                                                                <TouchableOpacity style={{ width: "15%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} onPress={() =>
                                                                     this.setState({ addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false, addDesc: this.state.daysData.Fri_TaskComments, addDescField: 5, },
                                                                         () => { })}>
-                                                                    <Image style={{ height: 40, width: 40 }} source={require("../Assets/message.png")} />
+                                                                    <Image style={{ height: 35, width: 35 }} source={require("../Assets/message.png")} />
                                                                 </TouchableOpacity>
                                                             </View>
                                                         </View>
                                                         {
-                                                            this.state.dvTotFri > this.state.MaxHrsPerDay &&  this.state.daysData.Status !== "Approved"?
+                                                            this.state.dvTotFri > this.state.MaxHrsPerDay && this.state.daysData.Status !== "Approved" ?
                                                                 <Text numberOfLines={1} style={{ fontSize: 14, fontWeight: '900', color: 'red' }}>
-                                                                    {" * Maximum time allowed per day is exceeding."}
+                                                                    {" * Maximum time allowed per day is "+  this.state.MaxHrsPerDay + " hr."}
                                                                 </Text>
                                                                 : null
                                                         }
@@ -1376,36 +1414,40 @@ class TimeSheet extends Component {
                                                     <View style={2 % 2 === 0 ? styles.strip1 : styles.strip2} />
                                                     <View style={styles.view}>
                                                         <View style={styles.flexRow1}>
-                                                            <View style={{ width: "40%" }}>
+                                                            <View style={{ width: "30%" }}>
                                                                 <Text style={{ fontSize: 16 }}>{this.state.lblSat}</Text>
                                                             </View>
-                                                            <View style={{ width: "60%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
-                                                                {
-                                                                    this.state.daysData.Status == "Saved" ||  this.state.daysData.Status == "Submitted"?
-                                                                        <TouchableOpacity style={[styles.hrsData, { width: "30%", borderColor: 'gray', backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
+                                                            <View style={{ width: "70%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
+                                                            <TouchableOpacity style={{ width: "15%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} onPress={() =>
+                                                                    this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Sat_ApprRemark })}>
+                                                                    <Image style={{ height: 40, width: 40, }} source={require("../Assets/msgbg.png")} />
+                                                                </TouchableOpacity>
+                                                                {/* {
+                                                                    this.state.daysData.Status == "Saved" || this.state.daysData.Status == "Submitted" ? */}
+                                                                        <TouchableOpacity style={[styles.hrsData, { width: "25%", borderColor: 'gray', backgroundColor: this.props.secColor}]}>
                                                                             <Text style={{ fontSize: 16, color: "#4D504F" }}>{this.state.dvTotSat}</Text>
                                                                         </TouchableOpacity>
-                                                                        :
-                                                                        <TouchableOpacity style={{ width: "30%", flexDirection: 'row',  justifyContent:"center", alignItems: 'center', }} onPress={() =>
-                                                                            this.setState({addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Sat_ApprRemark  })}>
+                                                                        {/* :
+                                                                        <TouchableOpacity style={{ width: "30%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} onPress={() =>
+                                                                            this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Sat_ApprRemark })}>
                                                                             <Image style={{ height: 50, width: 50, }} source={require("../Assets/msgbg.png")} />
                                                                         </TouchableOpacity>
-                                                                }
+                                                                } */}
                                                                 <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.daysData.Status == "Saved" ? true : false, dayField: 'Sat', dayField: 6, }) }}
-                                                                    style={[styles.hrsData, { width: "30%", backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
+                                                                    style={[styles.hrsData, { width: "25%", backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
                                                                     <Text style={{ fontSize: 16 }}>{this.state.daysData.Sat == "" ? "--:--" : this.state.daysData.Sat}</Text>
                                                                 </TouchableOpacity>
-                                                                <TouchableOpacity style={{width: "20%",  flexDirection: 'row',  justifyContent:"center", alignItems: 'center',}} onPress={() =>
+                                                                <TouchableOpacity style={{ width: "15%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} onPress={() =>
                                                                     this.setState({ addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false, addDesc: this.state.daysData.Sat_TaskComments, addDescField: 6, },
                                                                         () => { })}>
-                                                                    <Image style={{ height: 40, width: 40 }} source={require("../Assets/message.png")} />
+                                                                    <Image style={{ height: 35, width: 35 }} source={require("../Assets/message.png")} />
                                                                 </TouchableOpacity>
                                                             </View>
                                                         </View>
                                                         {
-                                                            this.state.dvTotSat > this.state.MaxHrsPerDay &&  this.state.daysData.Status !== "Approved"?
+                                                            this.state.dvTotSat > this.state.MaxHrsPerDay && this.state.daysData.Status !== "Approved" ?
                                                                 <Text numberOfLines={1} style={{ fontSize: 14, fontWeight: '900', color: 'red' }}>
-                                                                    {" * Maximum time allowed per day is exceeding."}
+                                                                    {" * Maximum time allowed per day is "+  this.state.MaxHrsPerDay + " hr."}
                                                                 </Text>
                                                                 : null
                                                         }
@@ -1418,36 +1460,40 @@ class TimeSheet extends Component {
                                                     <View style={this.props.index % 2 === 0 ? styles.strip1 : styles.strip2} />
                                                     <View style={styles.view}>
                                                         <View style={styles.flexRow1}>
-                                                            <View style={{ width: "40%" }}>
+                                                            <View style={{ width: "30%" }}>
                                                                 <Text style={{ fontSize: 16 }}>{this.state.lblSun}</Text>
                                                             </View>
-                                                            <View style={{ width: "60%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
-                                                                {
-                                                                    this.state.daysData.Status == "Saved" ||  this.state.daysData.Status == "Submitted"?
-                                                                        <TouchableOpacity style={[styles.hrsData, { width: "30%", borderColor: 'gray', backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
+                                                            <View style={{ width: "70%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
+                                                            <TouchableOpacity style={{ width: "15%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} onPress={() =>
+                                                                    this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Sun_ApprRemark })}>
+                                                                    <Image style={{ height: 40, width: 40, }} source={require("../Assets/msgbg.png")} />
+                                                                </TouchableOpacity>
+                                                                {/* {
+                                                                    this.state.daysData.Status == "Saved" || this.state.daysData.Status == "Submitted" ? */}
+                                                                        <TouchableOpacity style={[styles.hrsData, { width: "25%", borderColor: 'gray', backgroundColor: this.props.secColor }]}>
                                                                             <Text style={{ fontSize: 16, color: "#4D504F" }}>{this.state.dvTotSun}</Text>
                                                                         </TouchableOpacity>
-                                                                        :
-                                                                        <TouchableOpacity style={{ width: "30%", flexDirection: 'row', justifyContent:"center", alignItems: 'center', }} onPress={() =>
-                                                                            this.setState({addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Sun_ApprRemark  })}>
+                                                                        {/* :
+                                                                        <TouchableOpacity style={{ width: "30%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} onPress={() =>
+                                                                            this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Sun_ApprRemark })}>
                                                                             <Image style={{ height: 50, width: 50, }} source={require("../Assets/msgbg.png")} />
                                                                         </TouchableOpacity>
-                                                                }
+                                                                } */}
                                                                 <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.daysData.Status == "Saved" ? true : false, dayField: 'Mon', dayField: 7, }) }}
-                                                                    style={[styles.hrsData, {width: "30%", backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
+                                                                    style={[styles.hrsData, { width: "25%", backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
                                                                     <Text style={{ fontSize: 16 }}>{this.state.daysData.Sun == "" ? "--:--" : this.state.daysData.Sun}</Text>
                                                                 </TouchableOpacity>
-                                                                <TouchableOpacity style={{ width: "20%", flexDirection: 'row', justifyContent:"center", alignItems: 'center', }} onPress={() =>
+                                                                <TouchableOpacity style={{ width: "15%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} onPress={() =>
                                                                     this.setState({ addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false, addDesc: this.state.daysData.Sun_TaskComments, addDescField: 7, },
                                                                         () => { })}>
-                                                                    <Image style={{  height: 40, width: 40 }} source={require("../Assets/message.png")} />
+                                                                    <Image style={{ height: 35, width: 35 }} source={require("../Assets/message.png")} />
                                                                 </TouchableOpacity>
                                                             </View>
                                                         </View>
                                                         {
-                                                            this.state.dvTotSun > this.state.MaxHrsPerDay &&  this.state.daysData.Status !== "Approved"?
+                                                            this.state.dvTotSun > this.state.MaxHrsPerDay && this.state.daysData.Status !== "Approved" ?
                                                                 <Text numberOfLines={1} style={{ fontSize: 14, fontWeight: '900', color: 'red' }}>
-                                                                    {" * Maximum time allowed per day is exceeding."}
+                                                                    {" * Maximum time allowed per day is "+  this.state.MaxHrsPerDay + " hr."}
                                                                 </Text>
                                                                 : null
                                                         }
@@ -1460,7 +1506,7 @@ class TimeSheet extends Component {
                                 </View>
                             </View>
                         </ScrollView>
-                      
+
                         <FloatingAction
                             actions={actions}
                             animated={true}
