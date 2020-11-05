@@ -16,7 +16,7 @@ async function FechDrawerMenu(empId, empRole, baseUrl) {
         return {};
       });
     
-      const response = await fetch(`${baseUrl}/api/login/GetMenuList`, {
+      const response = await fetch(`${baseUrl}/api/login/GetMenus`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

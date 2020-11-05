@@ -43,9 +43,10 @@ class DrawerComponent extends Component {
     };
 
     handleMenu = (response) => {
+console.log("response",response);
 
         Object.keys(response).map((key, index) => {
-            console.log("response[key].AutoId",response[key].MenuName);
+            // console.log("response[key].AutoId",response[key].MenuName);
             if ((response[key].MenuName) === "My Timesheet") {
                 myTimesheet = true
             }
@@ -70,8 +71,8 @@ class DrawerComponent extends Component {
         // BackHandler.addEventListener("hardwareBackPress", this.backAction);
         await getData('UserRole').then((value) => {
             this.setState({ UserRole: value }, async () => {
-                var drawerMenu = await FechDrawerMenu(this.props.user, this.state.UserRole, this.props.baseUrl)
-                this.handleMenu(drawerMenu.MenuList[0].Table)
+                var drawerMenu = await FechDrawerMenu(this.props.user, this.state.UserRole, this.props.baseUrl)                
+                this.handleMenu(drawerMenu.EmployeeMenu[0])
             })
         })
     }

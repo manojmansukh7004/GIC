@@ -11,9 +11,11 @@ import { connect } from 'react-redux'
 import { setUser, setBaseUrl } from '../Redux/Action'
 const displayWidth = Dimensions.get('window').width;
 const contantPadding = 30;
-import {  ProgressBar } from 'material-bread';
+import { FechDrawerMenu } from "../Services/FechDrawerMenu"
 import { UIActivityIndicator } from 'react-native-indicators';
 import { FetchMobileVersion } from '../Services/FetchMobileVersion'
+var myTimesheet = false, timesheetApproval = false
+
 class SplashScreen extends Component {
   state = {
     loading: true,
@@ -35,14 +37,14 @@ class SplashScreen extends Component {
   getOrientation = () => {
 
     if (this.refs.rootView) {
-        if (Dimensions.get('window').width < Dimensions.get('window').height) {
-            this.setState({ orientation: 'portrait' });
-        }
-        else {
-            this.setState({ orientation: 'landscape' });
-        }
+      if (Dimensions.get('window').width < Dimensions.get('window').height) {
+        this.setState({ orientation: 'portrait' });
+      }
+      else {
+        this.setState({ orientation: 'landscape' });
+      }
     }
-}
+  }
 
   FetchFiltetData = async () => {
 
@@ -52,19 +54,43 @@ class SplashScreen extends Component {
     await getData('UserId').then((value) => {
       this.setState({ UserId: value })
     })
-    // await getData('UserRole').then((value) => {     
-    //  this.setState({ UserRole: value },()=>{console.log("vvvvvvvvvvvvvvvv",this.state.UserRole);
-    //  })
-    // })
+    await getData('UserRole').then((value) => {
+      this.setState({ UserRole: value })
+    })
 
     var userId = this.state.UserId
     var baseUrl = this.state.baseUrl
     this.props.setUser(userId)
     this.props.setBaseUrl(baseUrl)
+    var response = await FechDrawerMenu(this.state.UserId, this.state.UserRole, this.state.baseUrl)
+    var drawerMenu =response.EmployeeMenu[0]
+    Object.keys(drawerMenu).map((key, index) => {
+      console.log("respfffffffffffffnse",drawerMenu[key].MenuName);
 
-    this.props.navigation.navigate("TimeSheet",{"Loading": false})
-    this.setState({ loading: false });  
-
+      if (drawerMenu[key].MenuName === "My Timesheet") {
+        myTimesheet= true
+        console.log("kkkkkkkkkkkkkk");
+        
+        // this.props.navigation.navigate("TimeSheet", { "Loading": false })
+        // this.setState({ loading: false });
+      }
+      else if (drawerMenu[key].MenuName === "Timesheet Approval") {
+        timesheetApproval= true
+        console.log("aaaaaaaaaaaaa");
+        // this.props.navigation.navigate("TsApproval", { "Loading": false })
+        // this.setState({ loading: false });
+      }
+      // else if ((response.EmployeeMenu[0][key].MenuName === "My Timesheet") && response.EmployeeMenu[0][key].MenuName === "Timesheet Approval") {
+      //   this.props.navigation.navigate("Help", { "Loading": false })
+      //   this.setState({ loading: false });
+      // }
+    })
+    console.log("ppppppppppppp",myTimesheet, timesheetApproval);
+    
+    myTimesheet === true ? this.props.navigation.navigate("TimeSheet", { "Loading": false }):
+    timesheetApproval === true?this.props.navigation.navigate("TsApproval", { "Loading": false }):
+    this.props.navigation.navigate("Help", { "Loading": false })
+    this.setState({ loading: false });
   }
 
   onPressUpdate = () => {
@@ -74,7 +100,7 @@ class SplashScreen extends Component {
   async componentDidMount() {
     this.getOrientation();
     Dimensions.addEventListener('change', () => {
-        this.getOrientation();
+      this.getOrientation();
     });
     const version = DeviceInfo.getVersion();
     console.log("version", version);
@@ -90,8 +116,8 @@ class SplashScreen extends Component {
       }
       var baseUrl = "http://gictimesheettest.orgtix.com/webApi"
       const response = await FetchMobileVersion(payload, baseUrl)
-      console.log("mjjj",response.MobileVerion[0].Table[0].androidVersionCode);
-      
+      console.log("mjjj", response.MobileVerion[0].Table[0].androidVersionCode);
+
       var UpdatedVersionCode = response.MobileVerion[0].Table[0].androidVersionCode
       if (version < UpdatedVersionCode) {
         this.setState({
@@ -121,7 +147,7 @@ class SplashScreen extends Component {
       return (
         <View style={styles.container}>
           <Card style={styles.card}>
-            <Image style={{ height: 90, width: 240 , margin:20}} source={require('../Assets/logo.jpg')} />
+            <Image style={{ height: 90, width: 240, margin: 20 }} source={require('../Assets/logo.jpg')} />
 
             <Text style={styles.textCard}>An important update is available.</Text>
             <Text style={styles.textCard}>Please update your app to</Text>
@@ -144,17 +170,17 @@ class SplashScreen extends Component {
     }
     return (
       <View ref="rootView" style={[styles.Container]}>
-      <StatusBar translucent barStyle="light-content" backgroundColor='#297AF9' />
-       <View style={{marginTop:80}}>
-       <Image style={{ height: 100, width: 250 ,}} source={require('../Assets/logo.jpg')} />
-      {
-        this.state.loading == true ? 
-        <UIActivityIndicator style={{bottom:120}} color= "gray" size= {50}/>
-        
-        :null
-      }
+        <StatusBar translucent barStyle="light-content" backgroundColor='#297AF9' />
+        <View style={{ marginTop: 80 }}>
+          <Image style={{ height: 100, width: 250, }} source={require('../Assets/logo.jpg')} />
+          {
+            this.state.loading == true ?
+              <UIActivityIndicator style={{ bottom: 120 }} color="gray" size={50} />
 
-       </View>
+              : null
+          }
+
+        </View>
 
       </View>
     );
@@ -184,7 +210,7 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'flex-start',
     alignItems: 'center',
-},
+  },
   img: {
     width: displayWidth - 3.4 * contantPadding,
     height: (displayWidth - 3.5 * contantPadding) / 3,

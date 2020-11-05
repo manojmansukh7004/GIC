@@ -19,12 +19,10 @@ import { GetDataOnClientChange } from '../Services/TsApproval/GetDataOnClientCha
 import { GetEmpListForApproval } from '../Services/TsApproval/GetEmpListForApproval'
 import { GetDataforApprOnSearch } from '../Services/TsApproval/GetDataforApprOnSearch'
 import { SaveUpdateApproverAction } from '../Services/TsApproval/SaveUpdateApproverAction'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 var lblMon = "", lblTue = "", lblWed = "", lblThu = "", lblFri = "", lblSat = "", lblSun = ""
 var TotalTime = "", dvTotMon = "", dvTotTue = "", dvTotWed = "", dvTotThu = "", dvTotFri = "", dvTotSat = "", dvTotSun = ""
-var timesheetID = '', clientCode = '', projectCode = '', typeofWorkId = '', phaseId = '', activityId = '', workOrderId = '', taskDesc = '', status = '', duration = '', dailyTaskComments = '', date = '', autoId = '', status = '', currRecordStatus = ''
-var Status = '', selectedRow = ''
+var Status = '',dataArr = []
 var obj = '', objArr = [], count = 0
 const showToast = (Msg) => {
     ToastAndroid.show(Msg, ToastAndroid.LONG);
@@ -132,13 +130,9 @@ class TimeSheet extends Component {
             Object.getOwnPropertyNames(this.state.data).map((key, index) => (
                 this.state.data[key].Value !== undefined ? selectedNode.push(this.state.data[key].Value) : null
             ))
-            this.setState({ selectedVal: this.state.clientList, client: this.state.clientList, clientValue: selectedNode, project: [], type: '', resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] },
+            this.setState({ selectedVal: this.state.clientList, client: this.state.clientList, clientValue: selectedNode, project: [], type: '', type1: [], resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] },
                 async () => {
-                    console.log("aasssss", this.state.clientValue);
-
                     var projectData = await GetDataOnClientChange(this.props.user, this.state.deliverTypeValue, this.state.projectGroupValue, this.state.clientValue, this.props.baseUrl)
-                    console.log("PPPPPPPPPPPPP", projectData);
-
                     this.setState({ projectList: projectData.ProjectList[0] })
                 })
         }
@@ -147,7 +141,7 @@ class TimeSheet extends Component {
             Object.getOwnPropertyNames(this.state.data).map((key, index) => (
                 selectedNode.push(this.state.data[key].Value)
             ))
-            this.setState({ selectedVal: this.state.deliverTypeList, deliverType: this.state.deliverTypeList, deliverTypeValue: selectedNode, project: [], type: '', resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] },
+            this.setState({ selectedVal: this.state.deliverTypeList, deliverType: this.state.deliverTypeList, deliverTypeValue: selectedNode, project: [], type: '', type1: [], resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] },
                 async () => {
                     var projectData = await GetDataOnClientChange(this.props.user, this.state.deliverTypeValue, this.state.projectGroupValue, this.state.clientValue, this.props.baseUrl)
                     this.setState({ projectList: projectData.ProjectList[0] })
@@ -158,7 +152,7 @@ class TimeSheet extends Component {
             Object.getOwnPropertyNames(this.state.data).map((key, index) => (
                 selectedNode.push(this.state.data[key].Value)
             ))
-            this.setState({ selectedVal: this.state.projectGroupList, projectGroup: this.state.projectGroupList, projectGroupValue: selectedNode, project: [], type: '', resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] },
+            this.setState({ selectedVal: this.state.projectGroupList, projectGroup: this.state.projectGroupList, projectGroupValue: selectedNode, project: [], type: '', type1: [], resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] },
                 async () => {
                     var projectData = await GetDataOnClientChange(this.props.user, this.state.deliverTypeValue, this.state.projectGroupValue, this.state.clientValue, this.props.baseUrl)
                     this.setState({ projectList: projectData.ProjectList[0] })
@@ -169,7 +163,7 @@ class TimeSheet extends Component {
             Object.getOwnPropertyNames(this.state.data).map((key, index) => (
                 selectedNode.push(this.state.data[key].Value)
             ))
-            this.setState({ selectedVal: this.state.projectList, project: this.state.projectList, projectValue: selectedNode, type: '', resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] })
+            this.setState({ selectedVal: this.state.projectList, project: this.state.projectList, projectValue: selectedNode, type: '', type1: [], resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] })
             // this.setState({ project: this.state.projectList, selectedVal: this.state.projectList }, () => { this.handleSelectedData() })
         }
     }
@@ -253,7 +247,7 @@ class TimeSheet extends Component {
                 var selectedNode = this.state.deliverType.filter(element => element !== item)
                 var selectedNode1 = this.state.selectedVal.filter(element => element !== item)
                 var selectedNode2 = this.state.deliverTypeValue.filter(element => element !== item.Value)
-                this.setState({ selectedVal: selectedNode1, deliverType: selectedNode, deliverTypeValue: selectedNode2, project: [], type: '', resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] },
+                this.setState({ selectedVal: selectedNode1, deliverType: selectedNode, deliverTypeValue: selectedNode2, project: [], type: '', type1: [], resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] },
                     async () => {
                         var projectData = await GetDataOnClientChange(this.props.user, this.state.deliverTypeValue, this.state.projectGroupValue, this.state.clientValue, this.props.baseUrl)
                         this.setState({ projectList: projectData.ProjectList[0] })
@@ -263,7 +257,7 @@ class TimeSheet extends Component {
                 var selectedNode = this.state.deliverType.concat(item)
                 var selectedNode1 = this.state.selectedVal.concat(item)
                 var selectedNode2 = this.state.deliverTypeValue.concat(item.Value)
-                this.setState({ selectedVal: selectedNode1, deliverType: selectedNode, deliverTypeValue: selectedNode2, project: [], type: '', resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] },
+                this.setState({ selectedVal: selectedNode1, deliverType: selectedNode, deliverTypeValue: selectedNode2, project: [], type: '', type1: [], resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] },
                     async () => {
                         var projectData = await GetDataOnClientChange(this.props.user, this.state.deliverTypeValue, this.state.projectGroupValue, this.state.clientValue, this.props.baseUrl)
                         console.log("projectData", projectData)
@@ -606,7 +600,7 @@ class TimeSheet extends Component {
 
         Status = data.item.Status,
         // this.setState({Status: data.item.Status},()=>{
-        console.log("Status", Status),
+        // console.log("Status", Status),
         <>
             <TouchableHighlight
                 onPress={() => { this.handledata(data.item, data.index) }}
@@ -635,15 +629,23 @@ class TimeSheet extends Component {
                     {
                         data.item.Status !== 'Saved' && data.item.Status !== 'Submitted' ?
                             <>
-
-                                <View style={{ justifyContent: 'flex-start', alignItems: 'center', width: '15%', backgroundColor: 'transparent' }}>
-                                    <Text style={{ fontSize: 14, color: 'blue', justifyContent: 'center', alignItems: 'center', }}>{"OTP"}</Text>
-                                    <Text style={{ fontSize: 16, color: "black", padding: 5 }}>{data.item.ApprOTPRating}</Text>
-                                </View>
-                                <View style={{ justifyContent: 'flex-start', alignItems: 'center', width: '15%', backgroundColor: 'transparent' }}>
-                                    <Text style={{ fontSize: 14, color: 'blue', justifyContent: 'center', alignItems: 'center', }}>{"QOW"}</Text>
-                                    <Text style={{ fontSize: 16, color: "black", padding: 5 }}>{data.item.ApprQOWRating}</Text>
-                                </View>
+                                {
+                                    data.item.ApprOTPRating == '' ?
+                                        <View style={{ justifyContent: 'flex-start', alignItems: 'center', width: '30%', backgroundColor: 'transparent' }}>
+                                            <Text style={{ fontSize: 14, color: 'green', justifyContent: 'center', alignItems: 'center', }}>{data.item.Status.toUpperCase()}</Text>
+                                        </View>
+                                        :
+                                        <>
+                                            <View style={{ justifyContent: 'flex-start', alignItems: 'center', width: '15%', backgroundColor: 'transparent' }}>
+                                                <Text style={{ fontSize: 14, color: 'blue', justifyContent: 'center', alignItems: 'center', }}>{"OTP"}</Text>
+                                                <Text style={{ fontSize: 16, color: "black", padding: 5 }}>{data.item.ApprOTPRating}</Text>
+                                            </View>
+                                            <View style={{ justifyContent: 'flex-start', alignItems: 'center', width: '15%', backgroundColor: 'transparent' }}>
+                                                <Text style={{ fontSize: 14, color: 'blue', justifyContent: 'center', alignItems: 'center', }}>{"QOW"}</Text>
+                                                <Text style={{ fontSize: 16, color: "black", padding: 5 }}>{data.item.ApprQOWRating}</Text>
+                                            </View>
+                                        </>
+                                }
                             </>
                             :
                             null
@@ -860,7 +862,7 @@ class TimeSheet extends Component {
                                         </View>
                                         <View style={{ width: '45%', borderWidth: 1, borderRadius: 3, borderColor: 'white', justifyContent: 'center', alignItems: 'center', }}>
                                             {/* <Image style={{ height: 20, width: 20, marginLeft: 5, tintColor: 'white' }} source={require("../Assets/calendar.png")} /> */}
-                                            <Text numberOfLines={1} style={styles.text}> {this.state.timesheet == '' ? "--select--" :
+                                            <Text style={styles.text}> {this.state.timesheet == '' ? "--select--" :
                                                 moment(new Date(this.state.timesheet.slice(0, 10).split('-').reverse().join('/'))).format("DD MMM")
                                                 + ' - ' + moment(new Date(this.state.timesheet.slice(14, 24).split('-').reverse().join('/'))).format("DD MMM YYYY")}</Text>
                                         </View>
@@ -958,7 +960,7 @@ class TimeSheet extends Component {
                                                     </View>
                                                     <Modal isVisible={this.state.addDescVisible}>
                                                         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                                            <View style={{ backgroundColor: 'white', borderRadius: 5, width: 350, height: 250 }}>
+                                                            <View style={{ backgroundColor: 'white', borderRadius: 5, width: Dimensions.get('window').width - 50, height: 250 }}>
                                                                 <View style={{ borderTopStartRadius: 5, borderTopEndRadius: 5, height: 50, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
                                                                     <Text style={{ fontSize: title, color: this.props.fontColor }}>{this.state.rating == true ? "Rating" : 'Additional Description'}</Text>
                                                                     <TouchableOpacity onPress={() =>
@@ -1097,9 +1099,9 @@ class TimeSheet extends Component {
 
                             <Modal isVisible={this.state.ratingVisible} >
                                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                    <View style={{ backgroundColor: 'white', borderRadius: 5, width: "90%", height: this.state.action == "Approved" && this.state.ratingAllow == true ? 450 : this.state.action == "Approved" && this.state.ratingAllow == false ? 300 : 300 }}>
+                                    <View style={{ backgroundColor: 'white', borderRadius: 5, width: Dimensions.get('window').width - 50, height: this.state.action == "Approved" && this.state.ratingAllow == true ? 450 : this.state.action == "Approved" && this.state.ratingAllow == false ? 300 : 300 }}>
                                         <View style={{ borderTopStartRadius: 5, borderTopEndRadius: 5, height: 50, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
-                                            <Text style={{ fontSize: title, color: this.props.fontColor }}>{'Rating'}</Text>
+                                            <Text style={{ fontSize: title, color: this.props.fontColor }}>{ this.state.action == "Approved"  && this.state.ratingAllow ? 'Rating': "Remark"}</Text>
                                             <TouchableOpacity onPress={() =>
                                                 this.setState({ ratingVisible: false, },
                                                     () => { })}>
@@ -1182,7 +1184,7 @@ class TimeSheet extends Component {
                                 </View>
                             </Modal>
 
-                            <Dialog
+                            {/* <Dialog
                                 visible={this.state.actionVisible}
                                 style={{ backgroundColor: 'white', width: 150, height: 80, justifyContent: 'center', alignItems: 'center' }}
                                 onTouchOutside={() => this.setState({ actionVisible: false, selectedVal: [] }, () => { })}
@@ -1199,11 +1201,11 @@ class TimeSheet extends Component {
                                         <Image style={{ height: 55, width: 55, top: 8 }} source={require('../Assets/cross.png')} />
                                     </TouchableOpacity>
                                 </View>
-                            </Dialog>
+                            </Dialog> */}
 
                             <Modal isVisible={this.state.multiPickerVisible1}>
                                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                    <View style={{ backgroundColor: 'white', height: 350, width: 300, borderRadius: 5 }}>
+                                    <View style={{ backgroundColor: 'white', height: Dimensions.get('window').width - 50, width: Dimensions.get('window').width - 50, borderRadius: 5 }}>
                                         <View style={{ borderTopStartRadius: 5, borderTopEndRadius: 5, height: 50, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
                                             <Text style={{ fontSize: title, color: this.props.fontColor }}>{this.state.title}</Text>
                                             <TouchableOpacity onPress={() =>
@@ -1255,7 +1257,7 @@ class TimeSheet extends Component {
 
                             <Modal isVisible={this.state.multiPickerVisible}>
                                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                    <View style={{ backgroundColor: 'white', height: 400, width: 350, borderRadius: 5 }}>
+                                    <View style={{ backgroundColor: 'white', height: 400, width: Dimensions.get('window').width - 50, borderRadius: 5 }}>
                                         <View style={{ borderTopStartRadius: 5, borderTopEndRadius: 5, height: 50, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
                                             <Text style={{ fontSize: title, color: this.props.fontColor }}>{this.state.title}</Text>
                                             <TouchableOpacity onPress={() =>
@@ -1315,8 +1317,8 @@ class TimeSheet extends Component {
                                                                 </View>
                                                                 <View style={{ width: '10%', backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }}>
                                                                     {
-                                                                        this.state.selectedVal.length == 0 ? null : this.state.selectedVal.includes(this.state.data[item]) ?
-                                                                            <Image
+                                                                        dataArr = this.state.deliverType.concat(this.state.projectGroup).concat(this.state.client).concat(this.state.project).concat(this.state.type1).concat(this.state.resource1).concat(this.state.timesheet1),
+                                                                        dataArr.length == 0 ? null : dataArr.includes(this.state.data[item]) ?                                                                            <Image
                                                                                 source={require('../Assets/tick.png')}
                                                                                 style={{ width: 20, height: 23, marginRight: 15, padding: 5, tintColor: "#4D504F" }}
                                                                             /> : null

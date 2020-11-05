@@ -882,13 +882,11 @@ class TimeSheet extends Component {
                                         </View>
                                         <TouchableOpacity onPress={() => this.setState({ weekVisible: true })}
                                             style={{ flexDirection: 'row', width: "50%", justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderRadius: 3, borderColor: 'white' }}>
-                                            {/* <Image style={{ height: 20, width: 20, marginLeft: 5, tintColor: 'white' }} source={require("../Assets/calendar.png")} /> */}
                                             <Text numberOfLines={1} style={styles.text}> {firstDate1 == '' ? "Select Week" : firstDate1 + " - " + lastDate1}</Text>
                                         </TouchableOpacity>
                                     </View>
 
                                     {
-                                        // this.state.timeSheetButton == false ?
                                         <View style={{ backgroundColor: 'transparent', flexDirection: "row", justifyContent: 'center', alignItems: 'center' }}>
                                             {
                                                 this.state.timesheetData.length == 0 && this.state.display == true ?
@@ -938,7 +936,7 @@ class TimeSheet extends Component {
 
                                 <Modal isVisible={this.state.addDescVisible} collapsable={true}>
                                     <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                        <View style={{ backgroundColor: 'white', borderRadius: 5, width: 350, height: 250 }}>
+                                        <View style={{ backgroundColor: 'white', borderRadius: 5, width: Dimensions.get('window').width - 50, height: 250 }}>
                                             <View style={{ borderTopStartRadius: 5, borderTopEndRadius: 5, height: 50, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
                                                 <Text style={{ fontSize: title, color: this.props.fontColor }}>{this.state.rating == true ? "Rating" : 'Additional Description'}</Text>
                                                 <TouchableOpacity onPress={() =>
@@ -1044,7 +1042,7 @@ class TimeSheet extends Component {
 
                                 <Modal isVisible={this.state.weekVisible}>
                                     <View style={{ justifyContent: 'center', alignItems: 'center', }}>
-                                        <View style={{ backgroundColor: 'white', borderRadius: 5, width: 250, height: 350 }}>
+                                        <View style={{ backgroundColor: 'white', borderRadius: 5, width: 250, height: Dimensions.get('window').width - 50 }}>
                                             <View style={{ borderTopStartRadius: 5, borderTopEndRadius: 5, height: 50, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
                                                 <Text style={{ fontSize: title, color: this.props.fontColor }}>{'Select Week'}</Text>
                                                 <TouchableOpacity onPress={() =>
@@ -1085,7 +1083,6 @@ class TimeSheet extends Component {
                                                                             console.log(" ")
                                                                         }
                                                                         <Text style={styles.textPopup}>
-
                                                                             {firstDate.toUpperCase() + " - " + lastDate.toUpperCase()}
                                                                         </Text>
                                                                         <Divider />
@@ -1148,7 +1145,7 @@ class TimeSheet extends Component {
                                                     <View style={{ paddingLeft: 8 }}>
                                                         <View style={[styles.flexRow1]}>
                                                             <View style={{ width: "40%" }}>
-                                                                <Text style={{ fontSize: 16, }}>{"Day"}</Text>
+                                                                <Text style={{ fontSize: 14, }}>{"Day"}</Text>
                                                             </View>
                                                             <View style={{ width: "60%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'flex-start' }}>
 
@@ -1156,8 +1153,8 @@ class TimeSheet extends Component {
                                                                     {/* {
                                                                         this.state.daysData.Status == "Saved" || this.state.daysData.Status == "Submitted" ? */}
                                                                             <>
-                                                                                <Text style={{ fontSize: 16 }}>{"Total"}</Text>
-                                                                                <Text style={{ fontSize: 16 }}>{"Hr."}</Text>
+                                                                                <Text style={{ fontSize: 14 }}>{"Total"}</Text>
+                                                                                <Text style={{ fontSize: 14 }}>{"Hr."}</Text>
                                                                             </>
                                                                              {/* :
                                                                             <>
@@ -1168,11 +1165,11 @@ class TimeSheet extends Component {
 
                                                                 </View>
                                                                 <View style={{ width: "30%", justifyContent: 'center', alignItems: 'center' }}>
-                                                                    <Text style={{ fontSize: 16 }}>{"Working"}</Text>
-                                                                    <Text style={{ fontSize: 16 }}>{"Hr."}</Text>
+                                                                    <Text style={{ fontSize: 14 }}>{"Working"}</Text>
+                                                                    <Text style={{ fontSize: 14 }}>{"Hr."}</Text>
                                                                 </View>
                                                                 <View style={{ width: "20%", justifyContent: 'center', alignItems: 'center' }}>
-                                                                    <Text style={{ fontSize: 16 }}>{"Desc."}</Text>
+                                                                    <Text style={{ fontSize: 14 }}>{"Desc."}</Text>
                                                                 </View>
                                                             </View>
                                                         </View>
@@ -1599,10 +1596,10 @@ const styles = StyleSheet.create({
     },
     totalHrs: {
         textAlign: 'left',
-        fontWeight: '500',
+        // fontWeight: '500',
         fontSize: title,
-        margin: 5,
-        color: "white"
+        margin: 3,
+        color: "white",
     },
     textPopup: {
         padding: 10,

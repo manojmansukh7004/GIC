@@ -642,7 +642,7 @@ class TimesheetEntry extends Component {
 
                             <Modal isVisible={this.state.fieldVisible}>
                                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                    <View style={{ backgroundColor: 'white', borderRadius: 5, width: 350, height: 250 }}>
+                                    <View style={{ backgroundColor: 'white', borderRadius: 5, width: Dimensions.get('window').width - 50, height: 250 }}>
                                         <View style={{ borderTopStartRadius: 5, borderTopEndRadius: 5, height: 50, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
                                             <Text style={{ fontSize: title, color: this.props.fontColor }}>{this.state.title}</Text>
                                             <TouchableOpacity onPress={() =>
@@ -687,7 +687,7 @@ class TimesheetEntry extends Component {
 
                             <Modal isVisible={this.state.addDescVisible}>
                                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                    <View style={{ backgroundColor: 'white', borderRadius: 5, width: 350, height: 250 }}>
+                                    <View style={{ backgroundColor: 'white', borderRadius: 5, width: Dimensions.get('window').width - 50, height: 250 }}>
                                         <View style={{ borderTopStartRadius: 5, borderTopEndRadius: 5, height: 50, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
                                             <Text style={{ fontSize: title, color: this.props.fontColor }}>{'Additional Description'}</Text>
                                             <TouchableOpacity onPress={() =>
@@ -697,7 +697,7 @@ class TimesheetEntry extends Component {
                                             </TouchableOpacity>
                                         </View>
                                         <View style={{ justifyContent: 'center', alignItems: 'center', }}>
-                                            <View style={{ borderRadius: 5, borderWidth: .5, width: 300, height: 170, margin: 15 }}>
+                                            <View style={{ borderRadius: 5, borderWidth: .5, width: Dimensions.get('window').width - 50, height: 170, margin: 15 }}>
                                                 <TextInput
                                                     multiline={true}
                                                     value={this.state.addDesc}
@@ -724,6 +724,8 @@ class TimesheetEntry extends Component {
                                     {
                                         width: 100,
                                         height: 350,
+                                        borderWidth: 1,
+                                        borderRadius: 10
                                     }
                                 }
                             >
