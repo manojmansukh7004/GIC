@@ -697,7 +697,7 @@ class TimesheetEntry extends Component {
                                             </TouchableOpacity>
                                         </View>
                                         <View style={{ justifyContent: 'center', alignItems: 'center', }}>
-                                            <View style={{ borderRadius: 5, borderWidth: .5, width: Dimensions.get('window').width - 50, height: 170, margin: 15 }}>
+                                            <View style={{ borderRadius: 5, borderWidth: .5, width: "90%", height: 170, margin: 15 }}>
                                                 <TextInput
                                                     multiline={true}
                                                     value={this.state.addDesc}

@@ -669,22 +669,18 @@ class TimeSheet extends Component {
                 underlayColor={'#AAA'}
             >
                 <>
-                    {
-                        console.log("ssssss", data)
-
-                    }
                     <Card elevation={2} style={styles.container} >
                         <View style={styles.flexRow}>
                             <View style={2 % 2 === 0 ? styles.strip1 : styles.strip2} />
                             <View style={styles.view}>
                                 <View style={styles.flexRow1}>
-                                    <View style={{ width: "40%" }}>
+                                    <View style={{ width: data.item.Status == "Approved"? "30%": "40%",backgroundColor: 'transparent' }}>
                                         <Text style={{ fontSize: 16 }}>{data.item.date}</Text>
                                     </View>
-                                    <View style={{ width: "60%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
+                                    <View style={{ width:  data.item.Status == "Approved"? "70%" : '60%', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
                                         {
                                             data.item.Status == "Approved" ?
-                                                <TouchableOpacity style={{ width: "30%", justifyContent: "center", alignItems: 'center', flexDirection: 'row', }} onPress={() =>
+                                                <TouchableOpacity style={{ width: "35%", justifyContent: "center", alignItems: 'center', flexDirection: 'row', }} onPress={() =>
                                                     this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: data.item.remark },
                                                         () => { })}>
                                                     <Image style={{ height: 50, width: 50 }} source={require("../Assets/msgbg.png")} />
@@ -693,10 +689,10 @@ class TimeSheet extends Component {
                                         }
                                         <TouchableOpacity
                                             onPress={() => { this.setState({ timeVisible: data.item.Status == "Saved" ? true : false, dayField: 'Tue', dayField: this.state.daysData.dayField, }) }}
-                                            style={[styles.hrsData, { width: "30%", justifyContent: "center", alignItems: 'center', backgroundColor: data.item.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
+                                            style={[styles.hrsData, { width: "35%", justifyContent: "center", alignItems: 'center', backgroundColor: data.item.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
                                             <Text style={{ fontSize: 16 }}>{data.item.time == "" ? "--:--" : data.item.time}</Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={{ width: "20%", justifyContent: "center", alignItems: 'center', flexDirection: 'row', }} onPress={() =>
+                                        <TouchableOpacity style={{ width: "25%", justifyContent: "center", alignItems: 'center', flexDirection: 'row', }} onPress={() =>
                                             this.setState({ addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false, addDesc: data.item.comment, addDescField: this.state.daysData.dayField, },
                                                 () => { })}>
                                             <Image style={{ height: 40, width: 40 }} source={require("../Assets/message.png")} />
@@ -824,7 +820,6 @@ class TimeSheet extends Component {
             validation: false,
             visible: true,
             // ratingVisible: true,
-
             // action: 'Approved'
         })
     }
@@ -864,7 +859,7 @@ class TimeSheet extends Component {
                                             {/* <Image style={{ height: 20, width: 20, marginLeft: 5, tintColor: 'white' }} source={require("../Assets/calendar.png")} /> */}
                                             <Text style={styles.text}> {this.state.timesheet == '' ? "--select--" :
                                                 moment(new Date(this.state.timesheet.slice(0, 10).split('-').reverse().join('/'))).format("DD MMM")
-                                                + ' - ' + moment(new Date(this.state.timesheet.slice(14, 24).split('-').reverse().join('/'))).format("DD MMM YYYY")}</Text>
+                                                + ' - ' + moment(new Date(this.state.timesheet.slice(14, 24).split('-').reverse().join('/'))).format("DD MMM YY")}</Text>
                                         </View>
 
                                     </View>
@@ -920,25 +915,25 @@ class TimeSheet extends Component {
 
                                                                 }
                                                                 <View style={[styles.flexRow1,{paddingLeft:8}]}>
-                                                                    <View style={{ width: "40%" }}>
+                                                                    <View style={{ width:  this.state.tsStatus == "Approved" ?"30%": '40%' ,backgroundColor: 'transparent',padding:10}}>
                                                                         <Text style={{ fontSize: 16, }}>{"Day"}</Text>
                                                                     </View>
-                                                                    <View style={{ width: "60%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'flex-start' }}>
+                                                                    <View style={{ width:  this.state.tsStatus == "Approved" ? "70%": "60%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'flex-start' }}>
 
                                                                         {
                                                                             this.state.tsStatus == "Approved" ?
-                                                                                <View style={{ width: "30%", justifyContent: 'center', alignItems: 'center' }}>
+                                                                                <View style={{ width: "35%", justifyContent: 'center', alignItems: 'center' }}>
                                                                                     <Text style={{ fontSize: 16 }}>{"Approver"}</Text>
-                                                                                    <Text style={{ fontSize: 16 }}>{"Rating."}</Text>
+                                                                                    <Text style={{ fontSize: 16 }}>{"Comments."}</Text>
                                                                                 </View>
                                                                                 : null
                                                                         }
 
-                                                                        <View style={{ width: "30%", justifyContent: 'center', alignItems: 'center' }}>
+                                                                        <View style={{ width: "35%", justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent' }}>
                                                                             <Text style={{ fontSize: 16 }}>{"Working"}</Text>
                                                                             <Text style={{ fontSize: 16 }}>{"Hr."}</Text>
                                                                         </View>
-                                                                        <View style={{ width: "20%", justifyContent: 'center', alignItems: 'center' }}>
+                                                                        <View style={{ width: "25%", justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent' }}>
                                                                             <Text style={{ fontSize: 16 }}>{"Desc."}</Text>
                                                                         </View>
                                                                     </View>
@@ -970,7 +965,7 @@ class TimeSheet extends Component {
                                                                     </TouchableOpacity>
                                                                 </View>
                                                                 <View style={{ justifyContent: 'center', alignItems: 'center', }}>
-                                                                    <View style={{ borderRadius: 5, borderWidth: .5, width: 300, height: 170, margin: 15 }}>
+                                                                    <View style={{ borderRadius: 5, borderWidth: .5, width: "90%", height: 170, margin: 15 }}>
                                                                         <ScrollView persistentScrollbar={true}>
                                                                             <TextInput
                                                                                 multiline={true}
