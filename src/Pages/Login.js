@@ -69,7 +69,7 @@ class Login extends Component {
     };
     var baseUrl = `${this.state.baseUrl}`;
     const data = await attemptLogin(payload, baseUrl);
-    console.log("login details", data.EmployeeDetails[0]);
+    // console.log("login details", data.EmployeeDetails[0]);
 
     if (data != null && data != "") {
 
