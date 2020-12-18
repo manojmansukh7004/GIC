@@ -12,7 +12,6 @@ async function DeleteTimesheetRecord(EmpID, TimesheetId, TimesheetEntryId, baseU
           "TimesheetId": TimesheetId
         }
 }
-console.log(payload);
 
     const formBody = JSON.stringify(payload, (key, value) => {
       if (value !== null) {

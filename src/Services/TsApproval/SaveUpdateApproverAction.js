@@ -17,7 +17,6 @@ async function SaveUpdateApproverAction(EmpID,employeeNo,tsEntryId, ApprRating1,
                 "Status": status
             }
     }
-    console.log("pppppp",payload);
     
         const formBody = JSON.stringify(payload, (key, value) => {
           if (value !== null) {
@@ -35,7 +34,6 @@ async function SaveUpdateApproverAction(EmpID,employeeNo,tsEntryId, ApprRating1,
         });
       
         const responseJson = await response.json();  
-        console.log(responseJson);
         return responseJson;
       }
       

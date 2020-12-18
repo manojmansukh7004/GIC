@@ -159,7 +159,6 @@ class TimeSheet extends Component {
         let { timesheetData } = this.state;
         let targetPost = timesheetData[index];
         let targetPost1 = daysData
-        console.log("addDescField,", addDescField, index, value, targetPost);
 
         if (addDescField == 1) {
             targetPost.Mon_TaskComments = value;
@@ -357,7 +356,8 @@ class TimeSheet extends Component {
         var data = this.state.timesheetData
         var empAttendanceData = this.state.empAttendanceData
         var i = 0
-
+        console.log("dataaaa",data);
+        
         for (i; i < data.length; i++) {
             Mon.push({
                 autoId: (data[i].Mon_AutoId == null) ? "" : data[i].Mon_AutoId,
@@ -442,9 +442,10 @@ class TimeSheet extends Component {
 
             }
         }
-
         if (empAttendanceData[0].Mon == 0 && empAttendanceData[0].AttendanceValidation.toLowerCase() == "true") {
-            if (parseInt(mon) > 0)
+            if ((mon) > 0)
+            console.log("llllllo0iuhjj");
+            
                 errAtt++;
         }
         if (minHrs != "") {
@@ -455,6 +456,7 @@ class TimeSheet extends Component {
             if ((mon > maxHrsTime))
                 errMaxCnt++;
         }
+        console.log("fffffff", mon, errAtt++  )
 
         //tue vaidation
         if (empAttendanceData[0].Tue == 0 && empAttendanceData[0].AttendanceValidation == "true") {
@@ -539,6 +541,7 @@ class TimeSheet extends Component {
             if ((sun > maxHrsTime))
                 errMaxCnt++;
         }
+        console.log("eeeeee",errAtt++)
 
         //check Previous status
         var data = await CheckPreviousEmpTSStatus(this.props.user, this.props.tsId, this.props.baseUrl);
@@ -623,7 +626,6 @@ class TimeSheet extends Component {
             count = count + 1,
             obj = this.state.timesheetData[key],
             Object.assign(obj, { key: count }),
-            console.log("ActivityId", obj.ActivityId),
             obj.ActivityId !== undefined ? objArr.push(obj) : null
         ))
         lblMon = moment(new Date(this.state.headerData[0].Mon_Date)).format("ddd D, YYYY"),
@@ -662,7 +664,6 @@ class TimeSheet extends Component {
             dvTotSun: dvTotSun, TotalTime: TotalTime,
             timesheetData: objArr
         }, () => {
-            // console.log("mmmmmmmmmmmmmmmmm",this.state.MaxHrsPerDay,this.state.MinHrsPerDay);
             objArr = [], obj = '',
                 lblMon = "", lblTue = "", lblWed = "", lblThu = "", lblFri = "", lblSat = "", lblSun = ""
             TotalTime = "", dvTotMon = "", dvTotTue = "", dvTotWed = "", dvTotThu = "", dvTotFri = "", dvTotSat = "", dvTotSun = ""
@@ -772,10 +773,6 @@ class TimeSheet extends Component {
                         </View>
                     </View>
                     {
-                        console.log("dddddddddddddd", data.item.Status)
-
-                    }
-                    {
                         data.item.Status !== 'Saved' && data.item.Status !== 'Submitted' ?
                             <>
                                 {
@@ -817,7 +814,6 @@ class TimeSheet extends Component {
         if (this.state.singleTsRecord.Sat_AutoId !== null) { tsEntryId.push(this.state.singleTsRecord.Sat_AutoId) }
         if (this.state.singleTsRecord.Sun_AutoId !== null) { tsEntryId.push(this.state.singleTsRecord.Sun_AutoId) }
         var data = await DeleteTimesheetRecord(this.props.user, this.state.timesheetId, tsEntryId.toString(), this.props.baseUrl)
-        console.log(data);
 
         if (data != null && data != "") {
             if (data.Message != null && data.Message != "") {
@@ -1177,17 +1173,9 @@ class TimeSheet extends Component {
                                                                     this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Mon_ApprRemark })}>
                                                                     <Image style={{ height: 40, width: 40, }} source={require("../Assets/msgbg.png")} />
                                                                 </TouchableOpacity>
-                                                                {/* {
-                                                                    this.state.daysData.Status == "Saved" || this.state.daysData.Status == "Submitted" ? */}
                                                                 <TouchableOpacity style={[styles.hrsData, { width: "28%", borderColor: 'gray', backgroundColor: this.props.secColor }]}>
                                                                     <Text style={{ fontSize: 16, color: "#4D504F" }}>{this.state.dvTotMon}</Text>
                                                                 </TouchableOpacity>
-                                                                {/* :
-                                                                        <TouchableOpacity style={{ width: "30%", justifyContent: "center", alignItems: 'center', flexDirection: 'row' }} onPress={() =>
-                                                                            this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Mon_ApprRemark })}>
-                                                                            <Image style={{ height: 50, width: 50, }} source={require("../Assets/msgbg.png")} />
-                                                                        </TouchableOpacity>
-                                                                } */}
                                                                 <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.daysData.Status == "Saved" ? true : false, dayField: 'Mon', dayField: 1, }) }}
                                                                     style={[styles.hrsData, { width: "28%", backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
                                                                     <Text style={{ fontSize: 16 }}>{this.state.daysData.Mon == "" || this.state.daysData.Mon == undefined ? "--:--" : this.state.daysData.Mon}</Text>
@@ -1227,12 +1215,6 @@ class TimeSheet extends Component {
                                                                 <TouchableOpacity style={[styles.hrsData, { width: "28%", borderColor: 'gray', backgroundColor: this.props.secColor }]}>
                                                                     <Text style={{ fontSize: 16, color: "#4D504F" }}>{this.state.dvTotTue}</Text>
                                                                 </TouchableOpacity>
-                                                                {/* :
-                                                                        <TouchableOpacity style={{ width: "30%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} onPress={() =>
-                                                                            this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Tue_ApprRemark })}>
-                                                                            <Image style={{ height: 50, width: 50, }} source={require("../Assets/msgbg.png")} />
-                                                                        </TouchableOpacity>
-                                                                } */}
                                                                 <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.daysData.Status == "Saved" ? true : false, dayField: 'Tue', dayField: 2, }) }}
                                                                     style={[styles.hrsData, { width: "28%", backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
                                                                     <Text style={{ fontSize: 16 }}>{this.state.daysData.Tue == "" ? "--:--" : this.state.daysData.Tue}</Text>

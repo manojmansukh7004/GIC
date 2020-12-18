@@ -3,3 +3,10 @@ Key store password: 1234567890
 
 Key ailas: key
 Key password: 1234567890
+
+
+gmail info
+acc Holder Name: Manoj Mansukh.
+birth date: 8/5/1995
+gmail: gic.mobileapp20@gmail.com
+pass: Hacker23@1

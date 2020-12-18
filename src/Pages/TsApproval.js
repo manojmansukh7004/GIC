@@ -189,7 +189,6 @@ class TimeSheet extends Component {
             this.setState({
                 value: text,
             });
-            console.log(this.state.arrayholder)
 
             const newData = this.state.arrayholder.filter(item => {
                 const itemData = this.state.field == 11 || this.state.field == 12 ? `${item.Text.toUpperCase()} ${item.Value}` : ` ${item.Text.toUpperCase()} ${item.Value.toUpperCase()} `
@@ -210,7 +209,6 @@ class TimeSheet extends Component {
             this.setState({
                 value: text,
             });
-            console.log(this.state.arrayholder)
 
             const newData = this.state.arrayholder.filter(item => {
                 const itemData = `${item.Text.toUpperCase()} ${item.Value} `;
@@ -260,8 +258,6 @@ class TimeSheet extends Component {
                 this.setState({ selectedVal: selectedNode1, deliverType: selectedNode, deliverTypeValue: selectedNode2, project: [], type: '', type1: [], resourceList: [], resource: [], resourceName: '', timesheet: '', timesheetList: [] },
                     async () => {
                         var projectData = await GetDataOnClientChange(this.props.user, this.state.deliverTypeValue, this.state.projectGroupValue, this.state.clientValue, this.props.baseUrl)
-                        console.log("projectData", projectData)
-
                         this.setState({ projectList: projectData.ProjectList[0] })
 
                     })
@@ -387,21 +383,19 @@ class TimeSheet extends Component {
             headerData: timesheetData.TimesheetHeaderData[0],
             headerHrsData: timesheetData.TimesheetTotalHrs[0],
         }, () => {
-            // console.log("timesheetdatttttttt", this.state.timesheetData[0].AllowRating);
-
             this.setTimesheetData();
         });
     }
+
     setTimesheetData = () => {
         Object.getOwnPropertyNames(this.state.timesheetData).map((key, index) => (
             count = count + 1,
             obj = this.state.timesheetData[key],
             Object.assign(obj, { key: count }),
-            console.log("ActivityId", obj.ActivityId),
             obj.ActivityId !== undefined ? objArr.push(obj) : null
         ))
 
-        lblMon = moment(new Date(this.state.headerData[0].Mon_Date)).format("ddd D, YYYY"),
+            lblMon = moment(new Date(this.state.headerData[0].Mon_Date)).format("ddd D, YYYY"),
             lblTue = moment(new Date(this.state.headerData[0].Tue_Date)).format("ddd D, YYYY"),
             lblWed = moment(new Date(this.state.headerData[0].Wed_Date)).format("ddd D, YYYY"),
             lblThu = moment(new Date(this.state.headerData[0].Thu_Date)).format("ddd D, YYYY"),
@@ -484,8 +478,6 @@ class TimeSheet extends Component {
 
     handleTsEntryId = () => {
         var tsEntryId = []
-        console.log("EEeeeee", this.state.apprActionData)
-
         if (this.state.apprActionData.Mon_AutoId !== null) { tsEntryId.push(this.state.apprActionData.Mon_AutoId) }
         if (this.state.apprActionData.Tue_AutoId !== null) { tsEntryId.push(this.state.apprActionData.Tue_AutoId) }
         if (this.state.apprActionData.Wed_AutoId !== null) { tsEntryId.push(this.state.apprActionData.Wed_AutoId) }
@@ -493,7 +485,6 @@ class TimeSheet extends Component {
         if (this.state.apprActionData.Fri_AutoId !== null) { tsEntryId.push(this.state.apprActionData.Fri_AutoId) }
         if (this.state.apprActionData.Sat_AutoId !== null) { tsEntryId.push(this.state.apprActionData.Sat_AutoId) }
         if (this.state.apprActionData.Sun_AutoId !== null) { tsEntryId.push(this.state.apprActionData.Sun_AutoId) }
-        console.log("ttttttttttttttttttttttt", tsEntryId);
 
         this.SaveUpdateApproverActionData(tsEntryId)
     }
@@ -599,8 +590,6 @@ class TimeSheet extends Component {
     renderItem = (data) => (
 
         Status = data.item.Status,
-        // this.setState({Status: data.item.Status},()=>{
-        // console.log("Status", Status),
         <>
             <TouchableHighlight
                 onPress={() => { this.handledata(data.item, data.index) }}
@@ -661,7 +650,7 @@ class TimeSheet extends Component {
 
 
     renderItem1 = (data) => (
-
+        console.log("dddd",data),
         <>
             <TouchableHighlight
                 // onPress={() => { this.handledata(data.item, data.index) }}
@@ -769,7 +758,6 @@ class TimeSheet extends Component {
             {
                 Status == "Approved" ?
                     <>
-
                         <TouchableOpacity
                             style={[styles.backRightBtn11, styles.backRightBtnRight, { justifyContent: 'center', alignItems: 'center' }]}
                         >
@@ -801,6 +789,7 @@ class TimeSheet extends Component {
 
         </View>
     );
+
     async componentDidMount() {
         this.getOrientation();
         Dimensions.addEventListener('change', () => {
@@ -906,14 +895,7 @@ class TimeSheet extends Component {
                                                                         <Text numberOfLines={1} style={{ color: "#4D504F" }}>{"(" + this.state.clientName + ")"}</Text>
                                                                         {/* <Text numberOfLines={1} style={{ color: "#4D504F" }}>{this.state.daysData.TaskDesc}</Text> */}
                                                                     </View>
-                                                                    {/* <View style={{ width: "40%", height: '100%', margin: 2, justifyContent: 'flex-start', alignItems: 'center' }}>
-                                                                        <Text style={{ fontSize: 18, color: this.state.details.Status == "Saved" ? 'red' : 'green' }}>{this.state.details.Status}</Text>
-                                                                    </View> */}
                                                                 </View>
-                                                                {
-                                                                    // console.log("pppppppppppp",this.state.daysData[0].Status)
-
-                                                                }
                                                                 <View style={[styles.flexRow1,{paddingLeft:8}]}>
                                                                     <View style={{ width:  this.state.tsStatus == "Approved" ?"30%": '40%' ,backgroundColor: 'transparent',padding:10}}>
                                                                         <Text style={{ fontSize: 16, }}>{"Day"}</Text>

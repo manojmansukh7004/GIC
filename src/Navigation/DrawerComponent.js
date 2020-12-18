@@ -43,7 +43,6 @@ class DrawerComponent extends Component {
     };
 
     handleMenu = (response) => {
-console.log("response",response);
 
         Object.keys(response).map((key, index) => {
             // console.log("response[key].AutoId",response[key].MenuName);

@@ -248,17 +248,14 @@ class TimesheetEntry extends Component {
 
 
     handleDataOnClientChange = async () => {
-        console.log("client calling", this.state.timesheetId);
 
         var clientChange = await getDataOnClientChange(this.props.user, this.state.timesheetId, this.state.client, this.props.baseUrl)
-        console.log(",clientChange", clientChange);
 
         this.setState({
             projetList: clientChange.ProjectList[0],
         });
     }
     handleDataOnProjectChange = async () => {
-        console.log("project calling");
 
         var projectChange = await getDataOnProjectChange(this.props.user, this.state.timesheetId, this.state.project, this.props.baseUrl)
         this.setState({
@@ -268,7 +265,6 @@ class TimesheetEntry extends Component {
         });
     }
     handleDataOnPhaseChange = async () => {
-        console.log("phase calling");
 
         if (this.state.phase !== null) {
             var phaseChange = await GetDataOnPhaseChange(this.props.user, this.state.timesheetId, this.state.project, this.state.phase == 0 ? "" : this.state.phase, this.props.baseUrl)

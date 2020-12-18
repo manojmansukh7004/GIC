@@ -1,34 +1,33 @@
 {
   "project_info": {
-    "project_number": "701189017491",
-    "firebase_url": "https://gic-timesheet.firebaseio.com",
-    "project_id": "gic-timesheet",
-    "storage_bucket": "gic-timesheet.appspot.com"
+    "project_number": "736344066843",
+    "project_id": "gic-app-59df2",
+    "storage_bucket": "gic-app-59df2.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:701189017491:android:d39e7106707738bfada266",
+        "mobilesdk_app_id": "1:736344066843:android:09621464764d804d8d61be",
         "android_client_info": {
           "package_name": "com.gic.timesheet"
         }
       },
       "oauth_client": [
         {
-          "client_id": "701189017491-idmtekiu0niinrjngamvct4qqgkmcaj5.apps.googleusercontent.com",
+          "client_id": "736344066843-l63v7sth2pct5artkpqdle4tdsu5geud.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD7UWT1fTS3vKWrtlNsJxM9UJ8qJQgXgJA"
+          "current_key": "AIzaSyCalr8EP6exnGgQc14bRcu-xynJ-1h8_6Q"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "701189017491-idmtekiu0niinrjngamvct4qqgkmcaj5.apps.googleusercontent.com",
+              "client_id": "736344066843-l63v7sth2pct5artkpqdle4tdsu5geud.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

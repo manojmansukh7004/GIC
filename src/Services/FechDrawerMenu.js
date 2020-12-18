@@ -7,7 +7,6 @@ async function FechDrawerMenu(empId, empRole, baseUrl) {
           loginEmpCompanyCodeNo: ''
         },
     };
-    console.log("paaaaaaa",payload, baseUrl);
     
     const formBody = JSON.stringify(payload, (key, value) => {
         if (value !== null) {      

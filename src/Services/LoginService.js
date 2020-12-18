@@ -14,10 +14,8 @@ async function attemptLogin(payload, baseUrl) {
       'Content-Type': 'application/json',
     },
     body: formBody,
-  });
-  
+  });  
   const responseJson = await response.json();
-  
   return responseJson;
 }
 

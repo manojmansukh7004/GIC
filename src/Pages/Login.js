@@ -13,7 +13,6 @@ import { setUser, } from '../Redux/Action'
 import firebase from 'react-native-firebase'
 const displayWidth = Dimensions.get('window').width;
 const contantPadding = 30;
-var url
 
 
 class Login extends Component {
@@ -29,6 +28,7 @@ class Login extends Component {
     isModalVisible: false,
     loading: false,
     baseUrl: "",
+    token:''
   };
 
   async componentDidMount() {
@@ -36,6 +36,7 @@ class Login extends Component {
       this.setState({ baseUrl: value })
     })
     const fcmToken = await firebase.messaging().getToken();
+    this.setState({ token: fcmToken })
     console.log("fcmToken,",fcmToken);
   }
 
@@ -43,6 +44,8 @@ class Login extends Component {
 
     var userName = this.state.userName;
     var passwd = this.state.password;
+    var token = this.state.token;
+
     if (userName == "" && passwd == "") {
       alert("Enter user name and password");
       return false;
@@ -54,22 +57,25 @@ class Login extends Component {
       alert("Enter password");
       return false;
     } else {
-      this.login(userName, passwd, "3");
+      this.login(userName, passwd, token ,"3");
     }
   }
 
-  async login(userName, password, Action) {
+  async login(userName, password, token, Action) {
     const payload = {
       "loginDetails":
       {
         Action: Action,
         LoginEmpID: userName,
-        Password: password
+        Password: password,
+        Extra2: token
       }
     };
+    console.log("payloddddd", payload);
+    
     var baseUrl = `${this.state.baseUrl}`;
     const data = await attemptLogin(payload, baseUrl);
-    // console.log("login details", data.EmployeeDetails[0]);
+    console.log("login details", data);
 
     if (data != null && data != "") {
 

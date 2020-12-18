@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import {
   StyleSheet, View, Image, Dimensions, Text, Linking, StatusBar
 } from 'react-native';
+import firebase, { NotificationOpen } from 'react-native-firebase';
 import { storeData, getData } from '../Config/AsyncStorace'
 import { isSignedIn } from "./Authentication";
 import DeviceInfo from 'react-native-device-info';
@@ -65,18 +66,15 @@ class SplashScreen extends Component {
     var response = await FechDrawerMenu(this.state.UserId, this.state.UserRole, this.state.baseUrl)
     var drawerMenu =response.EmployeeMenu[0]
     Object.keys(drawerMenu).map((key, index) => {
-      console.log("respfffffffffffffnse",drawerMenu[key].MenuName);
 
       if (drawerMenu[key].MenuName === "My Timesheet") {
         myTimesheet= true
-        console.log("kkkkkkkkkkkkkk");
         
         // this.props.navigation.navigate("TimeSheet", { "Loading": false })
         // this.setState({ loading: false });
       }
       else if (drawerMenu[key].MenuName === "Timesheet Approval") {
         timesheetApproval= true
-        console.log("aaaaaaaaaaaaa");
         // this.props.navigation.navigate("TsApproval", { "Loading": false })
         // this.setState({ loading: false });
       }
@@ -85,7 +83,6 @@ class SplashScreen extends Component {
       //   this.setState({ loading: false });
       // }
     })
-    console.log("ppppppppppppp",myTimesheet, timesheetApproval);
     
     myTimesheet === true ? this.props.navigation.navigate("TimeSheet", { "Loading": false }):
     timesheetApproval === true?this.props.navigation.navigate("TsApproval", { "Loading": false }):
@@ -102,9 +99,17 @@ class SplashScreen extends Component {
     Dimensions.addEventListener('change', () => {
       this.getOrientation();
     });
+    
+    this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
+      if (notificationOpen) {
+        const { data } = notificationOpen.notification;
+        console.log('notificationOpen', data);
+      }
+    })
     const version = DeviceInfo.getVersion();
-    console.log("version", version);
-    await storeData("baseUrl", "https://gictimesheet.orgtix.com/webApi");
+    // console.log("versiooooooooooooooooooooooooooooooooooooooooooooooooon", version);
+    // await storeData("baseUrl", "https://gictimesheet.orgtix.com/webAPI");
+    await storeData("baseUrl", "http://gictimesheettest.orgtix.com/WebAPI");
     setTimeout(async () => {
       const payload = {
         "inputData":
@@ -114,10 +119,9 @@ class SplashScreen extends Component {
           "iosVersionCode": "1"
         }
       }
-            // var baseUrl = "http://gictimesheettest.orgtix.com/webApi"
-      var baseUrl = "https://gictimesheet.orgtix.com/webApi"
+            var baseUrl = "http://gictimesheettest.orgtix.com/WebAPI"
+      // var baseUrl = "https://gictimesheet.orgtix.com/webAPI "
       const response = await FetchMobileVersion(payload, baseUrl)
-      console.log("mjjj", response.MobileVerion[0].Table[0].androidVersionCode);
 
       var UpdatedVersionCode = response.MobileVerion[0].Table[0].androidVersionCode
       if (version < UpdatedVersionCode) {
