@@ -442,10 +442,9 @@ class TimeSheet extends Component {
 
             }
         }
+        
         if (empAttendanceData[0].Mon == 0 && empAttendanceData[0].AttendanceValidation.toLowerCase() == "true") {
-            if ((mon) > 0)
-            console.log("llllllo0iuhjj");
-            
+            if ((mon) > 0)            
                 errAtt++;
         }
         if (minHrs != "") {
@@ -456,11 +455,10 @@ class TimeSheet extends Component {
             if ((mon > maxHrsTime))
                 errMaxCnt++;
         }
-        console.log("fffffff", mon, errAtt++  )
 
         //tue vaidation
-        if (empAttendanceData[0].Tue == 0 && empAttendanceData[0].AttendanceValidation == "true") {
-            if (parseInt(tue) > 0)
+        if (empAttendanceData[0].Tue == 0 && empAttendanceData[0].AttendanceValidation.toLowerCase() == "true") {
+            if ((tue) > 0)            
                 errAtt++;
         }
         if (minHrs != "") {
@@ -541,7 +539,6 @@ class TimeSheet extends Component {
             if ((sun > maxHrsTime))
                 errMaxCnt++;
         }
-        console.log("eeeeee",errAtt++)
 
         //check Previous status
         var data = await CheckPreviousEmpTSStatus(this.props.user, this.props.tsId, this.props.baseUrl);
@@ -576,9 +573,7 @@ class TimeSheet extends Component {
         }
         else {
             this.insertUpdateTimesheetEntry("Submitted");
-
         }
-
     }
 
     empTimesheetList = async () => {
