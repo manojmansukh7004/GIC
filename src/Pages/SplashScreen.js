@@ -48,21 +48,6 @@ class SplashScreen extends Component {
   }
 
   FetchFiltetData = async () => {
-
-    await getData('baseUrl').then((value) => {
-      this.setState({ baseUrl: value })
-    })
-    await getData('UserId').then((value) => {
-      this.setState({ UserId: value })
-    })
-    await getData('UserRole').then((value) => {
-      this.setState({ UserRole: value })
-    })
-
-    var userId = this.state.UserId
-    var baseUrl = this.state.baseUrl
-    this.props.setUser(userId)
-    this.props.setBaseUrl(baseUrl)
     var response = await FechDrawerMenu(this.state.UserId, this.state.UserRole, this.state.baseUrl)
     var drawerMenu =response.EmployeeMenu[0]
     Object.keys(drawerMenu).map((key, index) => {
@@ -99,13 +84,43 @@ class SplashScreen extends Component {
     Dimensions.addEventListener('change', () => {
       this.getOrientation();
     });
-    
+    await getData('baseUrl').then((value) => {
+      this.setState({ baseUrl: value })
+    })
+    await getData('UserId').then((value) => {
+      this.setState({ UserId: value })
+    })
+    await getData('UserRole').then((value) => {
+      this.setState({ UserRole: value })
+    })
+    var userId = this.state.UserId
+    var baseUrl = this.state.baseUrl
+    this.props.setUser(userId)
+    this.props.setBaseUrl(baseUrl)
+
     this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
       if (notificationOpen) {
         const { data } = notificationOpen.notification;
         console.log('notificationOpen', data);
+        if(data.ProcessName == "Timesheet Rejection"){
+          this.props.navigation.navigate('TimeSheet',{"notificationData": data, "notification" : true})
+
+        }
       }
     })
+
+    firebase.notifications().getInitialNotification()
+      .then((notificationOpen) => {
+        if (notificationOpen) {
+          const { data } = notificationOpen.notification;
+          console.log('notificationOpen', data);
+          if(data.ProcessName == "Timesheet Rejection"){
+            this.props.navigation.navigate('TimeSheet',{"notificationData": data, "notification" : true})
+  
+          }
+        }
+      });
+
     const version = DeviceInfo.getVersion();
     // console.log("versiooooooooooooooooooooooooooooooooooooooooooooooooon", version);
     // await storeData("baseUrl", "https://gictimesheet.orgtix.com/webAPI");

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ToastAndroid, TouchableHighlight, TextInput, Image, StatusBar, StyleSheet, Dimensions, ScrollView, Text, FlatList, View, TouchableOpacity } from 'react-native';
+import { ToastAndroid, AppState, TouchableHighlight, TextInput, Image, StatusBar, StyleSheet, Dimensions, ScrollView, Text, FlatList, View, TouchableOpacity } from 'react-native';
 import { Divider, Paragraph, Card } from 'react-native-paper';
 import Appbar1 from '../Component/AppBar1'
 import { FloatingAction } from "react-native-floating-action";
@@ -323,6 +323,8 @@ class TimeSheet extends Component {
             }
         })
         var data = await saveTimesheetEntry(this.props.user, timesheetData, this.props.baseUrl)
+        console.log("dattaaatt",data);
+        
         if (data != null && data != "") {
             if (data.Message != null && data.Message != "") {
                 showToast(data.Message);
@@ -330,7 +332,7 @@ class TimeSheet extends Component {
             if (data.SuccessList != undefined || data.ErrorList != undefined || data.ExceptionList != undefined) {
                 status1 == "Submitted" ? showToast('Timesheet data ' + status1 + '.') : showToast('Timesheet data ' + "Saved" + '.')
                 if (data.SuccessList != undefined) {
-                    this.empWeeklyTimesheetData(this.statetimesheetId);
+                    // this.empWeeklyTimesheetData(this.statetimesheetId);
                     this.empWeeklyTimesheetData()
                 }
             }
@@ -590,7 +592,9 @@ class TimeSheet extends Component {
 
     empWeeklyTimesheetData = async () => {
 
-        var timesheetData = await GetEmpWeeklyTimesheetData(this.props.user, this.state.selectedWeek.Value, this.props.baseUrl)
+        var timesheetData = await GetEmpWeeklyTimesheetData(this.props.user, this.state.timesheetId, this.props.baseUrl)
+        console.log("daarrrrrrrr",timesheetData.EmpTimesheetData[0]);
+        
         this.setState({
             empAttendanceData: timesheetData.EmpAttendanceData[0],
             timesheetData: timesheetData.EmpTimesheetData[0],
@@ -830,13 +834,28 @@ class TimeSheet extends Component {
         }
     }
 
+    _handleAppStateChange = () => {
+        var notification =this.props.navigation.state.params.notification
+        var notificationData =this.props.navigation.state.params.notificationData
+         if(notification == true){
+            this.setState({timesheetData: [],  timesheetVisible: true, timesheetId:  notificationData.TimeSheetId},()=>{
+                this.props.ts_Id( notificationData.TimeSheetId)
+                firstDate1 = moment(notificationData.StartDate).format("DD MMM"),
+                lastDate1 = moment(notificationData.EndDate).format("DD MMM YY")
+            })
+            this.empWeeklyTimesheetData()
+        }
+
+        
+     
+      };
+    
+
     componentDidMount() {
-        this.getOrientation();
-        Dimensions.addEventListener('change', () => {
-            this.getOrientation();
-        });
+        AppState.addEventListener('change', this._handleAppStateChange);
         this.empTimesheetList()
     }
+
 
     render() {
         const startDate = this.state.selectedDate ? this.state.selectedDate.toString() : '';

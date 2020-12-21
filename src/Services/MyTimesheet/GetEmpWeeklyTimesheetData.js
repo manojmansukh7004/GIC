@@ -13,6 +13,8 @@ async function GetEmpWeeklyTimesheetData(EmpID, TimesheetId, baseUrl) {
 
       }
 }
+console.log("dddd",payload);
+
     const formBody = JSON.stringify(payload, (key, value) => {
       if (value !== null) {
         return value;

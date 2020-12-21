@@ -22,7 +22,7 @@ import { SaveUpdateApproverAction } from '../Services/TsApproval/SaveUpdateAppro
 
 var lblMon = "", lblTue = "", lblWed = "", lblThu = "", lblFri = "", lblSat = "", lblSun = ""
 var TotalTime = "", dvTotMon = "", dvTotTue = "", dvTotWed = "", dvTotThu = "", dvTotFri = "", dvTotSat = "", dvTotSun = ""
-var Status = '',dataArr = []
+var Status = '', dataArr = []
 var obj = '', objArr = [], count = 0
 const showToast = (Msg) => {
     ToastAndroid.show(Msg, ToastAndroid.LONG);
@@ -395,7 +395,7 @@ class TimeSheet extends Component {
             obj.ActivityId !== undefined ? objArr.push(obj) : null
         ))
 
-            lblMon = moment(new Date(this.state.headerData[0].Mon_Date)).format("ddd D, YYYY"),
+        lblMon = moment(new Date(this.state.headerData[0].Mon_Date)).format("ddd D, YYYY"),
             lblTue = moment(new Date(this.state.headerData[0].Tue_Date)).format("ddd D, YYYY"),
             lblWed = moment(new Date(this.state.headerData[0].Wed_Date)).format("ddd D, YYYY"),
             lblThu = moment(new Date(this.state.headerData[0].Thu_Date)).format("ddd D, YYYY"),
@@ -569,15 +569,17 @@ class TimeSheet extends Component {
 
 
     handledata = (item, index) => {
-
+        console.log("dddddddddddd", item);
+        var totalTime = this.state.headerHrsData[0]
+        //this.state.headerHrsData[0].Mon_TotalTime == null ? "0:00" : (this.state.headerHrsData[0].Mon_TotalTime)
         var arr = [], details = []
-        arr.push({ key: 1, date: this.state.lblMon, addDescField: 1, Status: item.Status, time: item.Mon, entryId: item.Mon_AutoId, comment: item.Mon_TaskComments, remark: item.Mon_ApprRemark, day: "Mon" })
-        arr.push({ key: 2, date: this.state.lblTue, addDescField: 2, Status: item.Status, time: item.Tue, entryId: item.Tue_AutoId, comment: item.Tue_TaskComments, remark: item.Tue_ApprRemark, day: "Tue" })
-        arr.push({ key: 3, date: this.state.lblWed, addDescField: 3, Status: item.Status, time: item.Wed, entryId: item.Wed_AutoId, comment: item.Wed_TaskComments, remark: item.Wed_ApprRemark, day: "Wed" })
-        arr.push({ key: 4, date: this.state.lblThu, addDescField: 4, Status: item.Status, time: item.Thu, entryId: item.Thu_AutoId, comment: item.Thu_TaskComments, remark: item.Thu_ApprRemark, day: "Thu" })
-        arr.push({ key: 5, date: this.state.lblFri, addDescField: 5, Status: item.Status, time: item.Fri, entryId: item.Fri_AutoId, comment: item.Fri_TaskComments, remark: item.Fri_ApprRemark, day: "Fri" })
-        arr.push({ key: 6, date: this.state.lblSat, addDescField: 6, Status: item.Status, time: item.Sat, entryId: item.Sat_AutoId, comment: item.Sat_TaskComments, remark: item.Sat_ApprRemark, day: "Sat" })
-        arr.push({ key: 7, date: this.state.lblSun, addDescField: 7, Status: item.Status, time: item.Sun, entryId: item.Sun_AutoId, comment: item.Sun_TaskComments, remark: item.Sun_ApprRemark, ay: "Sun" })
+        arr.push({ key: 1, date: this.state.lblMon, addDescField: 1, Status: item.Status, time: item.Mon, total_Time: totalTime.Mon_TotalTime == null ? "--:--" : totalTime.Mon_TotalTime, entryId: item.Mon_AutoId, comment: item.Mon_TaskComments, remark: item.Mon_ApprRemark, day: "Mon" })
+        arr.push({ key: 2, date: this.state.lblTue, addDescField: 2, Status: item.Status, time: item.Tue, total_Time: totalTime.Tue_TotalTime == null ? "--:--" : totalTime.Tue_TotalTime, entryId: item.Tue_AutoId, comment: item.Tue_TaskComments, remark: item.Tue_ApprRemark, day: "Tue" })
+        arr.push({ key: 3, date: this.state.lblWed, addDescField: 3, Status: item.Status, time: item.Wed, total_Time: totalTime.Wed_TotalTime == null ? "--:--" : totalTime.Wed_TotalTime, entryId: item.Wed_AutoId, comment: item.Wed_TaskComments, remark: item.Wed_ApprRemark, day: "Wed" })
+        arr.push({ key: 4, date: this.state.lblThu, addDescField: 4, Status: item.Status, time: item.Thu, total_Time: totalTime.Thu_TotalTime == null ? "--:--" : totalTime.Thu_TotalTime, entryId: item.Thu_AutoId, comment: item.Thu_TaskComments, remark: item.Thu_ApprRemark, day: "Thu" })
+        arr.push({ key: 5, date: this.state.lblFri, addDescField: 5, Status: item.Status, time: item.Fri, total_Time: totalTime.Fri_TotalTime == null ? "--:--" : totalTime.Fri_TotalTime, entryId: item.Fri_AutoId, comment: item.Fri_TaskComments, remark: item.Fri_ApprRemark, day: "Fri" })
+        arr.push({ key: 6, date: this.state.lblSat, addDescField: 6, Status: item.Status, time: item.Sat, total_Time: totalTime.Sat_TotalTime == null ? "--:--" : totalTime.Sat_TotalTime, entryId: item.Sat_AutoId, comment: item.Sat_TaskComments, remark: item.Sat_ApprRemark, day: "Sat" })
+        arr.push({ key: 7, date: this.state.lblSun, addDescField: 7, Status: item.Status, time: item.Sun, total_Time: totalTime.Sun_TotalTime == null ? "--:--" : totalTime.Sun_TotalTime, entryId: item.Sun_AutoId, comment: item.Sun_TaskComments, remark: item.Sun_ApprRemark, ay: "Sun" })
 
         details.push({ ProjectName: item.ProjectName, ClientName: item.ClientName, Status: item.Status, ApprOTPRating: item.ApprOTPRating, ApprQOWRating: item.ApprQOWRating, })
 
@@ -650,7 +652,7 @@ class TimeSheet extends Component {
 
 
     renderItem1 = (data) => (
-        console.log("dddd",data),
+        console.log("dddd", data),
         <>
             <TouchableHighlight
                 // onPress={() => { this.handledata(data.item, data.index) }}
@@ -663,28 +665,33 @@ class TimeSheet extends Component {
                             <View style={2 % 2 === 0 ? styles.strip1 : styles.strip2} />
                             <View style={styles.view}>
                                 <View style={styles.flexRow1}>
-                                    <View style={{ width: data.item.Status == "Approved"? "30%": "40%",backgroundColor: 'transparent' }}>
+                                    <View style={{ width: "20%", backgroundColor: 'transparent' }}>
                                         <Text style={{ fontSize: 16 }}>{data.item.date}</Text>
                                     </View>
-                                    <View style={{ width:  data.item.Status == "Approved"? "70%" : '60%', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
+                                    <View style={{ width: '80%', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
                                         {
                                             data.item.Status == "Approved" ?
-                                                <TouchableOpacity style={{ width: "35%", justifyContent: "center", alignItems: 'center', flexDirection: 'row', }} onPress={() =>
+                                                <TouchableOpacity style={{ width: "15%", justifyContent: "center", alignItems: 'center', flexDirection: 'row', }} onPress={() =>
                                                     this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: data.item.remark },
                                                         () => { })}>
-                                                    <Image style={{ height: 50, width: 50 }} source={require("../Assets/msgbg.png")} />
+                                                    <Image style={{ height: 40, width: 40 }} source={require("../Assets/msgbg.png")} />
                                                 </TouchableOpacity>
                                                 : null
                                         }
                                         <TouchableOpacity
                                             onPress={() => { this.setState({ timeVisible: data.item.Status == "Saved" ? true : false, dayField: 'Tue', dayField: this.state.daysData.dayField, }) }}
-                                            style={[styles.hrsData, { width: "35%", justifyContent: "center", alignItems: 'center', backgroundColor: data.item.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
+                                            style={[styles.hrsData, { width: "28%", justifyContent: "center", alignItems: 'center', backgroundColor: data.item.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
+                                            <Text style={{ fontSize: 16 }}>{data.item.total_Time}</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            onPress={() => { this.setState({ timeVisible: data.item.Status == "Saved" ? true : false, dayField: 'Tue', dayField: this.state.daysData.dayField, }) }}
+                                            style={[styles.hrsData, { width: "28%", justifyContent: "center", alignItems: 'center', backgroundColor: data.item.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
                                             <Text style={{ fontSize: 16 }}>{data.item.time == "" ? "--:--" : data.item.time}</Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={{ width: "25%", justifyContent: "center", alignItems: 'center', flexDirection: 'row', }} onPress={() =>
+                                        <TouchableOpacity style={{ width: "15%", justifyContent: "center", alignItems: 'center', flexDirection: 'row', }} onPress={() =>
                                             this.setState({ addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false, addDesc: data.item.comment, addDescField: this.state.daysData.dayField, },
                                                 () => { })}>
-                                            <Image style={{ height: 40, width: 40 }} source={require("../Assets/message.png")} />
+                                            <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
                                         </TouchableOpacity>
                                     </View>
                                 </View>
@@ -896,26 +903,29 @@ class TimeSheet extends Component {
                                                                         {/* <Text numberOfLines={1} style={{ color: "#4D504F" }}>{this.state.daysData.TaskDesc}</Text> */}
                                                                     </View>
                                                                 </View>
-                                                                <View style={[styles.flexRow1,{paddingLeft:8}]}>
-                                                                    <View style={{ width:  this.state.tsStatus == "Approved" ?"30%": '40%' ,backgroundColor: 'transparent',padding:10}}>
+                                                                <View style={[styles.flexRow1, { }]}>
+                                                                    <View style={{ width: '20%', backgroundColor: 'transparent', padding: 10 }}>
                                                                         <Text style={{ fontSize: 16, }}>{"Day"}</Text>
                                                                     </View>
-                                                                    <View style={{ width:  this.state.tsStatus == "Approved" ? "70%": "60%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'flex-start' }}>
+                                                                    <View style={{ width: "80%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'flex-start' }}>
 
                                                                         {
                                                                             this.state.tsStatus == "Approved" ?
-                                                                                <View style={{ width: "35%", justifyContent: 'center', alignItems: 'center' }}>
-                                                                                    <Text style={{ fontSize: 16 }}>{"Approver"}</Text>
-                                                                                    <Text style={{ fontSize: 16 }}>{"Comments."}</Text>
+                                                                                <View style={{ width: "15%", justifyContent: 'center', alignItems: 'center' }}>
+                                                                                    {/* <Text style={{ fontSize: 16 }}>{"Approver"}</Text>
+                                                                                    <Text style={{ fontSize: 16 }}>{"Comments."}</Text> */}
                                                                                 </View>
                                                                                 : null
                                                                         }
-
-                                                                        <View style={{ width: "35%", justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent' }}>
+                                                                        <View style={{ width: "30%", justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent' }}>
+                                                                            <Text style={{ fontSize: 16 }}>{"Total"}</Text>
+                                                                            <Text style={{ fontSize: 16 }}>{"Hr."}</Text>
+                                                                        </View>
+                                                                        <View style={{ width: "30%", justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent' }}>
                                                                             <Text style={{ fontSize: 16 }}>{"Working"}</Text>
                                                                             <Text style={{ fontSize: 16 }}>{"Hr."}</Text>
                                                                         </View>
-                                                                        <View style={{ width: "25%", justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent' }}>
+                                                                        <View style={{ width: "15%", justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent' }}>
                                                                             <Text style={{ fontSize: 16 }}>{"Desc."}</Text>
                                                                         </View>
                                                                     </View>
@@ -1031,7 +1041,7 @@ class TimeSheet extends Component {
 
                                     <Card style={[styles.cards, { borderWidth: 1, borderColor: this.state.validation == true && this.state.type == '' ? 'red' : "transparent" }]}>
                                         <TouchableOpacity onPress={() => this.setState({
-                                            title: "Type", multiPickerVisible: true, field: 3, data: Type, type: this.state.type, selectedVal: this.state.type1, arrayholder: Type,
+                                            title: "Type", timesheetData: [], dataTable: false, multiPickerVisible: true, field: 3, data: Type, type: this.state.type, selectedVal: this.state.type1, arrayholder: Type,
 
                                         })}
                                             style={styles.cardMenuSpasing}>
@@ -1078,7 +1088,7 @@ class TimeSheet extends Component {
                                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                                     <View style={{ backgroundColor: 'white', borderRadius: 5, width: Dimensions.get('window').width - 50, height: this.state.action == "Approved" && this.state.ratingAllow == true ? 450 : this.state.action == "Approved" && this.state.ratingAllow == false ? 300 : 300 }}>
                                         <View style={{ borderTopStartRadius: 5, borderTopEndRadius: 5, height: 50, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, marginBottom: .3, backgroundColor: this.props.primaryColor }}>
-                                            <Text style={{ fontSize: title, color: this.props.fontColor }}>{ this.state.action == "Approved"  && this.state.ratingAllow ? 'Rating': "Remark"}</Text>
+                                            <Text style={{ fontSize: title, color: this.props.fontColor }}>{this.state.action == "Approved" && this.state.ratingAllow ? 'Rating' : "Remark"}</Text>
                                             <TouchableOpacity onPress={() =>
                                                 this.setState({ ratingVisible: false, },
                                                     () => { })}>
@@ -1160,25 +1170,6 @@ class TimeSheet extends Component {
                                     </View>
                                 </View>
                             </Modal>
-
-                            {/* <Dialog
-                                visible={this.state.actionVisible}
-                                style={{ backgroundColor: 'white', width: 150, height: 80, justifyContent: 'center', alignItems: 'center' }}
-                                onTouchOutside={() => this.setState({ actionVisible: false, selectedVal: [] }, () => { })}
-                            >
-                                <View style={[{ flexDirection: 'row', bottom: 12, right: 12, }]}>
-                                    <TouchableOpacity onPress={() =>
-                                        this.setState({ ratingVisible: true, action: 'Approved', singleRecord: true, actionVisible: false },
-                                            () => { })}>
-                                        <Image style={{ height: 70, width: 70 }} source={require('../Assets/greenTick.png')} />
-                                    </TouchableOpacity>
-                                    <TouchableOpacity onPress={() =>
-                                        this.setState({ ratingVisible: true, action: 'Rejected', singleRecord: true, actionVisible: false },
-                                            () => { })}>
-                                        <Image style={{ height: 55, width: 55, top: 8 }} source={require('../Assets/cross.png')} />
-                                    </TouchableOpacity>
-                                </View>
-                            </Dialog> */}
 
                             <Modal isVisible={this.state.multiPickerVisible1}>
                                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -1295,10 +1286,10 @@ class TimeSheet extends Component {
                                                                 <View style={{ width: '10%', backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }}>
                                                                     {
                                                                         dataArr = this.state.deliverType.concat(this.state.projectGroup).concat(this.state.client).concat(this.state.project).concat(this.state.type1).concat(this.state.resource1).concat(this.state.timesheet1),
-                                                                        dataArr.length == 0 ? null : dataArr.includes(this.state.data[item]) ?                                                                            <Image
-                                                                                source={require('../Assets/tick.png')}
-                                                                                style={{ width: 20, height: 23, marginRight: 15, padding: 5, tintColor: "#4D504F" }}
-                                                                            /> : null
+                                                                        dataArr.length == 0 ? null : dataArr.includes(this.state.data[item]) ? <Image
+                                                                            source={require('../Assets/tick.png')}
+                                                                            style={{ width: 20, height: 23, marginRight: 15, padding: 5, tintColor: "#4D504F" }}
+                                                                        /> : null
                                                                     }
                                                                 </View>
                                                                 <Divider />
