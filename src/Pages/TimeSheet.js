@@ -16,6 +16,7 @@ import { GetEmpWeeklyTimesheetData } from '../Services/MyTimesheet/GetEmpWeeklyT
 import { saveTimesheetEntry } from '../Services/MyTimesheet/saveTimesheetEntry'
 import { CheckPreviousEmpTSStatus } from '../Services/MyTimesheet/CheckPreviousTSStatus'
 import { DeleteTimesheetRecord } from '../Services/MyTimesheet/DeleteTimesheetRecord';
+import { GetValidWeekDatesByPhase } from '../Services/MyTimesheet/GetValidWeekDatesByPhase';
 import { setTsId } from '../Redux/Action'
 import Icon1 from 'react-native-vector-icons/Ionicons';
 import MovableView from 'react-native-movable-view'
@@ -111,7 +112,7 @@ class TimeSheet extends Component {
             ratingData: [],
             headerData: [],
             headerHrsData: [],
-            selectedService: '00:05'
+            weekDayVisible: [],
         }
         this.openRowRefs = [];
     }
@@ -323,8 +324,8 @@ class TimeSheet extends Component {
             }
         })
         var data = await saveTimesheetEntry(this.props.user, timesheetData, this.props.baseUrl)
-        console.log("dattaaatt",data);
-        
+        console.log("dattaaatt", data);
+
         if (data != null && data != "") {
             if (data.Message != null && data.Message != "") {
                 showToast(data.Message);
@@ -348,18 +349,32 @@ class TimeSheet extends Component {
         var errMinCnt = 0;
         var errMaxCnt = 0;
         var errAtt = 0;
+        var errAbsent = 0;
         var errCheckMsg = "";
-        var minHrs = (this.state.headerData[0].MinHrsPerDay).toString();
+        var monMinHrs = (this.state.headerData[0].MonMinHrs).toString();
+        var tueMinHrs = (this.state.headerData[0].TueMinHrs).toString();
+        var wedMinHrs = (this.state.headerData[0].WedMinHrs).toString();
+        var thuMinHrs = (this.state.headerData[0].ThuMinHrs).toString();
+        var friMinHrs = (this.state.headerData[0].FriMinHrs).toString();
+        var satMinHrs = (this.state.headerData[0].SatMinHrs).toString();
+        var sunMinHrs = (this.state.headerData[0].SunMinHrs).toString();
+        var monMinHrsTime = (parseInt(monMinHrs.split(':')[0] * 60) + (monMinHrs.split(':')[1] == undefined ? 0 : parseInt(monMinHrs.split(':')[1])));
+        var tueMinHrsTime = (parseInt(tueMinHrs.split(':')[0] * 60) + (tueMinHrs.split(':')[1] == undefined ? 0 : parseInt(tueMinHrs.split(':')[1])));
+        var wedMinHrsTime = (parseInt(wedMinHrs.split(':')[0] * 60) + (wedMinHrs.split(':')[1] == undefined ? 0 : parseInt(wedMinHrs.split(':')[1])));
+        var thuMinHrsTime = (parseInt(thuMinHrs.split(':')[0] * 60) + (thuMinHrs.split(':')[1] == undefined ? 0 : parseInt(thuMinHrs.split(':')[1])));
+        var friMinHrsTime = (parseInt(friMinHrs.split(':')[0] * 60) + (friMinHrs.split(':')[1] == undefined ? 0 : parseInt(friMinHrs.split(':')[1])));
+        var satMinHrsTime = (parseInt(satMinHrs.split(':')[0] * 60) + (satMinHrs.split(':')[1] == undefined ? 0 : parseInt(satMinHrs.split(':')[1])));
+        var sunMinHrsTime = (parseInt(sunMinHrs.split(':')[0] * 60) + (sunMinHrs.split(':')[1] == undefined ? 0 : parseInt(sunMinHrs.split(':')[1])));
+
         var maxHrs = (this.state.headerData[0].MaxHrsPerDay).toString();
-        var minHrsTime = minHrs.search(":") == -1 ? (parseInt(minHrs * 60)) : (parseInt(minHrs.split(':')[0] * 60) + (minHrs.split(':')[1] == undefined ? 0 : parseInt(minHrs.split(':')[1])));
-        var maxHrsTime = maxHrs.search(":") == -1 ? (parseInt(maxHrs * 60)) : (parseInt(maxHrs.split(':')[0] * 60) + (maxHrs.split(':')[1] == undefined ? 0 : parseInt(maxHrs.split(':')[1])));
+        var maxHrsTime = (parseInt(maxHrs.split(':')[0] * 60) + (maxHrs.split(':')[1] == undefined ? 0 : parseInt(maxHrs.split(':')[1])));
         var Mon = [], Tue = [], Wed = [], Thu = [], Fri = [], Sat = [], Sun = [];
         var mon = 0, tue = 0, wed = 0, thu = 0, fri = 0, sat = 0, sun = 0;
         var data = this.state.timesheetData
         var empAttendanceData = this.state.empAttendanceData
         var i = 0
-        console.log("dataaaa",data);
-        
+
+
         for (i; i < data.length; i++) {
             Mon.push({
                 autoId: (data[i].Mon_AutoId == null) ? "" : data[i].Mon_AutoId,
@@ -419,12 +434,20 @@ class TimeSheet extends Component {
 
         }
         var arr = [Mon, Tue, Wed, Thu, Fri, Sat, Sun];
+        var errCntNoTime = 0;
+        var errCntTdNotime = 0;
 
         for (i = 0; i < arr.length; i++) {
             var day = arr[i]
+
             for (var j = 0; j < day.length; j++) {
                 var duration = day[j].duration;
                 var dayName = day[j].day
+
+                if (duration == "") {
+                    errCntTdNotime++;
+                    console.log("jhhhhhhhh", errCntTdNotime);
+                }
 
                 if (dayName == "Monday") {
                     mon += (parseInt(duration.split(':')[0] * 60) + (duration.split(':')[1] == undefined ? 0 : parseInt(duration.split(':')[1])))
@@ -443,33 +466,53 @@ class TimeSheet extends Component {
                 }
 
             }
+
         }
-        
-        if (empAttendanceData[0].Mon == 0 && empAttendanceData[0].AttendanceValidation.toLowerCase() == "true") {
-            if ((mon) > 0)            
-                errAtt++;
-        }
-        if (minHrs != "") {
-            if (mon != 0 && (mon < minHrsTime))
-                errMinCnt++;
-        }
-        if (maxHrs != "") {
-            if ((mon > maxHrsTime))
-                errMaxCnt++;
+        if (errCntTdNotime == 7) {
+            console.log("yyyyyyy");
+            errCntNoTime++;
         }
 
-        //tue vaidation
-        if (empAttendanceData[0].Tue == 0 && empAttendanceData[0].AttendanceValidation.toLowerCase() == "true") {
-            if ((tue) > 0)            
+        // Mon vaidation
+        if (empAttendanceData[0].Mon == 0 && empAttendanceData[0].AttendanceValidation.toLowerCase() == "true") {
+            if ((mon) > 0)
                 errAtt++;
         }
-        if (minHrs != "") {
-            if (tue != 0 && (tue < minHrsTime))
-                errMinCnt++;
+
+        if (monMinHrsTime === '0,00') {
+            if (mon > 0) {
+                errAbsent++;
+            }
         }
-        if (maxHrs != "") {
-            if ((tue > maxHrsTime))
-                errMaxCnt++;
+        else {
+            if (monMinHrs != "") {
+                if (mon != 0 && (mon < monMinHrsTime))
+                    errMinCnt++;
+            }
+            if (maxHrs != "") {
+                if ((mon > maxHrsTime))
+                    errMaxCnt++;
+            }
+        }
+        //tue vaidation
+        if (empAttendanceData[0].Tue == 0 && empAttendanceData[0].AttendanceValidation.toLowerCase() == "true") {
+            if ((tue) > 0)
+                errAtt++;
+        }
+        if (tueMinHrsTime === 0) {
+            if (sun > 0) {
+                errAbsent++;
+            }
+        }
+        else {
+            if (tueMinHrs != "") {
+                if (tue != 0 && (tue < tueMinHrsTime))
+                    errMinCnt++;
+            }
+            if (maxHrs != "") {
+                if ((tue > maxHrsTime))
+                    errMaxCnt++;
+            }
         }
 
         //wed vaidation
@@ -477,13 +520,20 @@ class TimeSheet extends Component {
             if (parseInt(wed) > 0)
                 errAtt++;
         }
-        if (minHrs != "") {
-            if (wed != 0 && (wed < minHrsTime))
-                errMinCnt++;
+        if (wedMinHrsTime === 0) {
+            if (sun > 0) {
+                errAbsent++;
+            }
         }
-        if (maxHrs != "") {
-            if ((wed > maxHrsTime))
-                errMaxCnt++;
+        else {
+            if (wedMinHrs != "") {
+                if (wed != 0 && (wed < wedMinHrsTime))
+                    errMinCnt++;
+            }
+            if (maxHrs != "") {
+                if ((wed > maxHrsTime))
+                    errMaxCnt++;
+            }
         }
 
         //thu vaidation
@@ -491,13 +541,20 @@ class TimeSheet extends Component {
             if (parseInt(thu) > 0)
                 errAtt++;
         }
-        if (minHrs != "") {
-            if (thu != 0 && (thu < minHrsTime))
-                errMinCnt++;
+        if (thuMinHrsTime === 0) {
+            if (sun > 0) {
+                errAbsent++;
+            }
         }
-        if (maxHrs != "") {
-            if ((thu > maxHrsTime))
-                errMaxCnt++;
+        else {
+            if (thuMinHrs != "") {
+                if (thu != 0 && (thu < thuMinHrsTime))
+                    errMinCnt++;
+            }
+            if (maxHrs != "") {
+                if ((thu > maxHrsTime))
+                    errMaxCnt++;
+            }
         }
 
         //fri vaidation
@@ -505,13 +562,21 @@ class TimeSheet extends Component {
             if (parseInt(fri) > 0)
                 errAtt++;
         }
-        if (minHrs != "") {
-            if (fri != 0 && (fri < minHrsTime))
-                errMinCnt++;
+
+        if (friMinHrsTime === 0) {
+            if (sun > 0) {
+                errAbsent++;
+            }
         }
-        if (maxHrs != "") {
-            if ((fri > maxHrsTime))
-                errMaxCnt++;
+        else {
+            if (friMinHrs != "") {
+                if (fri != 0 && (fri < friMinHrsTime))
+                    errMinCnt++;
+            }
+            if (maxHrs != "") {
+                if ((fri > maxHrsTime))
+                    errMaxCnt++;
+            }
         }
 
         //sat vaidation
@@ -519,13 +584,21 @@ class TimeSheet extends Component {
             if (parseInt(sat) > 0)
                 errAtt++;
         }
-        if (minHrs != "") {
-            if (sat != 0 && (sat < minHrsTime))
-                errMinCnt++;
+
+        if (satMinHrsTime === 0) {
+            if (sun > 0) {
+                errAbsent++;
+            }
         }
-        if (maxHrs != "") {
-            if ((sat > maxHrsTime))
-                errMaxCnt++;
+        else {
+            if (satMinHrs != "") {
+                if (sat != 0 && (sat < satMinHrsTime))
+                    errMinCnt++;
+            }
+            if (maxHrs != "") {
+                if ((sat > maxHrsTime))
+                    errMaxCnt++;
+            }
         }
 
         //sun vaidation
@@ -533,13 +606,20 @@ class TimeSheet extends Component {
             if (parseInt(sun) > 0)
                 errAtt++;
         }
-        if (minHrs != "") {
-            if (sun != 0 && (sun < minHrsTime))
-                errMinCnt++;
+        if (sunMinHrsTime === 0) {
+            if (sun > 0) {
+                errAbsent++;
+            }
         }
-        if (maxHrs != "") {
-            if ((sun > maxHrsTime))
-                errMaxCnt++;
+        else {
+            if (sunMinHrs != "") {
+                if (sun != 0 && (sun < sunMinHrsTime))
+                    errMinCnt++;
+            }
+            if (maxHrs != "") {
+                if ((sun > maxHrsTime))
+                    errMaxCnt++;
+            }
         }
 
         //check Previous status
@@ -555,7 +635,10 @@ class TimeSheet extends Component {
             }
         }
 
-        if (errMinCnt > 0 || errMaxCnt > 0 || errAtt > 0 || errCheckMsg != "") {
+        if (errCntNoTime > 0) {
+            showToast('There is no time filled for one or more rows. Please fill the time or delete the row before submission.');
+        }
+        else if (errMinCnt > 0 || errMaxCnt > 0 || errAtt > 0 || errCheckMsg != "" || errAbsent > 0) {
             if (errCheckMsg != "") {  //to show an error msg on submit  when previous timesheet is not submitted
                 var errCheckMsg = errCheckMsg.split("$")[1]
                 alert(errCheckMsg.replace(/<[^>]*>/g, '.\n'))
@@ -566,9 +649,11 @@ class TimeSheet extends Component {
                     if (errMinCnt > 0 && errMaxCnt > 0) { //MinMaxHrsValidity to show an error msg on submit when time enetered per day does not siffice min and max hrs
                         showToast(' Minimum time and Maximum time allowed per day is exceeding.');
                     } else if (errMinCnt > 0) { //MinimumHrsValidity to show an error msg on submit when time enetered per day does not siffice min  hrs
-                        showToast(" Minimum time duration allowed per day is " + minHrs + " hours.")
+                        showToast(" Minimum time duration allowed per day is not fufilled for  one or more days.")
                     } else if (errMaxCnt > 0) { //MaximumHrsValidity to show an error msg on submit when time enetered per day does not siffice max  hrs
                         showToast(" Maximum time duration allowed per day is " + maxHrs + " hours.")
+                    } else if (errAbsent > 0) { //MaximumHrsValidity to show an error msg on submit when time enetered per day does not siffice max  hrs
+                        showToast(" Timesheet cannot be submitted as you were absent for one or more days. Please leave the columns blank for the day/s you were absent. Contact administrator/ HR, if you were present.")
                     }
                 }
             }
@@ -593,8 +678,7 @@ class TimeSheet extends Component {
     empWeeklyTimesheetData = async () => {
 
         var timesheetData = await GetEmpWeeklyTimesheetData(this.props.user, this.state.timesheetId, this.props.baseUrl)
-        console.log("daarrrrrrrr",timesheetData.EmpTimesheetData[0]);
-        
+
         this.setState({
             empAttendanceData: timesheetData.EmpAttendanceData[0],
             timesheetData: timesheetData.EmpTimesheetData[0],
@@ -634,6 +718,7 @@ class TimeSheet extends Component {
             lblFri = moment(new Date(this.state.headerData[0].Fri_Date)).format("ddd D, YYYY"),
             lblSat = moment(new Date(this.state.headerData[0].Sat_Date)).format("ddd D, YYYY"),
             lblSun = moment(new Date(this.state.headerData[0].Sun_Date)).format("ddd D, YYYY"),
+
             dvTotMon = this.state.headerHrsData[0].Mon_TotalTime == null ? "0:00" : (this.state.headerHrsData[0].Mon_TotalTime),
             dvTotTue = this.state.headerHrsData[0].Tue_TotalTime == null ? "0:00" : (this.state.headerHrsData[0].Tue_TotalTime),
             dvTotWed = this.state.headerHrsData[0].Wed_TotalTime == null ? "0:00" : (this.state.headerHrsData[0].Wed_TotalTime),
@@ -740,8 +825,25 @@ class TimeSheet extends Component {
         </View>
     );
 
-    handledata = (item, index) => {
-        this.setState({ daysVisible: true, daysData: item, dayIndex: index })
+    handledata = async (item, index) => {
+        console.log("itremmmm", item);
+        var response = await GetValidWeekDatesByPhase(this.props.user, item.TimesheetId, item.ProjectCode, item.ClientCode, this.props.baseUrl)
+        console.log("itremmmm", response.TimesheetHeaderData[0][0]);
+
+        this.setState({
+            weekDayVisible: response.TimesheetHeaderData[0][0],
+            daysVisible: true,
+            daysData: item,
+            dayIndex: index
+        })
+    }
+    handleValidWeekDates = async () => {
+        var response = await GetValidWeekDatesByPhase(this.props.user, this.state.timesheetId, this.state.project, this.state.client, this.props.baseUrl)
+
+        this.setState({
+            weekDayVisible: response.TimesheetHeaderData[0][0]
+
+        });
     }
 
     renderItem = (data) => (
@@ -835,21 +937,21 @@ class TimeSheet extends Component {
     }
 
     _handleAppStateChange = () => {
-        var notification =this.props.navigation.state.params.notification
-        var notificationData =this.props.navigation.state.params.notificationData
-         if(notification == true){
-            this.setState({timesheetData: [],  timesheetVisible: true, timesheetId:  notificationData.TimeSheetId},()=>{
-                this.props.ts_Id( notificationData.TimeSheetId)
+        var notification = this.props.navigation.state.params.notification
+        var notificationData = this.props.navigation.state.params.notificationData
+        if (notification == true) {
+            this.setState({ timesheetData: [], timesheetVisible: true, timesheetId: notificationData.TimeSheetId }, () => {
+                this.props.ts_Id(notificationData.TimeSheetId)
                 firstDate1 = moment(notificationData.StartDate).format("DD MMM"),
-                lastDate1 = moment(notificationData.EndDate).format("DD MMM YY")
+                    lastDate1 = moment(notificationData.EndDate).format("DD MMM YY")
             })
             this.empWeeklyTimesheetData()
         }
 
-        
-     
-      };
-    
+
+
+    };
+
 
     componentDidMount() {
         AppState.addEventListener('change', this._handleAppStateChange);
@@ -892,7 +994,7 @@ class TimeSheet extends Component {
                                         </View>
                                         <TouchableOpacity onPress={() => this.setState({ weekVisible: true })}
                                             style={{ flexDirection: 'row', width: "50%", justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderRadius: 3, borderColor: 'white' }}>
-                                            <Text  style={styles.text}> {firstDate1 == '' ? "Select Week" : firstDate1 + " - " + lastDate1}</Text>
+                                            <Text style={styles.text}> {firstDate1 == '' ? "Select Week" : firstDate1 + " - " + lastDate1}</Text>
                                         </TouchableOpacity>
                                     </View>
 
@@ -1059,7 +1161,7 @@ class TimeSheet extends Component {
                                                     <Image style={{ height: 30, width: 30, tintColor: 'white' }} source={require('../Assets/redCross.png')} />
                                                 </TouchableOpacity>
                                             </View>
-                                            <View style={{ justifyContent: 'center', alignItems: 'center',  height: "80%", }}>
+                                            <View style={{ justifyContent: 'center', alignItems: 'center', height: "80%", }}>
                                                 {
                                                     this.state.timesheetList.length == 0 ?
                                                         <View style={{ width: '100%', }}>
@@ -1082,7 +1184,7 @@ class TimeSheet extends Component {
                                                                                 this.empWeeklyTimesheetData()
                                                                         })
                                                                 }}
-                                                                    style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center',  }}>
+                                                                    style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', }}>
                                                                     <View style={{ width: '100%', }}>
 
                                                                         {
@@ -1157,7 +1259,7 @@ class TimeSheet extends Component {
                                                             </View>
                                                             <View style={{ width: "65%", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'flex-start' }}>
 
-                                                                <View style={{ width: "30%", justifyContent: 'center', alignItems: 'center',  }}>
+                                                                <View style={{ width: "30%", justifyContent: 'center', alignItems: 'center', }}>
                                                                     <Text style={{ fontSize: 14 }}>{"Total"}</Text>
                                                                     <Text style={{ fontSize: 14 }}>{"Hr."}</Text>
                                                                 </View>
@@ -1190,12 +1292,16 @@ class TimeSheet extends Component {
                                                                 <TouchableOpacity style={[styles.hrsData, { width: "28%", borderColor: 'gray', backgroundColor: this.props.secColor }]}>
                                                                     <Text style={{ fontSize: 16, color: "#4D504F" }}>{this.state.dvTotMon}</Text>
                                                                 </TouchableOpacity>
-                                                                <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.daysData.Status == "Saved" ? true : false, dayField: 'Mon', dayField: 1, }) }}
-                                                                    style={[styles.hrsData, { width: "28%", backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
+                                                                <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.daysData.Status == "Saved" && this.state.weekDayVisible.AllowMon == 1 ? true : false, dayField: 'Mon', dayField: 1, }) }}
+                                                                    style={[styles.hrsData, { width: "28%", backgroundColor: this.state.daysData.Status == "Saved" && this.state.weekDayVisible.AllowMon == 1 ? '#FFFF' : "#E9ECEF" }]}>
                                                                     <Text style={{ fontSize: 16 }}>{this.state.daysData.Mon == "" || this.state.daysData.Mon == undefined ? "--:--" : this.state.daysData.Mon}</Text>
                                                                 </TouchableOpacity>
-                                                                <TouchableOpacity style={{ width: "15%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} onPress={() =>
-                                                                    this.setState({ addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false, addDesc: this.state.daysData.Mon_TaskComments, addDescField: 1, })}>
+                                                                <TouchableOpacity style={{ width: "15%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }}
+                                                                 onPress={() => this.state.weekDayVisible.AllowMon !== 0 ?
+                                                                    this.setState({ addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false, 
+                                                                    addDesc: this.state.daysData.Mon_TaskComments, addDescField: 1, })
+                                                                    : null
+                                                                    }>
                                                                     <Image style={{ height: 35, width: 35, }} source={require("../Assets/message.png")} />
                                                                 </TouchableOpacity>
                                                             </View>
@@ -1229,13 +1335,15 @@ class TimeSheet extends Component {
                                                                 <TouchableOpacity style={[styles.hrsData, { width: "28%", borderColor: 'gray', backgroundColor: this.props.secColor }]}>
                                                                     <Text style={{ fontSize: 16, color: "#4D504F" }}>{this.state.dvTotTue}</Text>
                                                                 </TouchableOpacity>
-                                                                <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.daysData.Status == "Saved" ? true : false, dayField: 'Tue', dayField: 2, }) }}
-                                                                    style={[styles.hrsData, { width: "28%", backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
+                                                                <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.daysData.Status == "Saved" && this.state.weekDayVisible.AllowTue == 1 ? true : false, dayField: 'Tue', dayField: 2, }) }}
+                                                                    style={[styles.hrsData, { width: "28%", backgroundColor: this.state.daysData.Status == "Saved" && this.state.weekDayVisible.AllowTue == 1 ? '#FFFF' : "#E9ECEF" }]}>
                                                                     <Text style={{ fontSize: 16 }}>{this.state.daysData.Tue == "" ? "--:--" : this.state.daysData.Tue}</Text>
                                                                 </TouchableOpacity>
-                                                                <TouchableOpacity style={{ width: "15%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} onPress={() =>
-                                                                    this.setState({ addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false, addDesc: this.state.daysData.Tue_TaskComments, addDescField: 2, },
-                                                                        () => { })}>
+                                                                <TouchableOpacity style={{ width: "15%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} 
+                                                                onPress={() => this.state.weekDayVisible.AllowTue !== 0 ?
+                                                                    this.setState({ addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false, addDesc: this.state.daysData.Tue_TaskComments, addDescField: 2, })
+                                                                    : null
+                                                                    }>
                                                                     <Image style={{ height: 35, width: 35 }} source={require("../Assets/message.png")} />
                                                                 </TouchableOpacity>
                                                             </View>
@@ -1264,24 +1372,20 @@ class TimeSheet extends Component {
                                                                     this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Wed_ApprRemark })}>
                                                                     <Image style={{ height: 40, width: 40, }} source={require("../Assets/msgbg.png")} />
                                                                 </TouchableOpacity>
-                                                                {/* {
-                                                                    this.state.daysData.Status == "Saved" || this.state.daysData.Status == "Submitted" ? */}
                                                                 <TouchableOpacity style={[styles.hrsData, { width: "28%", borderColor: 'gray', backgroundColor: this.props.secColor }]}>
                                                                     <Text style={{ fontSize: 16, color: "#4D504F" }}>{this.state.dvTotWed}</Text>
                                                                 </TouchableOpacity>
-                                                                {/* :
-                                                                        <TouchableOpacity style={{ width: "30%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} onPress={() =>
-                                                                            this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Wed_ApprRemark })}>
-                                                                            <Image style={{ height: 50, width: 50, }} source={require("../Assets/msgbg.png")} />
-                                                                        </TouchableOpacity>
-                                                                } */}
-                                                                <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.daysData.Status == "Saved" ? true : false, dayField: 'Wed', dayField: 3, }) }}
-                                                                    style={[styles.hrsData, { width: "28%", backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
+                                                                <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.daysData.Status == "Saved" && this.state.weekDayVisible.AllowWed == 1 ? true : false, dayField: 'Wed', dayField: 3, }) }}
+                                                                    style={[styles.hrsData, { width: "28%", backgroundColor:  this.state.daysData.Status == "Saved" && this.state.weekDayVisible.AllowWed == 1 ? '#FFFF' : "#E9ECEF" }]}>
                                                                     <Text style={{ fontSize: 16 }}>{this.state.daysData.Wed == "" ? "--:--" : this.state.daysData.Wed}</Text>
                                                                 </TouchableOpacity>
-                                                                <TouchableOpacity style={{ width: "15%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} onPress={() =>
-                                                                    this.setState({ addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false, addDesc: this.state.daysData.Wed_TaskComments, addDescField: 3, },
-                                                                        () => { })}>
+                                                                <TouchableOpacity style={{ width: "15%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }}
+                                                                    onPress={() => this.state.weekDayVisible.AllowWed !== 0 ?
+                                                                        this.setState({
+                                                                            addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false,
+                                                                            addDesc: this.state.daysData.Wed_TaskComments, addDescField: 3,
+                                                                        })
+                                                                        : null}>
                                                                     <Image style={{ height: 35, width: 35 }} source={require("../Assets/message.png")} />
                                                                 </TouchableOpacity>
                                                             </View>
@@ -1310,24 +1414,19 @@ class TimeSheet extends Component {
                                                                     this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Thu_ApprRemark })}>
                                                                     <Image style={{ height: 40, width: 40, }} source={require("../Assets/msgbg.png")} />
                                                                 </TouchableOpacity>
-                                                                {/* {
-                                                                    this.state.daysData.Status == "Saved" || this.state.daysData.Status == "Submitted" ? */}
                                                                 <TouchableOpacity style={[styles.hrsData, { width: "28%", borderColor: 'gray', backgroundColor: this.props.secColor }]}>
                                                                     <Text style={{ fontSize: 16, color: "#4D504F" }}>{this.state.dvTotThu}</Text>
                                                                 </TouchableOpacity>
-                                                                {/* :
-                                                                        <TouchableOpacity style={{ width: "30%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} onPress={() =>
-                                                                            this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Thu_ApprRemark })}>
-                                                                            <Image style={{ height: 50, width: 50, }} source={require("../Assets/msgbg.png")} />
-                                                                        </TouchableOpacity>
-                                                                } */}
-                                                                <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.daysData.Status == "Saved" ? true : false, dayField: 'Thu', dayField: 4, }) }}
-                                                                    style={[styles.hrsData, { width: "28%", backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
+                                                                <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.daysData.Status == "Saved" && this.state.weekDayVisible.AllowThu == 1 ? true : false, dayField: 'Thu', dayField: 4, }) }}
+                                                                    style={[styles.hrsData, { width: "28%", backgroundColor: this.state.daysData.Status == "Saved" && this.state.weekDayVisible.AllowThu == 1 ? '#FFFF' : "#E9ECEF" }]}>
                                                                     <Text style={{ fontSize: 16 }}>{this.state.daysData.Thu == "" ? "--:--" : this.state.daysData.Thu}</Text>
                                                                 </TouchableOpacity>
-                                                                <TouchableOpacity style={{ width: "15%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} onPress={() =>
-                                                                    this.setState({ addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false, addDesc: this.state.daysData.Thu_TaskComments, addDescField: 4, },
-                                                                        () => { })}>
+                                                                <TouchableOpacity style={{ width: "15%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} 
+                                                                onPress={() => this.state.weekDayVisible.AllowThu !== 0 ?
+                                                                    this.setState({ addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false,
+                                                                     addDesc: this.state.daysData.Thu_TaskComments, addDescField: 4, })
+                                                                     : null
+                                                                     }>
                                                                     <Image style={{ height: 35, width: 35 }} source={require("../Assets/message.png")} />
                                                                 </TouchableOpacity>
                                                             </View>
@@ -1356,24 +1455,19 @@ class TimeSheet extends Component {
                                                                     this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Fri_ApprRemark })}>
                                                                     <Image style={{ height: 40, width: 40, }} source={require("../Assets/msgbg.png")} />
                                                                 </TouchableOpacity>
-                                                                {/* {
-                                                                    this.state.daysData.Status == "Saved" || this.state.daysData.Status == "Submitted" ? */}
                                                                 <TouchableOpacity style={[styles.hrsData, { width: "28%", borderColor: 'gray', backgroundColor: this.props.secColor }]}>
                                                                     <Text style={{ fontSize: 16, color: "#4D504F" }}>{this.state.dvTotFri}</Text>
                                                                 </TouchableOpacity>
-                                                                {/* :
-                                                                        <TouchableOpacity style={{ width: "30%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} onPress={() =>
-                                                                            this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Fri_ApprRemark })}>
-                                                                            <Image style={{ height: 50, width: 50, }} source={require("../Assets/msgbg.png")} />
-                                                                        </TouchableOpacity>
-                                                                } */}
-                                                                <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.daysData.Status == "Saved" ? true : false, dayField: 'Fri', dayField: 5, }) }}
-                                                                    style={[styles.hrsData, { width: "28%", backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
+                                                                <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.daysData.Status == "Saved" && this.state.weekDayVisible.AllowFri == 1 ? true : false, dayField: 'Fri', dayField: 5, }) }}
+                                                                    style={[styles.hrsData, { width: "28%", backgroundColor: this.state.daysData.Status == "Saved" && this.state.weekDayVisible.AllowFri == 1 ? '#FFFF' : "#E9ECEF" }]}>
                                                                     <Text style={{ fontSize: 16 }}>{this.state.daysData.Fri == "" ? "--:--" : this.state.daysData.Fri}</Text>
                                                                 </TouchableOpacity>
-                                                                <TouchableOpacity style={{ width: "15%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} onPress={() =>
-                                                                    this.setState({ addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false, addDesc: this.state.daysData.Fri_TaskComments, addDescField: 5, },
-                                                                        () => { })}>
+                                                                <TouchableOpacity style={{ width: "15%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }}
+                                                                 onPress={() => this.state.weekDayVisible.AllowFri !== 0 ?
+                                                                    this.setState({ addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false, 
+                                                                    addDesc: this.state.daysData.Fri_TaskComments, addDescField: 5, })
+                                                                    :null
+                                                                    }>
                                                                     <Image style={{ height: 35, width: 35 }} source={require("../Assets/message.png")} />
                                                                 </TouchableOpacity>
                                                             </View>
@@ -1402,24 +1496,19 @@ class TimeSheet extends Component {
                                                                     this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Sat_ApprRemark })}>
                                                                     <Image style={{ height: 40, width: 40, }} source={require("../Assets/msgbg.png")} />
                                                                 </TouchableOpacity>
-                                                                {/* {
-                                                                    this.state.daysData.Status == "Saved" || this.state.daysData.Status == "Submitted" ? */}
                                                                 <TouchableOpacity style={[styles.hrsData, { width: "28%", borderColor: 'gray', backgroundColor: this.props.secColor }]}>
                                                                     <Text style={{ fontSize: 16, color: "#4D504F" }}>{this.state.dvTotSat}</Text>
                                                                 </TouchableOpacity>
-                                                                {/* :
-                                                                        <TouchableOpacity style={{ width: "30%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} onPress={() =>
-                                                                            this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Sat_ApprRemark })}>
-                                                                            <Image style={{ height: 50, width: 50, }} source={require("../Assets/msgbg.png")} />
-                                                                        </TouchableOpacity>
-                                                                } */}
-                                                                <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.daysData.Status == "Saved" ? true : false, dayField: 'Sat', dayField: 6, }) }}
-                                                                    style={[styles.hrsData, { width: "28%", backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
+
+                                                                <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.daysData.Status == "Saved" && this.state.weekDayVisible.AllowSat == 1 ? true : false, dayField: 'Sat', dayField: 6, }) }}
+                                                                    style={[styles.hrsData, { width: "28%", backgroundColor: this.state.daysData.Status == "Saved" && this.state.weekDayVisible.AllowSat == 1 ? '#FFFF' : "#E9ECEF" }]}>
                                                                     <Text style={{ fontSize: 16 }}>{this.state.daysData.Sat == "" ? "--:--" : this.state.daysData.Sat}</Text>
                                                                 </TouchableOpacity>
-                                                                <TouchableOpacity style={{ width: "15%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} onPress={() =>
-                                                                    this.setState({ addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false, addDesc: this.state.daysData.Sat_TaskComments, addDescField: 6, },
-                                                                        () => { })}>
+                                                                <TouchableOpacity style={{ width: "15%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }}
+                                                                 onPress={() => this.state.weekDayVisible.AllowSat !== 0 ?
+                                                                    this.setState({ addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false, addDesc: this.state.daysData.Sat_TaskComments, addDescField: 6, })
+                                                                    :null
+                                                                    }>
                                                                     <Image style={{ height: 35, width: 35 }} source={require("../Assets/message.png")} />
                                                                 </TouchableOpacity>
                                                             </View>
@@ -1448,24 +1537,18 @@ class TimeSheet extends Component {
                                                                     this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Sun_ApprRemark })}>
                                                                     <Image style={{ height: 40, width: 40, }} source={require("../Assets/msgbg.png")} />
                                                                 </TouchableOpacity>
-                                                                {/* {
-                                                                    this.state.daysData.Status == "Saved" || this.state.daysData.Status == "Submitted" ? */}
                                                                 <TouchableOpacity style={[styles.hrsData, { width: "28%", borderColor: 'gray', backgroundColor: this.props.secColor }]}>
                                                                     <Text style={{ fontSize: 16, color: "#4D504F" }}>{this.state.dvTotSun}</Text>
                                                                 </TouchableOpacity>
-                                                                {/* :
-                                                                        <TouchableOpacity style={{ width: "30%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} onPress={() =>
-                                                                            this.setState({ addDescVisible: true, descEdit: false, rating: true, ratingText: this.state.daysData.Sun_ApprRemark })}>
-                                                                            <Image style={{ height: 50, width: 50, }} source={require("../Assets/msgbg.png")} />
-                                                                        </TouchableOpacity>
-                                                                } */}
-                                                                <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.daysData.Status == "Saved" ? true : false, dayField: 'Mon', dayField: 7, }) }}
-                                                                    style={[styles.hrsData, { width: "28%", backgroundColor: this.state.daysData.Status == "Saved" ? '#FFFF' : "#E9ECEF" }]}>
+                                                                <TouchableOpacity onPress={() => { this.setState({ timeVisible: this.state.daysData.Status == "Saved" && this.state.weekDayVisible.AllowSun == 1 ? true : false, dayField: 'Mon', dayField: 7, }) }}
+                                                                    style={[styles.hrsData, { width: "28%", backgroundColor: this.state.daysData.Status == "Saved" && this.state.weekDayVisible.AllowSun == 1 ? '#FFFF' : "#E9ECEF" }]}>
                                                                     <Text style={{ fontSize: 16 }}>{this.state.daysData.Sun == "" ? "--:--" : this.state.daysData.Sun}</Text>
                                                                 </TouchableOpacity>
-                                                                <TouchableOpacity style={{ width: "15%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} onPress={() =>
-                                                                    this.setState({ addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false, addDesc: this.state.daysData.Sun_TaskComments, addDescField: 7, },
-                                                                        () => { })}>
+                                                                <TouchableOpacity style={{ width: "15%", flexDirection: 'row', justifyContent: "center", alignItems: 'center', }} 
+                                                                onPress={() => this.state.weekDayVisible.AllowSun !== 0 ?
+                                                                    this.setState({ addDescVisible: true, descEdit: this.state.daysData.Status == "Saved" ? true : false, addDesc: this.state.daysData.Sun_TaskComments, addDescField: 7, })
+                                                                :null
+                                                                }>
                                                                     <Image style={{ height: 35, width: 35 }} source={require("../Assets/message.png")} />
                                                                 </TouchableOpacity>
                                                             </View>

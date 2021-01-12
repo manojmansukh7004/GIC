@@ -4,10 +4,10 @@ import {
   StyleSheet, View, Image, Dimensions, Text, Linking, StatusBar
 } from 'react-native';
 import firebase, { NotificationOpen } from 'react-native-firebase';
-import { storeData, getData } from '../Config/AsyncStorace'
+import AsyncStorace from "@react-native-community/async-storage"
 import { isSignedIn } from "./Authentication";
 import DeviceInfo from 'react-native-device-info';
-import { ActivityIndicator, Colors, Card, Button } from 'react-native-paper';
+import { Card, Button } from 'react-native-paper';
 import { connect } from 'react-redux'
 import { setUser, setBaseUrl } from '../Redux/Action'
 const displayWidth = Dimensions.get('window').width;
@@ -84,13 +84,13 @@ class SplashScreen extends Component {
     Dimensions.addEventListener('change', () => {
       this.getOrientation();
     });
-    await getData('baseUrl').then((value) => {
+    await AsyncStorace.getItem('baseUrl').then((value) => {
       this.setState({ baseUrl: value })
     })
-    await getData('UserId').then((value) => {
+    await AsyncStorace.getItem('UserId').then((value) => {
       this.setState({ UserId: value })
     })
-    await getData('UserRole').then((value) => {
+    await AsyncStorace.getItem('UserRole').then((value) => {
       this.setState({ UserRole: value })
     })
     var userId = this.state.UserId
@@ -123,8 +123,8 @@ class SplashScreen extends Component {
 
     const version = DeviceInfo.getVersion();
     // console.log("versiooooooooooooooooooooooooooooooooooooooooooooooooon", version);
-    // await storeData("baseUrl", "https://gictimesheet.orgtix.com/webAPI");
-    await storeData("baseUrl", "http://gictimesheettest.orgtix.com/WebAPI");
+    // await AsyncStorace.setItem("baseUrl", "https://gictimesheet.orgtix.com/webAPI");
+    await AsyncStorace.setItem("baseUrl", "http://gictimesheettest.orgtix.com/WebAPI");
     setTimeout(async () => {
       const payload = {
         "inputData":

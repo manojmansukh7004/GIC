@@ -12,6 +12,7 @@ import { getTsEntryDropdownData } from '../Services/MyTimesheet/getTsEntryDropdo
 import { getDataOnClientChange } from '../Services/MyTimesheet/getDataOnClientChange';
 import { getDataOnProjectChange } from '../Services/MyTimesheet/getDataOnProjectChange';
 import { GetDataOnPhaseChange } from '../Services/MyTimesheet/GetDataOnPhaseChange';
+import { GetValidWeekDatesByPhase } from '../Services/MyTimesheet/GetValidWeekDatesByPhase';
 import Appbar from '../Component/AppBar'
 const showToast = (Msg) => {
     ToastAndroid.show(Msg, ToastAndroid.LONG);
@@ -98,6 +99,7 @@ class TimesheetEntry extends Component {
             workOrderList: [],
             activityList1: [],
             workOrderList1: [],
+            weekDayVisible:[],
             edit: false,
             timesheetVisible: false,
             addDescVisible: false,
@@ -158,7 +160,6 @@ class TimesheetEntry extends Component {
     }
 
     handleSave = () => {
-        console.log(this.state.client,this.state.project, this.state.activity  )
         
         this.setState({ validation: true })
         if (this.state.client == 0) { showToast("Select client details.") }
@@ -284,12 +285,22 @@ class TimesheetEntry extends Component {
     }
     handleDataOnProjectChange = async () => {
         var projectChange = await getDataOnProjectChange(this.props.user, this.state.timesheetId, this.state.project, this.props.baseUrl)
-        console.log("aaaaaaa", projectChange.ActivityList[0]);
         
         this.setState({
             phaseList: projectChange.PhaseList[0],
             activityList: projectChange.ActivityList[0],
             workOrderList: projectChange.WorkOrderList[0],
+        },()=>{
+            this.handleValidWeekDates();
+        });
+    }
+
+    handleValidWeekDates = async () => {
+        var response = await GetValidWeekDatesByPhase(this.props.user, this.state.timesheetId, this.state.project, this.state.client,  this.props.baseUrl)
+    
+        this.setState({
+            weekDayVisible: response.TimesheetHeaderData[0][0]
+        
         });
     }
 
@@ -297,7 +308,6 @@ class TimesheetEntry extends Component {
 
         if (this.state.phase !== null) {
             var phaseChange = await GetDataOnPhaseChange(this.props.user, this.state.timesheetId, this.state.project, this.state.phase == null ? "" : this.state.phase, this.props.baseUrl)
-            console.log("phasss", phaseChange);
 
             this.setState({
                 activityList: phaseChange.ActivityList[0],
@@ -379,7 +389,6 @@ class TimesheetEntry extends Component {
     }
 
     editTimesheet = () => {
-        console.log("ddddddd",this.state.timesheetData);
         
         this.setState({
 
@@ -562,77 +571,87 @@ class TimesheetEntry extends Component {
                                         <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
                                             <Text style={{ color: this.props.primaryColor }}>{this.state.lblMon1}</Text>
                                             <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotMon1}</Text>
-                                            <TouchableOpacity onPress={() => { this.setState({ timeVisible: true, dayField: 'Mon', dayValue: 1, }) }} style={styles.hrsData}>
-                                                <Text>{this.state.lblMon}</Text>
+                                            <TouchableOpacity onPress={() => { this.state.weekDayVisible.length!==0 && this.state.weekDayVisible.AllowMon !== 0 ? this.setState({ timeVisible: true, dayValue: 1, }):null }} 
+                                            style={[styles.hrsData,{backgroundColor: this.state.weekDayVisible.AllowMon !== 0 ?  null : this.props.secColor }]}>
+                                            <Text>{this.state.lblMon}</Text>
                                             </TouchableOpacity>
                                             <TouchableOpacity onPress={() =>
-                                                this.setState({ addDescVisible: true, addDescField: 1, addDesc: this.state.descMon })}>
+                                                this.state.weekDayVisible.length!==0 && this.state.weekDayVisible.AllowMon !== 0 ?this.setState({ addDescVisible: true, addDescField: 1, addDesc: this.state.descMon }):null}>
                                                 <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
                                             </TouchableOpacity>
                                         </View>
                                         <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
                                             <Text style={{ color: this.props.primaryColor }}>{this.state.lblTue1}</Text>
                                             <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotTue1}</Text>
-                                            <TouchableOpacity onPress={() => { this.setState({ timeVisible: true, dayValue: 2, }) }} style={styles.hrsData}>
-                                                <Text>{this.state.lblTue}</Text>
+                                            <TouchableOpacity onPress={() => { this.state.weekDayVisible.length!==0 && this.state.weekDayVisible.AllowTue !== 0 ? this.setState({ timeVisible: true, dayValue: 2, }):null }} 
+                                            style={[styles.hrsData,{backgroundColor: this.state.weekDayVisible.AllowTue !== 0 ?  null : this.props.secColor }]}>
+                                            <Text>{this.state.lblTue}</Text>
                                             </TouchableOpacity>
                                             <TouchableOpacity onPress={() =>
-                                                this.setState({ addDescVisible: true, addDescField: 2, addDesc: this.state.descTue })}>
+                                                this.state.weekDayVisible.length!==0 && this.state.weekDayVisible.AllowTue !== 0 ? this.setState({ addDescVisible: true, addDescField: 2, addDesc: this.state.descTue }):null}>
                                                 <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
                                             </TouchableOpacity>
                                         </View>
+                                        {
+                                            console.log("lllllllll",this.state.weekDayVisible)
+                                        }
                                         <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
                                             <Text style={{ color: this.props.primaryColor }}>{this.state.lblWed1}</Text>
                                             <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotWed1}</Text>
-                                            <TouchableOpacity onPress={() => { this.setState({ timeVisible: true, dayValue: 3, }) }} style={styles.hrsData}>
+                                            <TouchableOpacity onPress={() => {this.state.weekDayVisible.length!==0 && this.state.weekDayVisible.AllowWed !== 0 ? this.setState({ timeVisible: true, dayValue: 3, }) : null }} 
+                                            style={[styles.hrsData,{backgroundColor: this.state.weekDayVisible.AllowWed !== 0 ?  null : this.props.secColor }]}>
                                                 <Text>{this.state.lblWed}</Text>
                                             </TouchableOpacity>
                                             <TouchableOpacity onPress={() =>
-                                                this.setState({ addDescVisible: true, addDescField: 3, addDesc: this.state.descWed })}>
+                                                this.state.weekDayVisible.length!==0 && this.state.weekDayVisible.AllowWed !== 0 ? this.setState({ addDescVisible: true, addDescField: 3, addDesc: this.state.descWed }): null}>
                                                 <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
                                             </TouchableOpacity>
                                         </View>
                                         <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
                                             <Text style={{ color: this.props.primaryColor }}>{this.state.lblThu1}</Text>
                                             <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotThu1}</Text>
-                                            <TouchableOpacity onPress={() => { this.setState({ timeVisible: true, dayValue: 4, }) }} style={styles.hrsData}>
-                                                <Text>{this.state.lblThu}</Text>
+                                            <TouchableOpacity onPress={() => { this.state.weekDayVisible.length!==0 && this.state.weekDayVisible.AllowThu !== 0 ? this.setState({ timeVisible: true, dayValue: 4, }) :null }} 
+                                            style={[styles.hrsData,{backgroundColor: this.state.weekDayVisible.AllowThu !== 0 ?  null : this.props.secColor }]}>
+                                            <Text>{this.state.lblThu}</Text>
                                             </TouchableOpacity>
                                             <TouchableOpacity onPress={() =>
-                                                this.setState({ addDescVisible: true, addDescField: 4, addDesc: this.state.descThu })}>
+                                                this.state.weekDayVisible.length!==0 && this.state.weekDayVisible.AllowThu !== 0 ? this.setState({ addDescVisible: true, addDescField: 4, addDesc: this.state.descThu }): null}>
                                                 <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
                                             </TouchableOpacity>
                                         </View>
                                         <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
                                             <Text style={{ color: this.props.primaryColor }}>{this.state.lblFri1}</Text>
                                             <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotFri1}</Text>
-                                            <TouchableOpacity onPress={() => { this.setState({ timeVisible: true, dayValue: 5, }) }} style={styles.hrsData}>
-                                                <Text>{this.state.lblFri}</Text>
+                                            <TouchableOpacity onPress={() => { this.state.weekDayVisible.length!==0 && this.state.weekDayVisible.AllowFri !== 0 ? this.setState({ timeVisible: true, dayValue: 5, }) :null }} 
+                                            style={[styles.hrsData,{backgroundColor: this.state.weekDayVisible.AllowFri !== 0 ?  null : this.props.secColor }]}>
+                                            <Text>{this.state.lblFri}</Text>
                                             </TouchableOpacity>
                                             <TouchableOpacity onPress={() =>
-                                                this.setState({ addDescVisible: true, addDescField: 5, addDesc: this.state.descFri })}>
+                                                this.state.weekDayVisible.length!==0 && this.state.weekDayVisible.AllowFri !== 0 ? this.setState({ addDescVisible: true, addDescField: 5, addDesc: this.state.descFri }): null}>
                                                 <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
                                             </TouchableOpacity>
                                         </View>
                                         <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
                                             <Text style={{ color: this.props.primaryColor }}>{this.state.lblSat1}</Text>
                                             <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotSat1}</Text>
-                                            <TouchableOpacity onPress={() => { this.setState({ timeVisible: true, dayValue: 6, }) }} style={styles.hrsData}>
-                                                <Text>{this.state.lblSat}</Text>
+                                            <TouchableOpacity onPress={() => { this.state.weekDayVisible.length!==0 && this.state.weekDayVisible.AllowSat !== 0 ? this.setState({ timeVisible: true, dayValue: 6, }) : null}} 
+                                            style={[styles.hrsData,{backgroundColor: this.state.weekDayVisible.AllowSat !== 0 ?  null : this.props.secColor }]}>
+                                            <Text>{this.state.lblSat}</Text>
                                             </TouchableOpacity>
                                             <TouchableOpacity onPress={() =>
-                                                this.setState({ addDescVisible: true, addDescField: 6, addDesc: this.state.descSat })}>
+                                                this.state.weekDayVisible.length!==0 && this.state.weekDayVisible.AllowSat !== 0 ? this.setState({ addDescVisible: true, addDescField: 6, addDesc: this.state.descSat }): null}>
                                                 <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
                                             </TouchableOpacity>
                                         </View>
                                         <View style={[styles.sheetData, { backgroundColor: this.props.stripColor }]}>
                                             <Text style={{ color: this.props.primaryColor }}>{this.state.lblSun1}</Text>
                                             <Text style={{ color: this.props.primaryColor }}>{this.state.dvTotSun1}</Text>
-                                            <TouchableOpacity onPress={() => { this.setState({ timeVisible: true, dayValue: 7, }) }} style={styles.hrsData}>
-                                                <Text>{this.state.lblSun}</Text>
+                                            <TouchableOpacity onPress={() => { this.state.weekDayVisible.length!==0 && this.state.weekDayVisible.AllowSun !== 0 ? this.setState({ timeVisible: true, dayValue: 7, }) :null }}
+                                            style={[styles.hrsData,{backgroundColor: this.state.weekDayVisible.AllowSun !== 0 ?  null : this.props.secColor }]}>
+                                            <Text>{this.state.lblSun}</Text>
                                             </TouchableOpacity>
                                             <TouchableOpacity onPress={() =>
-                                                this.setState({ addDescVisible: true, addDescField: 7, addDesc: this.state.descSun })}>
+                                                this.state.weekDayVisible.length!==0 && this.state.weekDayVisible.AllowSun !== 0 ? this.setState({ addDescVisible: true, addDescField: 7, addDesc: this.state.descSun }):null}>
                                                 <Image style={{ height: 30, width: 30 }} source={require("../Assets/message.png")} />
                                             </TouchableOpacity>
                                         </View>
